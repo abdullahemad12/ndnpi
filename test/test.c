@@ -4,13 +4,11 @@
 #include <CUnit/CUnit.h>
 #include <CUnit/Basic.h>
 
-
 /*prototypes*/
 static int init(void);
 static int run_tests(void);
 static int init_suite(void);
 static int clean_suite(void);
-
 
 /*Array of all the tests*/
 struct test
@@ -97,6 +95,7 @@ static int init_suite(void)
 {
 	return 0;
 }
+
 static int clean_suite(void)
 {
 	return 0;
