@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <CUnit/CUnit.h>
 #include <CUnit/Basic.h>
+#include "linkedlist.c"
 
 /*prototypes*/
 static int init(void);
@@ -18,6 +19,8 @@ struct test
 };
 
 static struct test utests[] = {
+	{"ll_create_test", ll_create_test},
+	{"ll_add_test", ll_add_test},
 	{NULL, NULL}
 
 };

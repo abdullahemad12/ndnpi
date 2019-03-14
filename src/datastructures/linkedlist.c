@@ -49,7 +49,7 @@ void ll_add(linkedlist_t* ll, void* object)
 {
 	if(ll->head == NULL)
 	{
-		ll->head = malloc(sizeof(ll_node_t*));
+		ll->head = malloc(sizeof(ll_node_t));
 		if(ll->head == NULL)
 		{
 			return;
@@ -60,7 +60,7 @@ void ll_add(linkedlist_t* ll, void* object)
 	}
 	else
 	{
-		ll_node_t* node = malloc(sizeof(ll_node_t*));
+		ll_node_t* node = malloc(sizeof(ll_node_t));
 		if(node == NULL)
 		{
 			return;
@@ -69,6 +69,7 @@ void ll_add(linkedlist_t* ll, void* object)
 		node->prev = NULL;
 		ll->head->prev = node;
 		ll->head = node;
+		node->object = object;
 	}
 	++ll->size;
 }
@@ -153,7 +154,7 @@ void ll_destroy(linkedlist_t* ll, void (*free_ptr)(void*))
 		{
 			free_ptr(del->object);
 		}
-		free(cur);
+		free(del);
 	}
 	free(ll);
 }
