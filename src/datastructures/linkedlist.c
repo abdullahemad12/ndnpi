@@ -21,7 +21,7 @@
   * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   * SOFTWARE.
   */
-
+#include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <datastructures/linkedlist.h>
@@ -144,6 +144,19 @@ void* ll_remove(linkedlist_t* ll, void* object)
 		free(ret);
 	}
 	return obj;
+}
+
+void* ll_search(linkedlist_t* ll, void* object, bool (*compare) (void*, void*))
+{
+	ll_node_t* node = ll->head;
+	while(node != NULL)
+	{
+		if(compare(node->object, object))
+		{
+			return node->object;
+		}
+	}
+	return NULL;
 }
 
 void ll_destroy(linkedlist_t* ll, void (*free_ptr)(void*))

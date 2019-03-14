@@ -24,7 +24,7 @@
 
 #ifndef _DATASTRUCTURES_LINKEDLIST_H_
 #define _DATASTRUCTURES_LINKEDLIST_H_
-
+#include <stdbool.h>
 
 typedef struct ll_node
 {
@@ -93,6 +93,19 @@ void* ll_remove_at(linkedlist_t* ll, unsigned int i);
   */
 void* ll_remove(linkedlist_t* ll, void* object);
 
+
+/** 
+  * linkedlist_t*, bool (*) (void*, void*) -> void*
+  * EFFECTS: search for a specific object in the list using the compare function
+  * REQUIRES: the compare function to expect the first arugment to be the item that is being 
+  *           searched for and the second item is the 
+  * PARAMTERES: 
+  * - linkedlist_t* ll: the linkedlist
+  * - void* object: the object you are looking for
+  * - bool (*compare) (void*, void*): the compare function
+  */
+void* ll_search(linkedlist_t* ll, void* object, bool (*compare) (void*, void*));
+
 /**
   * linkedlist_t*, void (*)(void*) -> void
   * EFFECTS: destroys the given linkedlist object
@@ -103,5 +116,6 @@ void* ll_remove(linkedlist_t* ll, void* object);
   * - void (*free_ptr)(void*): the function that will be used to free the individual objects in the linkedlist
   */ 
 void ll_destroy(linkedlist_t* ll, void (*free_ptr)(void*));
+
 
 #endif /*..._DATASTRUCTURES_LINKEDLIST_H_*/
