@@ -37,7 +37,6 @@ typedef struct ll_node
 typedef struct linkedlist
 {
 	ll_node_t* head;
-	ll_node_t* tail;
 	unsigned int size;
 } linkedlist_t;
 
@@ -95,13 +94,14 @@ void* ll_remove_at(linkedlist_t* ll, unsigned int i);
 void* ll_remove(linkedlist_t* ll, void* object);
 
 /**
-  * linkedlist_t* -> void
+  * linkedlist_t*, void (*)(void*) -> void
   * EFFECTS: destroys the given linkedlist object
   * MODIFIES: ll 
   * REQUIRES: the given ll to be created by ll_create
   * PARAMETERS:
   * -linkedlist_t* ll: the linkedlist
+  * - void (*free_ptr)(void*): the function that will be used to free the individual objects in the linkedlist
   */ 
-void ll_destroy(linkedlist_t* ll);
+void ll_destroy(linkedlist_t* ll, void (*free_ptr)(void*));
 
 #endif /*..._DATASTRUCTURES_LINKEDLIST_H_*/

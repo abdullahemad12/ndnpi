@@ -10,7 +10,7 @@ CC = clang
 CFLAGS = -ggdb3 -O0 -Qunused-arguments -std=c11 -Wall -Werror
 
 # name for executable
-EXE = bin/cranbtree
+EXE = bin/ndnpi
 
 # space-separated list of header files
 HDRS = include/cranbtree.h
@@ -20,7 +20,7 @@ HDRS = include/cranbtree.h
 LIBS = -lcunit
 
 # space-separated list of source files
-SRCS = 
+SRCS = src/datastructures/linkedlist.c
 
 
 # Included folders
@@ -45,11 +45,11 @@ compile:
 
 #creates the library
 createlib: 
-	ar rc libcranbtree.a cranbtree.o
+	ar rc libndnpi.a ndnpi.o
 
 #create index on the library
 indexlib: 
-	ranlib libcranbtree.a
+	ranlib libndnpi.a
 
 # dependencies 
 $(OBJS): $(HDRS) Makefile
@@ -77,7 +77,7 @@ uninstall:
 
 #Creates binary for the test in /bin
 test: mkbin
-	$(CC) $(CFLAGS) test/test.c $(LIBS) -o bin/test -I $(INCLUDES)
+	$(CC) $(CFLAGS) $(SRCS) test/test.c $(LIBS) -o bin/test -I $(INCLUDES)
 
 
 #creates the bin directory if it does not exist
