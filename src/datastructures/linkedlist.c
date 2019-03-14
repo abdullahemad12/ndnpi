@@ -91,11 +91,14 @@ void* ll_remove_at(linkedlist_t* ll, unsigned int i)
 	{
 		return NULL;
 	}
-	ll_node_t* ret = ll_get_at(ll, i);
+	ll_node_t* ret = get_node_at(ll, i);
 	void* obj = NULL;
 	if(ret == ll->head)
 	{
-		ret->next->prev = NULL;
+		if(ret->next != NULL)
+		{
+			ret->next->prev = NULL;
+		}
 		ll->head = ret->next;
 		obj = ret->object;
 		free(ret);
@@ -126,17 +129,18 @@ void* ll_remove(linkedlist_t* ll, void* object)
 	}
 	else if(ret == ll->head)
 	{
-		ret->next->prev = NULL;
+		if(ret->next != NULL)
+		{
+			ret->next->prev = NULL;
+		}
 		ll->head = ret->next;
 		obj = ret->object;
-		--ll->size;
 		free(ret);
 	}
 	else
 	{
 		ret->prev->next = ret->next;
 		obj = ret->object;
-		--ll->size;
 		free(ret);
 	}
 	return obj;
@@ -178,6 +182,6 @@ static ll_node_t* get_node_at(linkedlist_t* ll, unsigned int i)
 	for(int j = 0; j < i; j++){
 		ret = ret->next;
 	}
-	return ret->object;
+	return ret;
 }
  

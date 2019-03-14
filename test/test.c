@@ -21,6 +21,8 @@ struct test
 static struct test utests[] = {
 	{"ll_create_test", ll_create_test},
 	{"ll_add_test", ll_add_test},
+	{"ll_get_at_test", ll_get_at_test},
+	{"ll_remove_at_test", ll_remove_at_test},
 	{NULL, NULL}
 
 };
