@@ -20,7 +20,7 @@ HDRS = include/cranbtree.h
 LIBS = -lcunit
 
 # space-separated list of source files
-SRCS = src/datastructures/linkedlist.c
+SRCS = src/datastructures/linkedlist.c src/datastructures/hashtable.c
 
 
 # Included folders
