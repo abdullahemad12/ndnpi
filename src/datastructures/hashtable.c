@@ -67,12 +67,20 @@ static bool ht_compare(void* curObj, void* targetObj)
 } 
 hashtable_t* ht_create(unsigned int n)
 {
-	hashtable_t* ht = malloc(sizeof(hashtable_t) + ((sizeof(linkedlist_t*) + 1) * n));
+	hashtable_t* ht = malloc(sizeof(hashtable_t));
 	if(ht == NULL)
 	{
 		return NULL;
 	}
-
+	ht->buckets = malloc(sizeof(linkedlist_t*) * n);
+	if(ht->buckets == NULL)
+	{
+		free(ht);
+		return NULL;
+	}
+	for(int i = 0; i < n; i++){
+		ht->buckets[i] = NULL;	
+	}
 	ht->n = n;
 	ht->size = 0;
 	return ht;
@@ -83,6 +91,10 @@ void ht_put(hashtable_t* ht, char* key, void* value)
 
 	long hash = ht_hash(key);
 	int index = hash % ht->n;
+	if(ht->buckets[index] == NULL)
+	{
+		ht->buckets[index] = ll_create();
+	}
 	ht_entry_t* entry = ll_search(ht->buckets[index], key, ht_compare);
 	if(entry == NULL)
 	{
@@ -113,15 +125,23 @@ void* ht_get(hashtable_t* ht, char* key)
 {
 	long hash = ht_hash(key);
 	int index = hash % ht->n;
+	if(ht->buckets[index] == NULL)
+	{
+		return NULL;
+	}
 	ht_entry_t* entry = ll_search(ht->buckets[index], key, ht_compare);
 
-	return entry;
+	return entry->value;
 }
 
 void* ht_remove(hashtable_t* ht, char* key)
 {
 	long hash = ht_hash(key);
 	int index = hash % ht->n;
+	if(ht->buckets[index] == NULL)
+	{
+		return NULL;
+	}
 	ht_entry_t* entry = ll_search(ht->buckets[index], key, ht_compare);
 	if(entry == NULL)
 	{
@@ -141,6 +161,10 @@ bool ht_contains_key(hashtable_t*ht, char* key)
 {
 	long hash = ht_hash(key);
 	int index = hash % ht->n;
+	if(ht->buckets[index] == NULL)
+	{
+		return false;
+	}
 	ht_entry_t* entry = ll_search(ht->buckets[index], key, ht_compare);
 
 	return entry != NULL;
@@ -162,6 +186,6 @@ void ht_destroy(hashtable_t* ht, void (*free_ptr)(void*))
 			ll_destroy(ht->buckets[i], destroy_entry);
 		}
 	}
-
+	free(ht->buckets);
 	free(ht);
 }

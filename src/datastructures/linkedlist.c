@@ -155,6 +155,7 @@ void* ll_search(linkedlist_t* ll, void* object, bool (*compare) (void*, void*))
 		{
 			return node->object;
 		}
+		node = node->next;
 	}
 	return NULL;
 }

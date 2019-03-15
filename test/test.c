@@ -25,6 +25,7 @@ static struct test utests[] = {
 	{"ll_get_at_test", ll_get_at_test},
 	{"ll_remove_at_test", ll_remove_at_test},
 	{"ht_create_test", ht_create_test},
+	{"ht_test", ht_test},
 	{NULL, NULL}
 
 };

@@ -38,7 +38,7 @@ typedef struct hashtable
 {
 	unsigned int size;
 	unsigned int n; 
-	linkedlist_t* buckets[];
+	linkedlist_t** buckets;
 } hashtable_t;
 
 

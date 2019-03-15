@@ -75,7 +75,7 @@ void ll_remove_at_test(void)
 	CU_ASSERT_PTR_NOT_NULL(x);
 	CU_ASSERT_EQUAL(*x, 4);	
 	CU_ASSERT_EQUAL(ll->size, 9);
-
+	free(x);
 	ll_node_t* llnode = ll->head; 
 	while(llnode != NULL)
 	{
@@ -85,6 +85,7 @@ void ll_remove_at_test(void)
 	}
 
 	x  = ll_remove_at(ll, 0);
+	free(x);
 	llnode = ll->head; 
 	while(llnode != NULL)
 	{
@@ -97,6 +98,7 @@ void ll_remove_at_test(void)
 
 
 	x  = ll_remove_at(ll, 7);
+	free(x);
 	llnode = ll->head; 
 	while(llnode != NULL)
 	{
