@@ -33,7 +33,7 @@ static ll_node_t* get_node_at(linkedlist_t* ll, unsigned int i);
 
 linkedlist_t* ll_create(void)
 {
-	linkedlist_t* ll = malloc(sizeof(linkedlist_t));
+	linkedlist_t* ll = (linkedlist_t*)malloc(sizeof(linkedlist_t));
 	if(ll == NULL)
 	{
 		return NULL;
@@ -49,7 +49,7 @@ void ll_add(linkedlist_t* ll, void* object)
 {
 	if(ll->head == NULL)
 	{
-		ll->head = malloc(sizeof(ll_node_t));
+		ll->head = (ll_node_t*)malloc(sizeof(ll_node_t));
 		if(ll->head == NULL)
 		{
 			return;
@@ -60,7 +60,7 @@ void ll_add(linkedlist_t* ll, void* object)
 	}
 	else
 	{
-		ll_node_t* node = malloc(sizeof(ll_node_t));
+		ll_node_t* node = (ll_node_t*)malloc(sizeof(ll_node_t));
 		if(node == NULL)
 		{
 			return;
@@ -193,7 +193,7 @@ void ll_destroy(linkedlist_t* ll, void (*free_ptr)(void*))
 static ll_node_t* get_node_at(linkedlist_t* ll, unsigned int i)
 {
 	ll_node_t* ret = ll->head;
-	for(int j = 0; j < i; j++){
+	for(unsigned int j = 0; j < i; j++){
 		ret = ret->next;
 	}
 	return ret;

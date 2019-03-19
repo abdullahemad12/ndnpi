@@ -18,7 +18,7 @@ void ll_add_test(void)
 	
 	for(int i = 0; i < 100; i++)
 	{
-		int* x = malloc(sizeof(int));
+		int* x = (int*) malloc(sizeof(int));
 		*x = i;		
 		ll_add(ll, x);
 		CU_ASSERT_EQUAL(ll->size, i + 1);
@@ -42,7 +42,7 @@ void ll_get_at_test(void)
 	
 	for(int i = 0; i < 10; i++)
 	{
-		int* x = malloc(sizeof(int));
+		int* x = (int*) malloc(sizeof(int));
 		*x = i;		
 		ll_add(ll, x);
 	}
@@ -65,12 +65,12 @@ void ll_remove_at_test(void)
 	
 	for(int i = 0; i < 10; i++)
 	{
-		int* x = malloc(sizeof(int));
+		int* x = (int*)malloc(sizeof(int));
 		*x = i;		
 		ll_add(ll, x);
 	}
 	
-	int* x = ll_remove_at(ll, 5);
+	int* x = (int*) ll_remove_at(ll, 5);
 
 	CU_ASSERT_PTR_NOT_NULL(x);
 	CU_ASSERT_EQUAL(*x, 4);	
@@ -79,17 +79,17 @@ void ll_remove_at_test(void)
 	ll_node_t* llnode = ll->head; 
 	while(llnode != NULL)
 	{
-		int* y = llnode->object;
+		int* y =(int*) llnode->object;
 		CU_ASSERT_NOT_EQUAL(*y, 4);
 		llnode = llnode->next;
 	}
 
-	x  = ll_remove_at(ll, 0);
+	x  = (int*)ll_remove_at(ll, 0);
 	free(x);
 	llnode = ll->head; 
 	while(llnode != NULL)
 	{
-		int* y = llnode->object;
+		int* y = (int*)llnode->object;
 		CU_ASSERT_NOT_EQUAL(*y, 9);
 		llnode = llnode->next;
 	}
@@ -97,12 +97,12 @@ void ll_remove_at_test(void)
 
 
 
-	x  = ll_remove_at(ll, 7);
+	x  = (int*)ll_remove_at(ll, 7);
 	free(x);
 	llnode = ll->head; 
 	while(llnode != NULL)
 	{
-		int* y = llnode->object;
+		int* y = (int*) llnode->object;
 		CU_ASSERT_NOT_EQUAL(*y, 0);
 		llnode = llnode->next;
 	}

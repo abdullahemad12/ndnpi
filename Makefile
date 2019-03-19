@@ -4,10 +4,10 @@
 #####################################
 
 # compiler to use
-CC = clang
+CC = g++
 
 # flags to pass compiler
-CFLAGS = -ggdb3 -O0 -Qunused-arguments -std=c11 -Wall -Werror
+CFLAGS = -ggdb3 -O0 -Wall -Werror
 
 # name for executable
 EXE = bin/ndnpi
@@ -37,7 +37,8 @@ OBJS = $(SRCS:.c=.o)
 ###########################################
 
 # default target make
-default: compile createlib indexlib
+default: mkbin
+	$(CC) $(CFLAGS) $(SRCS) src/ndnpi.cpp $(LIBS) -o bin/ndnpi -I $(INCLUDES)
 	
 # creates the object file
 compile:

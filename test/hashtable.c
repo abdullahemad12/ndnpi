@@ -13,38 +13,38 @@ void ht_test(void)
 {
 	hashtable_t* ht = ht_create(100);
 	
-	int* x = malloc(sizeof(int));
+	int* x = (int*)malloc(sizeof(int));
 	*x = 12;
-	int* y = malloc(sizeof(int));
+	int* y = (int*)malloc(sizeof(int));
 	*y = 13;
-	int* z = malloc(sizeof(int));
+	int* z = (int*)malloc(sizeof(int));
 	*z = 14;
-	int* w = malloc(sizeof(int));
+	int* w = (int*)malloc(sizeof(int));
 	*w = 15;
 
-	ht_put(ht, "Abdul", x);
-	ht_put(ht, "Em", y);
-	ht_put(ht, "Moh", z);
-	ht_put(ht, "Sal", w);
+	ht_put(ht, (char*)"Abdul", x);
+	ht_put(ht, (char*)"Em", y);
+	ht_put(ht, (char*)"Moh", z);
+	ht_put(ht, (char*)"Sal", w);
 
 
-	CU_ASSERT_PTR_EQUAL(ht_get(ht, "Abdul"), x);
-	CU_ASSERT_PTR_EQUAL(ht_get(ht, "Em"), y);
-	CU_ASSERT_PTR_EQUAL(ht_get(ht, "Moh"), z);
-	CU_ASSERT_PTR_EQUAL(ht_get(ht, "Sal"), w);
+	CU_ASSERT_PTR_EQUAL(ht_get(ht,(char*) "Abdul"), x);
+	CU_ASSERT_PTR_EQUAL(ht_get(ht, (char*)"Em"), y);
+	CU_ASSERT_PTR_EQUAL(ht_get(ht, (char*)"Moh"), z);
+	CU_ASSERT_PTR_EQUAL(ht_get(ht, (char*)"Sal"), w);
 
-	CU_ASSERT(ht_contains_key(ht, "Abdul"));
-	CU_ASSERT(ht_contains_key(ht, "Em"));
-	CU_ASSERT(ht_contains_key(ht, "Moh"));
-	CU_ASSERT(ht_contains_key(ht, "Sal"));
+	CU_ASSERT(ht_contains_key(ht, (char*)"Abdul"));
+	CU_ASSERT(ht_contains_key(ht, (char*)"Em"));
+	CU_ASSERT(ht_contains_key(ht, (char*)"Moh"));
+	CU_ASSERT(ht_contains_key(ht, (char*)"Sal"));
 
 
-	ht_put(ht, "Abdul", y);
-	CU_ASSERT_PTR_EQUAL(ht_get(ht, "Abdul"), y);
+	ht_put(ht, (char*)"Abdul", y);
+	CU_ASSERT_PTR_EQUAL(ht_get(ht, (char*)"Abdul"), y);
 	free(x);
 
-	free(ht_remove(ht, ht_remove(ht, "Abdul")));
-	CU_ASSERT(!ht_contains_key(ht, "Abdul"));
+	free(ht_remove(ht, (char*) ht_remove(ht,(char*) "Abdul")));
+	CU_ASSERT(!ht_contains_key(ht, (char*)"Abdul"));
 	
 	ht_destroy(ht, free);
 }

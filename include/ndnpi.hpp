@@ -21,3 +21,14 @@
   * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   * SOFTWARE.
   */
+
+#ifndef _NDNPI_
+#define _NDNPI_
+
+
+#define DEFAULT_IF	"eth0"
+#define IFNAMESIZE	1024
+
+
+
+#endif /*..._NDNPI_HPP*/

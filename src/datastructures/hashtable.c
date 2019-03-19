@@ -67,18 +67,18 @@ static bool ht_compare(void* curObj, void* targetObj)
 } 
 hashtable_t* ht_create(unsigned int n)
 {
-	hashtable_t* ht = malloc(sizeof(hashtable_t));
+	hashtable_t* ht = (hashtable_t*)malloc(sizeof(hashtable_t));
 	if(ht == NULL)
 	{
 		return NULL;
 	}
-	ht->buckets = malloc(sizeof(linkedlist_t*) * n);
+	ht->buckets = (linkedlist_t**) malloc(sizeof(linkedlist_t*) * n);
 	if(ht->buckets == NULL)
 	{
 		free(ht);
 		return NULL;
 	}
-	for(int i = 0; i < n; i++){
+	for(unsigned int i = 0; i < n; i++){
 		ht->buckets[i] = NULL;	
 	}
 	ht->n = n;
@@ -95,15 +95,15 @@ void ht_put(hashtable_t* ht, char* key, void* value)
 	{
 		ht->buckets[index] = ll_create();
 	}
-	ht_entry_t* entry = ll_search(ht->buckets[index], key, ht_compare);
+	ht_entry_t* entry = (ht_entry_t*) ll_search(ht->buckets[index], key, ht_compare);
 	if(entry == NULL)
 	{
-		entry = malloc(sizeof(ht_entry_t));
+		entry = (ht_entry_t*) malloc(sizeof(ht_entry_t));
 		if(entry == NULL)
 		{
 			return;
 		}
-		entry->key = malloc(sizeof(char) * (strlen(key) + 1));
+		entry->key = (char*) malloc(sizeof(char) * (strlen(key) + 1));
 		if(entry->key == NULL)
 		{
 			free(entry);
@@ -129,7 +129,7 @@ void* ht_get(hashtable_t* ht, char* key)
 	{
 		return NULL;
 	}
-	ht_entry_t* entry = ll_search(ht->buckets[index], key, ht_compare);
+	ht_entry_t* entry = (ht_entry_t*) ll_search(ht->buckets[index], key, ht_compare);
 
 	return entry->value;
 }
@@ -142,7 +142,7 @@ void* ht_remove(hashtable_t* ht, char* key)
 	{
 		return NULL;
 	}
-	ht_entry_t* entry = ll_search(ht->buckets[index], key, ht_compare);
+	ht_entry_t* entry = (ht_entry_t*) ll_search(ht->buckets[index], key, ht_compare);
 	if(entry == NULL)
 	{
 		return NULL;
@@ -165,7 +165,7 @@ bool ht_contains_key(hashtable_t*ht, char* key)
 	{
 		return false;
 	}
-	ht_entry_t* entry = ll_search(ht->buckets[index], key, ht_compare);
+	ht_entry_t* entry = (ht_entry_t*) ll_search(ht->buckets[index], key, ht_compare);
 
 	return entry != NULL;
 }
@@ -179,7 +179,7 @@ void ht_destroy(hashtable_t* ht, void (*free_ptr)(void*))
 {
 	cur_free_ptr = free_ptr;
 	
-	for(int i = 0; i < ht->n; i++)
+	for(unsigned int i = 0; i < ht->n; i++)
 	{
 		if(ht->buckets[i] != NULL)
 		{
