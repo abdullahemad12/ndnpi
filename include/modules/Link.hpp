@@ -22,50 +22,33 @@
   * SOFTWARE.
   */
 
-#ifndef _MODULES_ETHERNET_
-#define _MODULES_ETHERNET_
+#ifndef _MODULES_LINK_
+#define _MODULES_LINK_
 
-#define ETHER_TYPE	0x0800
-
-#include <stdint.h>
 #include <stdlib.h>
-
-typedef struct eth_hdr
-{
-	/*attribute packed*/
-} eth_hdr_t;
-
-class Ethernet
+#include <stdint.h>
+#include <modules/Ethernet.hpp>
+class Link
 {
     private:
-
-    public:
-		Ethernet(void);
+      int sockfd;
+	  Ethernet* eth;
+	public:
+		Link(int sockfd);
 		/**
-          * uint8_t* -> bool
-		  * EFFECTS: makes sure the given buffer contains a valid ethernet frame
-		  * RETURNS: true if buf contains a valid ethernet frame, false otherwise 
-		  * PARAMETERS:
-		  * - uint8_t* buf: the buffer
-          */
-        bool validate(uint8_t* buf);
-		/**
-		  * uint8_t* -> uint8_t*
- 		  * EFFECTS: extracts the payload from the ethernet frame
-		  * RETURNS: pointer to the first byte of the ethernet payload
-          * PARAMETERS:
-		  * - uint8_t* frame: the ethernet frame to be modified
+       	  * void -> void
+		  * EFFECTS: listens on the socket and captures incoming ethernet packets 
+		  *          then passes them to the Ethernet class for processing
+		  * MODIFIES: this
+		  * REQUIRES: sockfd to be pointing to a valid file descriptor
 		  */
-        uint8_t* extract_payload(uint8_t* frame);
+		void listen(void);
 		/**
-		  * uint8_t*, size_t ->uint8_t*
-		  * EFFECTS: puts the given data in an Ethernet frame
-		  * RETURNS: pointer to first byte of the new ethernet frame
-		  * PARAMETERS:
-		  * - uint8_t* payload: pointer to the first byte of the payload
-		  * - size_t: the size of the payload in bytes
-		  */
-        uint8_t* encapsulate(uint8_t* payload, size_t n);
+		  * uint8_t* -> void
+		  * EFFECTS: sends a given ethernet frame on sockfd
+		  * REQUIRES: frame to have a valid ethernet frame format
+          */ 
+		void transmit(uint8_t* frame);
 };
 
-#endif /*..._ETHERNET_*/
+#endif /*..._MODULES_LINK_*/
