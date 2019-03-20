@@ -22,7 +22,7 @@
   * SOFTWARE.
   */
 
-#define ETHER_TYPE	0x0800
+#define ETHER_TYPE	0x0BCB
 
 #ifndef _DATA_ETHERNET_
 #define _DATA_ETHERNET_

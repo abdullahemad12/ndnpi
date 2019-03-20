@@ -22,6 +22,7 @@
   * SOFTWARE.
   */
 
+#include <arpa/inet.h>
 #include <data/Ethernet.hpp>
 #include <string.h>
 using namespace data;
@@ -71,7 +72,8 @@ size_t Ethernet::encapsulate(uint8_t** packet)
 	struct eth_hdr* hdr = (struct eth_hdr*) frame;
 	memcpy(hdr->ether_dhost, this->dpa, ETHER_ADDR_LEN);
 	memcpy(hdr->ether_shost, this->spa, ETHER_ADDR_LEN);
-
+	hdr->ether_type = htons(ETHER_TYPE);
+	
 	uint8_t* data = frame + sizeof(struct eth_hdr);
 
 	memcpy(data, this->data, this->size);

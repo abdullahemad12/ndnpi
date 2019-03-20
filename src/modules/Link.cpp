@@ -41,9 +41,11 @@
 
 using namespace std;
 
-Link::Link(int sockfd)
+Link::Link(int rsockfd, int wsockfd, struct sockaddr_ll sock_addr)
 {
-	this->sockfd = sockfd;
+	this->sock_addr = sock_addr;
+	this->rsockfd = rsockfd;
+	this->wsockfd = wsockfd;
 	this->eth = new Ethernet(this);
 }
 
@@ -61,15 +63,13 @@ void Link::listen(void)
 	}
 	while(1)
 	{
-		numbytes = recvfrom(this->sockfd, buf, BUFSIZE, 0, NULL, NULL);
-		cout << numbytes;
-		cout << "\n";
+		numbytes = recvfrom(this->rsockfd, buf, BUFSIZE, 0, NULL, NULL);
 
+		transmit(buf, numbytes);
 		data::Ethernet* frame = new data::Ethernet(buf, numbytes);
-
+		
 		uint8_t* payload = frame->extract_payload();
-		cout << payload[0];
-		cout << "\n";
+
 		if(payload[0] == 12)
 		{
 			cout << "Recieved number 12 successfully\n";
@@ -81,5 +81,13 @@ void Link::listen(void)
 
 void Link::transmit(uint8_t* frame, size_t size)
 {
-	write(this->sockfd, frame, size);	
+	ssize_t n = sendto(this->wsockfd, frame, size, 0, (struct sockaddr *) &this->sock_addr, sizeof (sock_addr));
+	if(n <= 0)
+	{
+		perror("failed to write bytes\n");
+	}
+	else
+	{
+		cout << "message written\n";
+	}	
 }

@@ -29,13 +29,24 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <modules/Ethernet.hpp>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <linux/if_packet.h>
+#include <linux/if_ether.h>
+#include <net/ethernet.h>
+#include <net/if.h>
+#include <arpa/inet.h>
+
 class Link
 {
     private:
-      int sockfd;
+	  struct sockaddr_ll sock_addr;
+      int rsockfd;
+	  int wsockfd;	
 	  Ethernet* eth;
 	public:
-		Link(int sockfd);
+		Link(int rsockfd, int wsockfd, struct sockaddr_ll sock_addr);
 		/**
        	  * void -> void
 		  * EFFECTS: listens on the socket and captures incoming ethernet packets 
