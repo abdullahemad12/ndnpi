@@ -40,7 +40,6 @@ struct eth_hdr
 	#ifndef ETHER_ADDR_LEN
 	#define ETHER_ADDR_LEN 6
 	#endif
-
     uint8_t  ether_dhost[ETHER_ADDR_LEN];    /* destination ethernet address */
     uint8_t  ether_shost[ETHER_ADDR_LEN];    /* source ethernet address */
     uint16_t ether_type;                     /* packet type ID */
@@ -56,11 +55,20 @@ namespace data
 		private:
 			uint8_t dpa[ETHER_ADDR_LEN]; /*destination physical address*/
 			uint8_t spa[ETHER_ADDR_LEN]; /*source physical address*/
-			uint16_t ether_type;		/*ether type should be equal to ETHER_TYPE, otherwise an invalid packet exception is thrown*/
 			uint8_t* data;
 			size_t size;
 		public:
+		/**
+ 		  * NOTE: the size is the size of the whole frame
+		  */
 		Ethernet(uint8_t* frame, size_t size);
+
+		/**
+		  * EFFECTS: creates a new Ethernet object
+		  * REQUIRES: dpa and spa to be 6 bytes in size and in host byte order
+		  * MODIFIES: this
+		  */
+		Ethernet(uint8_t* dpa, uint8_t* spa, uint8_t* data, size_t data_size);
 		/**
 		  * void -> uint8_t*
  		  * EFFECTS: extracts the payload from the ethernet frame

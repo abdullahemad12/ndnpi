@@ -23,11 +23,34 @@
   */
 
 #include <data/Ethernet.hpp>
-
+#include <string.h>
 using namespace data;
+
+Ethernet::Ethernet(uint8_t* dpa, uint8_t* spa, uint8_t* data, size_t data_size)
+{
+	memcpy(this->dpa, dpa, ETHER_ADDR_LEN);
+	memcpy(this->spa, spa, ETHER_ADDR_LEN);
+	uint8_t* payload = (uint8_t*)malloc(sizeof(uint8_t) * data_size);
+	memcpy(payload, data, data_size);
+	this->data = payload;
+	this->size = data_size;
+}
 
 Ethernet::Ethernet(uint8_t* frame, size_t size)
 {
+	struct eth_hdr* hdr = (struct eth_hdr*) frame;
+		
+	uint8_t* data = frame + sizeof(struct eth_hdr);
+	size_t data_size = size - sizeof(struct eth_hdr);
+
+	memcpy(this->dpa, hdr->ether_dhost, ETHER_ADDR_LEN);
+	memcpy(this->spa, hdr->ether_shost, ETHER_ADDR_LEN);
+	uint8_t* payload = (uint8_t*)malloc(sizeof(uint8_t) * data_size);
+
+	
+	memcpy(payload, data, data_size);
+	this->data = payload;	
+	this->size = data_size;
 	
 }
 
