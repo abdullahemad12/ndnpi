@@ -45,11 +45,11 @@ class Link
 		  */
 		void listen(void);
 		/**
-		  * uint8_t* -> void
+		  * uint8_t*, size_t -> void
 		  * EFFECTS: sends a given ethernet frame on sockfd
 		  * REQUIRES: frame to have a valid ethernet frame format
           */ 
-		void transmit(uint8_t* frame);
+		void transmit(uint8_t* frame, size_t size);
 };
 
 #endif /*..._MODULES_LINK_*/

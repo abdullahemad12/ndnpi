@@ -76,11 +76,11 @@ namespace data
 		  */
         uint8_t* extract_payload(void);
 		/**
-		  * void ->uint8_t*
+		  * uint8_t** -> size_t
 		  * EFFECTS: puts the given data in an Ethernet frame
 		  * RETURNS: pointer to first byte of the new ethernet frame
 		  */
-        uint8_t* encapsulate(void);
+        size_t encapsulate(uint8_t** packet);
 	};
 };
 

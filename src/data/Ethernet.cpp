@@ -60,12 +60,12 @@ uint8_t* Ethernet::extract_payload(void)
 	return data;
 }
 
-uint8_t* Ethernet::encapsulate(void)
+size_t Ethernet::encapsulate(uint8_t** packet)
 {
 	uint8_t* frame = (uint8_t*) malloc(sizeof(eth_hdr) + this->size);
 	if(frame == NULL)
 	{
-		return NULL;
+		return 0;
 	}
 
 	struct eth_hdr* hdr = (struct eth_hdr*) frame;
@@ -76,5 +76,7 @@ uint8_t* Ethernet::encapsulate(void)
 
 	memcpy(data, this->data, this->size);
 	
-	return frame;
+	*packet = frame;
+	
+	return sizeof(struct eth_hdr) + this->size;
 }

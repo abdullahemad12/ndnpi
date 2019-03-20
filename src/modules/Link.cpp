@@ -77,3 +77,9 @@ void Link::listen(void)
 	}
 
 }
+
+
+void Link::transmit(uint8_t* frame, size_t size)
+{
+	write(this->sockfd, frame, size);	
+}

@@ -41,6 +41,11 @@
 #include <data/Ethernet.hpp>
 using namespace std;
 
+#include <stdint.h>
+
+uint8_t dst[] = {0x60, 0xd8, 0x19, 0x22, 0x3c, 0x47};
+uint8_t src[] = {0x18, 0x03, 0x73, 0x90, 0xad, 0xe4};
+
 /**
   * Some of the code in the main function is adapted from: 
   * Author: @austinmarton
@@ -98,8 +103,16 @@ int main(int argc, char* argv[])
 	cout << "The socket was opened successfully\n";
 
 
-	Link* link = new Link(sockfd);
 
+	uint8_t twelve = 12;
+
+	data::Ethernet* eth = new data::Ethernet(dst,src, &twelve, sizeof(uint8_t));
+	
+	uint8_t* packet;
+	size_t size = eth->encapsulate(&packet);
+
+	Link* link = new Link(sockfd);
+	link->transmit(packet, size);
 	link->listen();
 
 	/*exit*/
