@@ -22,23 +22,15 @@
   * SOFTWARE.
   */
 
-#ifndef _MODULES_ETHERNET_
-#define _MODULES_ETHERNET_
+#ifndef _EXCEPTIONS_INVALIDPACKETEXCEPTION_
+#define _EXCEPTIONS_INVALIDPACKETEXCEPTION_
 
+#include <iostream>
+#include <exception>
 
-#include <stdint.h>
-#include <stdlib.h>
-
-class Link;
-
-
-class Ethernet
+class InvalidPacketException : std::exception
 {
-    private:
-		Link* link;
-    public:
-		Ethernet(Link* link);
-
+	const char* what() const throw();
 };
 
-#endif /*..._ETHERNET_*/
+#endif /*..._EXCEPTIONS_INVALIDPACKETEXCEPTION_*/

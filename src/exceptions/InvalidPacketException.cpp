@@ -21,24 +21,10 @@
   * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   * SOFTWARE.
   */
-
-#ifndef _MODULES_ETHERNET_
-#define _MODULES_ETHERNET_
+#include <exceptions/InvalidPacketException.hpp>
 
 
-#include <stdint.h>
-#include <stdlib.h>
-
-class Link;
-
-
-class Ethernet
+const char* InvalidPacketException::what() const throw()
 {
-    private:
-		Link* link;
-    public:
-		Ethernet(Link* link);
-
-};
-
-#endif /*..._ETHERNET_*/
+	return "Invalid Packet was Recieved\n";
+}

@@ -26,7 +26,8 @@
 #include <modules/Link.hpp>
 
 
-Ethernet::Ethernet(void)
+Ethernet::Ethernet(Link* link)
 {
-
+	this->link = link;
 }
+

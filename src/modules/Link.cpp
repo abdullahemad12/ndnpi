@@ -24,9 +24,56 @@
 #include <stdint.h>
 #include <modules/Link.hpp>
 #include <modules/Ethernet.hpp>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <linux/if_packet.h>
+#include <linux/ip.h>
+#include <linux/udp.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/ioctl.h>
+#include <sys/socket.h>
+#include <net/if.h>
+#include <netinet/ether.h>
+#include <iostream>
+#include <data/Ethernet.hpp>
+
+using namespace std;
 
 Link::Link(int sockfd)
 {
 	this->sockfd = sockfd;
-	this->eth = new Ethernet();
+	this->eth = new Ethernet(this);
+}
+
+
+void Link::listen(void)
+{
+	uint8_t* buf;
+	size_t numbytes;
+
+	buf = (uint8_t*)malloc(sizeof(uint8_t) * BUFSIZE);
+	if(buf == NULL)
+	{
+		printf("Couldn't allocate memory for the buffer\n");
+		exit(1);
+	}
+	while(1)
+	{
+		numbytes = recvfrom(this->sockfd, buf, BUFSIZE, 0, NULL, NULL);
+		cout << numbytes;
+		cout << "\n";
+
+		data::Ethernet* frame = new data::Ethernet(buf, numbytes);
+
+		uint8_t* payload = frame->extract_payload();
+		cout << payload[0];
+		cout << "\n";
+		if(payload[0] == 12)
+		{
+			cout << "Recieved number 12 successfully\n";
+		}
+	}
+
 }

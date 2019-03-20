@@ -22,23 +22,23 @@
   * SOFTWARE.
   */
 
-#ifndef _MODULES_ETHERNET_
-#define _MODULES_ETHERNET_
+#include <data/Ethernet.hpp>
 
+using namespace data;
 
-#include <stdint.h>
-#include <stdlib.h>
-
-class Link;
-
-
-class Ethernet
+Ethernet::Ethernet(uint8_t* frame, size_t size)
 {
-    private:
-		Link* link;
-    public:
-		Ethernet(Link* link);
+	
+}
 
-};
 
-#endif /*..._ETHERNET_*/
+uint8_t* Ethernet::extract_payload(void)
+{
+	return data;
+}
+
+uint8_t* Ethernet::encapsulate(void)
+{
+	
+	return NULL;
+}

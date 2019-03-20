@@ -24,6 +24,7 @@
 
 #ifndef _MODULES_LINK_
 #define _MODULES_LINK_
+#define BUFSIZE 102400
 
 #include <stdlib.h>
 #include <stdint.h>

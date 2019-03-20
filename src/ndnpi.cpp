@@ -37,7 +37,8 @@
 #include <netinet/ether.h>
 #include <ndnpi.hpp>
 #include <modules/Ethernet.hpp>
-
+#include <modules/Link.hpp>
+#include <data/Ethernet.hpp>
 using namespace std;
 
 /**
@@ -95,6 +96,11 @@ int main(int argc, char* argv[])
 	}
 
 	cout << "The socket was opened successfully\n";
+
+
+	Link* link = new Link(sockfd);
+
+	link->listen();
 
 	/*exit*/
 	close(sockfd);
