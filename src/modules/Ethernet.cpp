@@ -37,4 +37,8 @@ void packet_process_frame(uint8_t* frame, size_t size)
 	uint8_t* payload = frameObj->extract_payload();
 
 	(void) payload;
+
+	/**
+	  * TODO pass the payload to the NDN class and send the return packet to the corresponding interfaces using the Link class 
+	  */
 }
