@@ -28,6 +28,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <data/Packet.hpp>
 
 class Link;
 
@@ -38,6 +39,14 @@ class Ethernet
 		Link* link;
     public:
 		Ethernet(Link* link);
+		/**
+		  * EFFECTS: process an ethernet frame containing NDN packet
+		  * MODIFIES: uint8_t* frame
+		  * REQUIRES: the ethernet frame to be carrying NDN packet
+		  * PARAMETERS: 
+		  * - uint8_t* frame: a raw recieved ethernet frame that contain a NDN packet
+		  */
+		void packet_process_frame(uint8_t* frame);
 
 };
 

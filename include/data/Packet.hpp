@@ -21,20 +21,18 @@
   * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   * SOFTWARE.
   */
-#include <stdint.h>
-#include <modules/Ethernet.hpp>
-#include <modules/Link.hpp>
-#include <data/Ethernet.hpp>
 
-Ethernet::Ethernet(Link* link)
+
+#ifndef _DATA_PACKET_
+#define _DATA_PACKET_
+
+class Packet
 {
-	this->link = link;
-}
+	public:
+		Packet(void);
+};
 
-void packet_process_frame(uint8_t* frame, size_t size)
-{
-	data::Ethernet* frameObj = new data::Ethernet(frame, size);
-	uint8_t* payload = frameObj->extract_payload();
+#endif /*..._DATA_PACKET_*/
 
-	(void) payload;
-}
+
+
