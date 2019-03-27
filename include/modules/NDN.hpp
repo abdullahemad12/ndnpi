@@ -28,6 +28,9 @@
 
 #include <stdint.h>
 #include <data/Packet.hpp>
+#include <stdlib.h>
+#include <modules/Downstream.hpp>
+#include <modules/Upstream.hpp>
 
 #define NDN_INTEREST 0x05
 #define NDN_DATA	 0x06
@@ -35,6 +38,9 @@
 
 class NDN
 {
+	private:
+		Downstream* downstream;
+		Upstream* upstream;
 	public:	
 		NDN(void);
 		/**
@@ -43,7 +49,7 @@ class NDN
 		  * PARAMETERS: 
 		  * - uint8_t* data: raw NDN packet
 		  */
-		Packet* process_packet(uint8_t* data);
+		Packet* process_packet(uint8_t* data, size_t size);
 };
 
 

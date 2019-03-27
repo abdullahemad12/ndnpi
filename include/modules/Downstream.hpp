@@ -22,46 +22,21 @@
   * SOFTWARE.
   */
 
-#include <modules/NDN.hpp>
-#include <ndn-cpp/interest.hpp>
+
+#ifndef _MODULES_DOWNSTREAM_
+#define _MODUELS_DOWNSTREAM_
+
+#include <data/Packet.hpp>
 #include <ndn-cpp/data.hpp>
 
-using namespace ndn;
 
-NDN::NDN(void)
+class Downstream
 {
-	this->downstream = new Downstream();
-	this->upstream = new Upstream();
-}
+	public:
+		Downstream(void);
+		Packet* process_data_packet(ndn::Data* data_pckt);
+};
 
 
-Packet* NDN::process_packet(uint8_t* data, size_t size)
-{
-	uint8_t type = *data;
-	Packet* packet = NULL;
-	switch(type)
-	{
-		case NDN_INTEREST:
-		{
-			/*decode the interest packet*/
-			Interest* interest = new Interest();
-			interest->wireDecode(data, size);
 
-			packet = this->upstream->process_interest_packet(interest);
-
-			delete interest;
-			break;
-		}
-		case NDN_DATA:
-		{
-			Data* ndn_data = new Data();
-			ndn_data->wireDecode(data, size);
-			
-			packet = this->downstream->process_data_packet(ndn_data);
-			delete ndn_data;
-			break;
-		}
-		default: return NULL;
-	}
-	return packet;
-}
+#endif /*..._MODUELS_DOWNSTREAM_*/
