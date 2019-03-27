@@ -23,9 +23,33 @@
   */
 
 #include <modules/NDN.hpp>
-
+#include <ndn-cpp/interest.hpp>
+using namespace ndn;
 
 NDN::NDN(void)
 {
 
+}
+
+
+Packet* process_packet(uint8_t* data)
+{
+	uint8_t type = *data;
+	Packet* packet = NULL;
+	switch(type)
+	{
+		case NDN_INTEREST:
+		{
+			Interest* interest = new Interest();
+			(void) interest;
+			delete interest;
+			break;
+		}
+		case NDN_DATA:
+		{
+			break;
+		}
+		default: return NULL;
+	}
+	return packet;
 }

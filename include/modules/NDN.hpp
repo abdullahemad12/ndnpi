@@ -29,6 +29,10 @@
 #include <stdint.h>
 #include <data/Packet.hpp>
 
+#define NDN_INTEREST 0x05
+#define NDN_DATA	 0x06
+
+
 class NDN
 {
 	public:	

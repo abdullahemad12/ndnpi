@@ -17,7 +17,7 @@ HDRS = include/cranbtree.h
 
 # space-separated list of libraries, if any,
 # each of which should be prefixed with -l
-LIBS = -lcunit
+LIBS = -lcunit -lndn-cpp
 
 # space-separated list of source files
 SRCS = src/datastructures/linkedlist.c src/datastructures/hashtable.c src/modules/* src/exceptions/* src/data/*
