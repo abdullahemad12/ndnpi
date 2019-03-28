@@ -27,6 +27,11 @@
 #include <iostream>
 #include <ndn-cpp/data.hpp>
 
+/**
+  * prototypes
+  */
+char* nameToCharArr(ndn::Name& name);
+
 ContentStore::ContentStore(void)
 {
 	this->ht_store = ht_create(CS_MAX_SIZE);
@@ -42,13 +47,9 @@ ContentStore::~ContentStore(void)
 
 ndn::Data* ContentStore::lookup(ndn::Name& name)
 {
-	std::string nameStr = name.toUri();
 
-	char* ht_name = (char*)malloc((sizeof(char) * nameStr.size()) + 1);
-	for(int i = 0, n = nameStr.size(); i < n; i++)
-	{
-		ht_name[i] = nameStr[i];
-	}
+	char* ht_name = nameToCharArr(name);
+
 
 	ndn::Data* data = (ndn::Data*)ht_get(this->ht_store, ht_name);
 	
@@ -56,4 +57,25 @@ ndn::Data* ContentStore::lookup(ndn::Name& name)
 	free(ht_name);
 
 	return data;
+}
+
+void ContentStore::store(ndn::Data* data)
+{
+	char* ht_name = nameToCharArr(data->getName());
+
+	ht_put(this->ht_store, ht_name, data);
+
+	free(ht_name);
+}
+
+char* nameToCharArr(ndn::Name& name)
+{
+	std::string nameStr = name.toUri();
+	char* ht_name = (char*)malloc((sizeof(char) * nameStr.size()) + 1);
+	for(int i = 0, n = nameStr.size(); i < n; i++)
+	{
+		ht_name[i] = nameStr[i];
+	}
+	ht_name[nameStr.size()] = 0;
+	return ht_name;
 }
