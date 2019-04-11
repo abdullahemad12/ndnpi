@@ -22,10 +22,39 @@
   * SOFTWARE.
   */
 
-
-
-int main(int argc, char* argv[])
+#ifndef _MODULES_FORWARDINGINFORMATIONBASE_
+#define _MODULES_FORWARDINGINFORMATIONBASE_
+#include <ndn-cxx/face.hpp>
+#include <datastructures/linkedlist.h>
+#include <vector> 
+using namespace std;
+using namespace ndn;
+class ForwardingInformationBase
 {
+	private:
+		struct linkedlist* faces;
+		struct linkedlist* entries;
+	public:
+		/**
+		  * const char* tpath: the path to the routing table
+		  */
+		ForwardingInformationBase(const char* tpath);
+		/**
+		  * EFFECTS: given a name performs the lognest prefix match and decides the next hop(s)
+		  * RETURNS: vector of faces
+		  * PARAMETERS:
+		  *  - Name* name: the name to perform the lpm on
+		  */ 
+		vector<Face> computeMatchingFaces(Name* name);
 
+		/**
+		  * EFFECTS: inserts a new Name entry in the FIB. If the name already exists, then it updates it
+		  * REQUIRES: the data associated with that name to be recieved through this face 
+		  * PARAMETERS:
+		  * - Name* name: the name of the new data
+		  * - Face* face: the face of that the data was received on
+		  */
+		void insert(Name* name, Face* face);
+};
 
-}
+#endif /*..._MODULES_FORWARDINGINFORMATIONBASE_*/

@@ -26,8 +26,6 @@
 #define _NDNPI_
 
 
-#define DEFAULT_IF	"eth0"
-#define IFNAMESIZE	1024
 
 
 

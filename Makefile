@@ -17,10 +17,10 @@ HDRS = include/cranbtree.h
 
 # space-separated list of libraries, if any,
 # each of which should be prefixed with -l
-LIBS = -lcunit -lndn-cpp
+LIBS = -lcunit -lndn-cxx -lboost_system
 
 # space-separated list of source files
-SRCS = src/datastructures/linkedlist.c src/datastructures/hashtable.c src/modules/* src/exceptions/* src/data/*
+SRCS = src/datastructures/linkedlist.c src/datastructures/hashtable.c src/modules/* src/data/*
 
 
 # Included folders

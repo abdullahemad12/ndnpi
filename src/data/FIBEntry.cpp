@@ -22,10 +22,33 @@
   * SOFTWARE.
   */
 
+#include <data/FIBEntry.hpp>
+#include <ndn-cxx/face.hpp>
+using namespace ndn;
 
-
-int main(int argc, char* argv[])
+FIBEntry::FIBEntry(Name* name, Face* face)
 {
-
-
+	this->name = new Name(*name);
+	this->face = face;
 }
+
+FIBEntry::~FIBEntry(void)
+{
+	delete this->name;
+}
+
+Name* FIBEntry::getName(void)
+{
+	return this->name;
+}
+
+Face* FIBEntry::getFace(void)
+{
+	return this->face;
+}
+
+
+
+
+
+

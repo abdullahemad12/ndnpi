@@ -22,10 +22,26 @@
   * SOFTWARE.
   */
 
+#ifndef _DATA_FIBENTRY_
+#define _DATA_FIBENTRY_
 
+#include <ndn-cxx/face.hpp>
 
-int main(int argc, char* argv[])
+using namespace ndn;
+
+class FIBEntry
 {
+	private: 
+		Name* name;
+		Face* face;
+	public:
+		FIBEntry(Name* name, Face* face);
+		~FIBEntry(void);
+		Name* getName(void);
+		Face* getFace(void);
+};
 
 
-}
+
+#endif /*..._DATA_FIBENTRY_*/
+
