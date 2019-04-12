@@ -34,6 +34,17 @@ class ForwardingInformationBase
 	private:
 		struct linkedlist* faces;
 		struct linkedlist* entries;
+		/**
+		  * EFFECTS: parses the interfaces file and intializes the faces accordingly  
+		  * MODIFIES: this 
+		  * REQUIRES: the given file to follow this rules:
+		  *             ID IP PORT
+		  * 		  all the fields are space-sperated
+		  * PARAMETERS:
+		  * - const char* tpath: the path to the interfaces table
+		  */
+		void parseTable(const char* tpath);
+
 	public:
 		/**
 		  * const char* tpath: the path to the routing table
@@ -55,6 +66,7 @@ class ForwardingInformationBase
 		  * - Face* face: the face of that the data was received on
 		  */
 		void insert(Name* name, Face* face);
+
 };
 
 #endif /*..._MODULES_FORWARDINGINFORMATIONBASE_*/
