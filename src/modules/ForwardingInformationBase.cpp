@@ -32,6 +32,7 @@
 /**
   * Prototypes for helper functions
   */
+static bool compare(FIBEntry* entry, Name* name);
 static int computeLongestCommonPrefixSize(Name* name1, Name* name2);
 static char* readline(FILE* file);
 static int str_split(char* str, char c, char*** strret);
@@ -152,10 +153,35 @@ struct linkedlist* ForwardingInformationBase::getFaces(void)
 }
 
 
+void ForwardingInformationBase::insert(Name* name, Face* face)
+{
+	FIBEntry* entry = (FIBEntry*) ll_search(this->entries, name, (bool (*)(void*, void*)) compare);
+	if(entry != NULL)
+	{
+		return;
+	}
+
+	entry = new FIBEntry(name, face);
+
+	ll_add(this->entries, entry);
+}
+
 /***********************
  *    Static helper    *
  ***********************/ 
+/**
+  * EFFECTS: used to search for an entry in the linkedlist
+  * RETURNS: true if the name of the entry and the given name match
+  */
+static bool compare(FIBEntry* entry, Name* name)
+{
+	return entry->getName()->compare(*name) == 0;
+}
 
+/**
+  * EFFECTS: calculates how many prefix consecutive components of the given two names are equal
+  * RETUNRS: the number of matching components
+  */
 static int computeLongestCommonPrefixSize(Name* name1, Name* name2)
 {
 	size_t n = min(name1->size(), name2->size());
