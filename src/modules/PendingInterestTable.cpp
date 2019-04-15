@@ -22,29 +22,35 @@
   * SOFTWARE.
   */
 
+#include <ndn-cxx/face.hpp>
+#include <modules/PendingInterestTable.hpp>
 #include <data/PITEntry.hpp>
-
-
-PITEntry::PITEntry(Name* name)
+#include <datastructures/hashtable.h>
+#include <iostream>
+using namespace std;
+PendingInterestTable::PendingInterestTable(void)
 {
-	this->name = new Name(name->toUri());
-}
-
-PITEntry::PITEntry(Interest* interest)
-{
-	this->name = new Name(interest->getName().toUri());
-	this->nonces.push_back(interest->getNonce());
-}
-
-bool PITEntry::addNonce(int nonce)
-{
-	for(int i = 0, n = this->nonces.size(); i < n; i++)
+	this->entries = ht_create(10000);
+	if(this->entries == NULL)
 	{
-		if(this->nonces[i] == nonce)
-		{
-			return false;
-		}		
+		cout << "Insufficient Memory\n";
+		exit(2);
 	}
-	this->nonces.push_back(nonce);
+	
+}
+
+bool PendingInterestTable::insert(Interest* interest)
+{
+	PITEntry* entry = (PITEntry*) ht_get(this->entries, (char*)interest->getName().toUri().c_str());
+	if(entry == NULL)
+	{
+		entry = new PITEntry(interest);
+		ht_put(this->entries, (char*)interest->getName().toUri().c_str(), interest);
+	}
+	else
+	{
+		return entry->addNonce(interest->getNonce());
+	}
 	return true;
-}	
+
+}

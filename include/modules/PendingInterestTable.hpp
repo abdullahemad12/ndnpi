@@ -22,29 +22,36 @@
   * SOFTWARE.
   */
 
+#ifndef _MODULES_PENDINGINTERESTTABLE_
+#define _MODULES_PENDINGINTERESTTABLE_
+
+#include <ndn-cxx/face.hpp>
+#include <datastructures/hashtable.h>
 #include <data/PITEntry.hpp>
-
-
-PITEntry::PITEntry(Name* name)
+using namespace ndn;
+class PendingInterestTable
 {
-	this->name = new Name(name->toUri());
-}
+	private:
+		struct hashtable* entries;
+	public:
+		PendingInterestTable(void);
+		/**
+		  * EFFECTS: inserts the given interest in the PIT
+		  * MODIFIES: this
+		  * RETURNS: false if the same interest with the same nonce was found
+		  */
+		bool insert(Interest* interest);
+		/**
+		  * EFFECTS: gets the PIT entry with the matching name and removes it
+		  * MODIFIES: this 
+		  * RETURNS: the PITEntry
+		  */
+		PITEntry* getMatchingEntry(Name* name);
+		/**
+		  * EFFECTS: removes the PIT entry with the matching name from the PIT
+		  * MODIFIES: this
+		  */
+		void remove(Name* name);
+};
 
-PITEntry::PITEntry(Interest* interest)
-{
-	this->name = new Name(interest->getName().toUri());
-	this->nonces.push_back(interest->getNonce());
-}
-
-bool PITEntry::addNonce(int nonce)
-{
-	for(int i = 0, n = this->nonces.size(); i < n; i++)
-	{
-		if(this->nonces[i] == nonce)
-		{
-			return false;
-		}		
-	}
-	this->nonces.push_back(nonce);
-	return true;
-}	
+#endif /*..._MODULES_PENDINGINTERESTTABLE_*/
