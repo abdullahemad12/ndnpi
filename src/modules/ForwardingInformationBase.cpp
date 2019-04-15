@@ -26,13 +26,25 @@
 #include <ndn-cxx/face.hpp>
 #include <datastructures/linkedlist.h>
 #include <vector>
-#include <iostream> 
+#include <iostream>
+#include <data/FIBEntry.hpp> 
 
 /**
   * Prototypes for helper functions
   */
+static int computeLongestCommonPrefixSize(Name* name1, Name* name2);
 static char* readline(FILE* file);
 static int str_split(char* str, char c, char*** strret);
+/**
+  * EFFECTS: gets the minimum of the two given numbers
+  * RETURNS: the mininmum
+  * PARAMTERS: 
+  * - int x: the first number to be compared 
+  * - int y: the second number to be compared
+  */
+static size_t min(size_t x, size_t y) { return x < y ? x : y;}
+
+
 
 /**
   * EFFECTS: parses the interfaces file and intializes the faces accordingly  
@@ -68,7 +80,7 @@ void ForwardingInformationBase::parseTable(const char* tpath)
 			exit(1);		
 		}
 		string ip(arr[1]);
-		char* port(arr[2]);
+		string port(arr[2]);
 		Face* face = new Face(ip, port);
 		ll_add(this->faces, face);
 	}
@@ -90,7 +102,73 @@ ForwardingInformationBase::ForwardingInformationBase(const char* tpath)
 		std::cout << "ENOMEM\n";
 		exit(1);
 	}
+	this->parseTable(tpath);
 }
+
+
+vector<Face*> ForwardingInformationBase::computeMatchingFaces(Name* name)
+{
+
+	vector<Face*> faces;
+	
+	int maxScore = 0;
+	Face* ret = NULL;
+
+	/**
+      * Iterate over the linkedlist
+      */
+	struct ll_node* cur = this->entries->head;
+	while(cur != NULL)
+	{
+		FIBEntry* entry = (FIBEntry*) cur->object;
+		int curScore = computeLongestCommonPrefixSize(entry->getName(), name);
+		if(curScore > maxScore)
+		{
+			ret = entry->getFace();
+			maxScore = curScore;
+		}
+		cur = cur->next;
+	}
+	
+	if(ret == NULL)
+	{
+		cur = this->faces->head;
+		while(cur != NULL)
+		{
+			faces.push_back((Face*) cur->object);
+			cur = cur->next;	
+		}
+	}
+	else
+	{
+		faces.push_back(ret);
+	}
+	return faces;	
+}
+
+
+
+/***********************
+ *    Static helper    *
+ ***********************/ 
+
+static int computeLongestCommonPrefixSize(Name* name1, Name* name2)
+{
+	size_t n = min(name1->size(), name2->size());
+	int score = 0;
+
+	for(size_t i = 0; i < n; i++)
+	{
+		name::Component comp1 = name1->at(i);
+		name::Component comp2 = name2->at(i);
+		if(comp1.compare(comp2) == 0)
+		{
+			++score;
+		}
+	}
+	return score;	
+}
+
 
 
 /**
@@ -156,13 +234,13 @@ static int str_split(char* str, char c, char*** strret)
 		int j;
 		for(j = ptr; j < n && str[j] != c; j++);
 		int len = (j - ptr) + 1;
-		char* word = (char*)malloc(sizeof(len));
+		char* word = (char*)malloc(sizeof(char) * len);
 		int tmpptr = 0;
 		for(int k = ptr; k < j; k++)
 		{
 			word[tmpptr++] = str[k];
 		}
-		word[j] = '\0'; 
+		word[tmpptr] = '\0'; 
 		arr[i] = word;
 		ptr = j + 1; 
 	}

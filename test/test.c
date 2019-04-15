@@ -5,6 +5,7 @@
 #include <CUnit/Basic.h>
 #include "linkedlist.c"
 #include "hashtable.c"
+#include "ForwardingInformationBase.cpp"
 
 /*prototypes*/
 static int init(void);
@@ -26,6 +27,7 @@ static struct test utests[] = {
 	{"ll_remove_at_test", ll_remove_at_test},
 	{"ht_create_test", ht_create_test},
 	{"ht_test", ht_test},
+	{"fib_constructor_test", fib_constructor_test},
 	{NULL, NULL}
 
 };

@@ -56,7 +56,7 @@ class ForwardingInformationBase
 		  * PARAMETERS:
 		  *  - Name* name: the name to perform the lpm on
 		  */ 
-		vector<Face> computeMatchingFaces(Name* name);
+		vector<Face*> computeMatchingFaces(Name* name);
 
 		/**
 		  * EFFECTS: inserts a new Name entry in the FIB. If the name already exists, then it updates it
