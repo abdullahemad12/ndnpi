@@ -54,3 +54,8 @@ bool PendingInterestTable::insert(Interest* interest)
 	return true;
 
 }
+
+PITEntry* PendingInterestTable::getMatchingEntry(Name* name)
+{
+	 return (PITEntry*) ht_remove(this->entries, (char*)name->toUri().c_str());
+}
