@@ -146,6 +146,10 @@ vector<Face*> ForwardingInformationBase::computeMatchingFaces(Name* name)
 	return faces;	
 }
 
+struct linkedlist* ForwardingInformationBase::getFaces(void)
+{
+	return this->faces;
+}
 
 
 /***********************

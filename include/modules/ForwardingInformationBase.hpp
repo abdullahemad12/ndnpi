@@ -67,6 +67,13 @@ class ForwardingInformationBase
 		  */
 		void insert(Name* name, Face* face);
 
+		/**
+          * EFFECTS: gets the linkedlist of faces 
+          * NOTE: Never delete, modify or write to this linkedlist or its elements 
+		  *       Only use for reading
+ 		  */ 
+		struct linkedlist* getFaces(void);
+
 };
 
 #endif /*..._MODULES_FORWARDINGINFORMATIONBASE_*/
