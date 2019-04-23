@@ -67,5 +67,6 @@ void Stream::onRegisterFailed(const Name& prefix, const std::string& reason)
 
 void Stream::putData(const Data& data)
 {
+	 cout << "New data was Retrieved\n";
 	 this->m_face.put(data);
 }
