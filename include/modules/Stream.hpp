@@ -26,6 +26,7 @@
 #define _MODULES_STREAM_
 
 #include <ndn-cxx/face.hpp>
+#include <ndn-cxx/security/key-chain.hpp>
 
 #include <modules/PendingInterestTable.hpp>
 #include <modules/ForwardingInformationBase.hpp>
@@ -33,6 +34,8 @@
 class Stream
 {
 	private:
+		Face m_face;
+		KeyChain m_keyChain;
 		PendingInterestTable* pit;
 		ForwardingInformationBase* fib;
 		void onInterest(const InterestFilter& filter, const Interest& interest);
@@ -40,6 +43,7 @@ class Stream
 	public:
 		Stream(void);	
 		void listen(void);
+		void putData(const Data& data);
 };
 
 

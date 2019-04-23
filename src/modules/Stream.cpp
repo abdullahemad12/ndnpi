@@ -26,6 +26,8 @@
 #include <modules/RequestsThread.hpp>
 #include <modules/PendingInterestTable.hpp>
 #include <modules/ForwardingInformationBase.hpp>
+#include <iostream>
+
 
 Stream::Stream(void)
 {
@@ -43,4 +45,27 @@ void Stream::onInterest(const InterestFilter& filter, const Interest& interest)
 	vector<Face*> faces = this->fib->computeMatchingFaces((Name*) &interest.getName());
 	RequestsThread* rt = new RequestsThread((Interest*)&interest, faces, this->pit, this->fib);
 	rt->run();
+}
+
+void Stream::listen(void)
+{
+    this->m_face.setInterestFilter("/",
+                         bind(&Stream::onInterest, this, _1, _2),
+                         RegisterPrefixSuccessCallback(),
+                         bind(&Stream::onRegisterFailed, this, _1, _2));
+    this->m_face.processEvents();
+}
+
+void Stream::onRegisterFailed(const Name& prefix, const std::string& reason)
+{
+    std::cerr << "ERROR: Failed to register prefix \""
+              << prefix << "\" in local hub's daemon (" << reason << ")"
+              << std::endl;
+    m_face.shutdown();
+	exit(1);
+}
+
+void Stream::putData(const Data& data)
+{
+	 this->m_face.put(data);
 }
