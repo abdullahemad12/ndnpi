@@ -26,7 +26,8 @@
 #define _NDNPI_
 
 
+#include <modules/Stream.hpp>
 
-
+extern Stream* stream;
 
 #endif /*..._NDNPI_HPP*/

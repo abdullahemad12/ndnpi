@@ -26,7 +26,7 @@
 #include <ndn-cxx/face.hpp>
 #include <data/Request.hpp>
 #include <modules/RequestsThread.hpp>
-
+#include <ndnpi.hpp>
 
 Request::Request(Face* face, Interest* interest, RequestsThread* rt, PendingInterestTable* pit, ForwardingInformationBase* fib)
 {
@@ -55,9 +55,8 @@ void Request::onData(const Interest& interest, const Data& data)
 	Name name = interest.getName();
 	this->fib->insert(&name, this->face);
 	this->pit->getMatchingEntry(&name);
-	/**
-	  * TODO: Put the data on the global face
-	  */	
+	
+	stream->putData(data);	
 }
 
 void Request::onTimeout(const Interest& interest)

@@ -22,10 +22,12 @@
   * SOFTWARE.
   */
 
-
+#include <modules/Stream.hpp>
+Stream* stream; 
 
 int main(int argc, char* argv[])
 {
-
-
+	stream = new Stream();
+	stream->listen();
+	
 }
