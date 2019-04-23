@@ -27,6 +27,7 @@ Stream* stream;
 
 int main(int argc, char* argv[])
 {
+	chdir("bin");
 	stream = new Stream();
 	stream->listen();
 	
