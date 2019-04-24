@@ -29,19 +29,22 @@
 #include <modules/RequestsThread.hpp>
 #include <modules/PendingInterestTable.hpp>
 #include <modules/ForwardingInformationBase.hpp>
+#include <data/Interface.hpp>
 
 class RequestsThread;
 
 class Request : noncopyable
 {
 	private:
+		Interface* interface;
 		Face* face;
 		Interest* interest;
 		RequestsThread* rt;
 		PendingInterestTable* pit;
 		ForwardingInformationBase* fib;
 	public:
-		Request(Face* face, Interest* interest, RequestsThread* rt, PendingInterestTable* pit, ForwardingInformationBase* fib);
+		Request(Interface* interface, Interest* interest, RequestsThread* rt, PendingInterestTable* pit, ForwardingInformationBase* fib);
+		~Request(void);		
 		void expressInterest(void);	
 		void onData(const Interest& interest, const Data& data);
 		void onTimeout(const Interest& interest);

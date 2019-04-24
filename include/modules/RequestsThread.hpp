@@ -33,6 +33,7 @@
 #include <modules/PendingInterestTable.hpp>
 #include <data/FIBEntry.hpp>
 #include <mutex>
+#include <data/Interface.hpp>
 using namespace std;
 
 class Request;
@@ -49,7 +50,7 @@ class RequestsThread
 		Interest* interest;
 		void t_func(void);
 	public:
-		RequestsThread(Interest* interest, vector<Face*> faces, PendingInterestTable* pit, ForwardingInformationBase* fib);
+		RequestsThread(Interest* interest, vector<Interface*> faces, PendingInterestTable* pit, ForwardingInformationBase* fib);
 		void run(void);
 		void decrementRequests(void);
 };

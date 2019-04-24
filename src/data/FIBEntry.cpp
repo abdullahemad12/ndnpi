@@ -23,13 +23,15 @@
   */
 
 #include <data/FIBEntry.hpp>
+#include <data/Interface.hpp>
 #include <ndn-cxx/face.hpp>
+
 using namespace ndn;
 
-FIBEntry::FIBEntry(Name* name, Face* face)
+FIBEntry::FIBEntry(Name* name, Interface* interface)
 {
 	this->name = new Name(*name);
-	this->face = face;
+	this->interface = interface;
 }
 
 FIBEntry::~FIBEntry(void)
@@ -42,9 +44,9 @@ Name* FIBEntry::getName(void)
 	return this->name;
 }
 
-Face* FIBEntry::getFace(void)
+Interface* FIBEntry::getInterface(void)
 {
-	return this->face;
+	return this->interface;
 }
 
 

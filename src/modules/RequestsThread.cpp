@@ -24,9 +24,10 @@
 
 #include <modules/RequestsThread.hpp>
 #include <data/Request.hpp>
+#include <data/Interface.hpp>
 #include <thread>
 
-RequestsThread::RequestsThread(Interest* interest, vector<Face*> faces, PendingInterestTable* pit, ForwardingInformationBase* fib)
+RequestsThread::RequestsThread(Interest* interest, vector<Interface*> faces, PendingInterestTable* pit, ForwardingInformationBase* fib)
 {
 	for(int i = 0, n = faces.size(); i < n; i++)
 	{

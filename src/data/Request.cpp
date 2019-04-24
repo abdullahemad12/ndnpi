@@ -27,18 +27,24 @@
 #include <data/Request.hpp>
 #include <modules/RequestsThread.hpp>
 #include <ndnpi.hpp>
+#include <data/Interface.hpp>
 
-Request::Request(Face* face, Interest* interest, RequestsThread* rt, PendingInterestTable* pit, ForwardingInformationBase* fib)
+Request::Request(Interface* interface, Interest* interest, RequestsThread* rt, PendingInterestTable* pit, ForwardingInformationBase* fib)
 {
+	this->interface = interface;
 	this->pit = pit;
 	this->fib = fib;
-	this->face = face;
+	this->face = new Face(interface->getIp(), interface->getPort());
 	this->interest = interest;
 	this->rt = rt;
 	
 }
 
-
+Request::~Request(void)
+{
+	this->face->shutdown();
+	delete this->face;
+}
 void Request::expressInterest(void)
 {
 	this->face->expressInterest(*this->interest,
@@ -53,7 +59,7 @@ void Request::expressInterest(void)
 void Request::onData(const Interest& interest, const Data& data)
 {
 	Name name = interest.getName();
-	this->fib->insert(&name, this->face);
+	this->fib->insert(&name, this->interface);
 	this->pit->getMatchingEntry(&name);
 	
 	stream->putData(data);	

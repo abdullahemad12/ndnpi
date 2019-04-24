@@ -22,27 +22,25 @@
   * SOFTWARE.
   */
 
-#ifndef _DATA_FIBENTRY_
-#define _DATA_FIBENTRY_
 
-#include <ndn-cxx/face.hpp>
+#include <string>
 #include <data/Interface.hpp>
 
-using namespace ndn;
+using namespace std;
 
-class FIBEntry
+Interface::Interface(string ip, string port)
 {
-	private: 
-		Name* name;
-		Interface* interface;
-	public:
-		FIBEntry(Name* name, Interface* interface);
-		~FIBEntry(void);
-		Name* getName(void);
-		Interface* getInterface(void);
-};
+	this->ip = ip;
+	this->port = port;
+}
 
 
+string Interface::getIp(void)
+{
+	return this->ip;
+}
 
-#endif /*..._DATA_FIBENTRY_*/
-
+string Interface::getPort(void)
+{
+	return this->port;
+}

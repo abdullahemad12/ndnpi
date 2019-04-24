@@ -27,7 +27,7 @@
 #include <modules/PendingInterestTable.hpp>
 #include <modules/ForwardingInformationBase.hpp>
 #include <iostream>
-
+#include <data/Interface.hpp>
 
 Stream::Stream(void)
 {
@@ -42,7 +42,7 @@ void Stream::onInterest(const InterestFilter& filter, const Interest& interest)
 	{
 		return;
 	}
-	vector<Face*> faces = this->fib->computeMatchingFaces((Name*) &interest.getName());
+	vector<Interface*> faces = this->fib->computeMatchingFaces((Name*) &interest.getName());
 	RequestsThread* rt = new RequestsThread((Interest*)&interest, faces, this->pit, this->fib);
 	rt->run();
 }

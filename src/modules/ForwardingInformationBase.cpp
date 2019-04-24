@@ -82,8 +82,8 @@ void ForwardingInformationBase::parseTable(const char* tpath)
 		}
 		string ip(arr[1]);
 		string port(arr[2]);
-		Face* face = new Face(ip, port);
-		ll_add(this->faces, face);
+		Interface* interface = new Interface(ip, port);
+		ll_add(this->faces, interface);
 	}
 
 	
@@ -107,13 +107,13 @@ ForwardingInformationBase::ForwardingInformationBase(const char* tpath)
 }
 
 
-vector<Face*> ForwardingInformationBase::computeMatchingFaces(Name* name)
+vector<Interface*> ForwardingInformationBase::computeMatchingFaces(Name* name)
 {
 
-	vector<Face*> faces;
+	vector<Interface*> faces;
 	
 	int maxScore = 0;
-	Face* ret = NULL;
+	Interface* ret = NULL;
 
 	/**
       * Iterate over the linkedlist
@@ -125,7 +125,7 @@ vector<Face*> ForwardingInformationBase::computeMatchingFaces(Name* name)
 		int curScore = computeLongestCommonPrefixSize(entry->getName(), name);
 		if(curScore > maxScore)
 		{
-			ret = entry->getFace();
+			ret = entry->getInterface();
 			maxScore = curScore;
 		}
 		cur = cur->next;
@@ -136,7 +136,7 @@ vector<Face*> ForwardingInformationBase::computeMatchingFaces(Name* name)
 		cur = this->faces->head;
 		while(cur != NULL)
 		{
-			faces.push_back((Face*) cur->object);
+			faces.push_back((Interface*) cur->object);
 			cur = cur->next;	
 		}
 	}
@@ -153,7 +153,7 @@ struct linkedlist* ForwardingInformationBase::getFaces(void)
 }
 
 
-void ForwardingInformationBase::insert(Name* name, Face* face)
+void ForwardingInformationBase::insert(Name* name, Interface* interface)
 {
 	FIBEntry* entry = (FIBEntry*) ll_search(this->entries, name, (bool (*)(void*, void*)) compare);
 	if(entry != NULL)
@@ -161,7 +161,7 @@ void ForwardingInformationBase::insert(Name* name, Face* face)
 		return;
 	}
 
-	entry = new FIBEntry(name, face);
+	entry = new FIBEntry(name, interface);
 
 	ll_add(this->entries, entry);
 }
