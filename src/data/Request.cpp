@@ -43,7 +43,6 @@ Request::Request(Interface* interface, Interest* interest, RequestsThread* rt, P
 Request::~Request(void)
 {
 	this->face->shutdown();
-	delete this->face;
 }
 void Request::expressInterest(void)
 {
