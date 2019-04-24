@@ -49,7 +49,8 @@ void RequestsThread::t_func(void)
 void RequestsThread::run(void)
 {
 
-	this->t = new thread(bind(&RequestsThread::t_func, this));
+	//this->t = new thread(bind(&RequestsThread::t_func, this));
+	this->t_func();
 }
 void RequestsThread::decrementRequests(void)
 {
