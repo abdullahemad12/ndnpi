@@ -61,7 +61,7 @@ void Request::onData(const Interest& interest, const Data& data)
 	Name name = interest.getName();
 	this->fib->insert(&name, this->interface);
 	this->pit->getMatchingEntry(&name);
-	
+	this->rt->decrementRequests();
 	stream->putData(data);	
 }
 
