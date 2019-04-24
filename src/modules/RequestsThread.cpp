@@ -57,7 +57,6 @@ void RequestsThread::decrementRequests(void)
 	--this->n_requests;
 	if(this->n_requests <= 0)
 	{
-		this->pit->getMatchingEntry((Name*)&this->interest->getName());
 		for(int i = 0, n = this->requests.size(); i < n; i++)
 		{
 			delete requests[i];
