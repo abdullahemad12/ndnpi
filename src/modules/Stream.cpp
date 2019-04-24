@@ -37,13 +37,14 @@ Stream::Stream(void)
 
 void Stream::onInterest(const InterestFilter& filter, const Interest& interest)
 {
+	Interest* interestc = new Interest(interest);
 	/*an entry with the same nonce already exists*/
-	if(!this->pit->insert((Interest*)&interest))
+	if(!this->pit->insert(interestc))
 	{
 		return;
 	}
-	vector<Interface*> faces = this->fib->computeMatchingFaces((Name*) &interest.getName());
-	RequestsThread* rt = new RequestsThread((Interest*)&interest, faces, this->pit, this->fib);
+	vector<Interface*> faces = this->fib->computeMatchingFaces((Name*) &interestc->getName());
+	RequestsThread* rt = new RequestsThread(interestc, faces, this->pit, this->fib);
 	rt->run();
 }
 
