@@ -24,9 +24,60 @@
 
 #include <modules/Shaper.hpp>
 #include <ndn-cxx/face.hpp>
-
+#include <assert.h>
 
 Shaper::Shaper(unsigned int capacity)
 {
 	this->capacity = capacity;
+}
+
+unsigned int Shaper::calculateCurrentLoad(void)
+{
+	unsigned int totalSize = 0;
+	for(int i = 0; i < N_PRIORITIES; i++)
+	{
+		totalSize = shaping_queues[i].size();
+	}
+	return totalSize;
+}
+
+
+void Shaper::calculatePriorityPercentage(void)
+{
+	float acc = 0;
+
+	/*how many queues will the acc be divided on*/
+	int n_priorities = N_PRIORITIES;
+
+	for(int i = 0; i < N_PRIORITIES; i++)
+	{
+		if(shaping_queues[i].size() == 0)
+		{
+			// distribute the percentage among other weights
+			acc += weights[i];
+			--n_priorities;			
+		}
+		else
+		{
+			alphas[i] = weights[i];
+		}
+	}
+	
+	acc /= n_priorities;
+	for(int i = 0; i < N_PRIORITIES; i++)
+	{
+		if(shaping_queues[i].size() > 0)
+		{
+			alphas[i] += acc;
+		}		
+	}
+	
+	/*just for debugging purpose*/	
+	float totalAlphas = 0;	
+	for(int i = 0; i < N_PRIORITIES; i++)	
+	{
+		totalAlphas += alphas[i];
+	}
+	
+	assert(totalAlphas <= 1);
 }

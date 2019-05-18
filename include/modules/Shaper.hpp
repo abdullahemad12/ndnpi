@@ -49,6 +49,12 @@ class Shaper
 
 
 		/**
+		  * EFFECTS: calculates the sum of all the queues size
+		  * RETURNS: the total size of all the queues
+		  */
+		unsigned int calculateCurrentLoad(void);
+
+		/**
 		  * EFFECTS: forwards the packets to their destination while considering 
 		  *          the priority of each packet
 		  * MODIFIES: this
@@ -58,10 +64,10 @@ class Shaper
 		/**
 		  * EFFECTS: calculates the alphas given the initial weights 
 		  *          rule: 
-                  *            alphas[i] = weight[i] if shaping_queues[i] is not empty
+          *            alphas[i] = weight[i] if shaping_queues[i] is not empty
 		  *            alphas[i] = 0         if shaping_queues[i] is empty
-                  * MODIFIES: alphas
-	          * REQUIRES: sum weights = 1
+          * MODIFIES: alphas
+	      * REQUIRES: sum weights = 1
 		  */  
 		void calculatePriorityPercentage(void);
 	public:
