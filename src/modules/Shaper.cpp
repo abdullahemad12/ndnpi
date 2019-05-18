@@ -79,5 +79,5 @@ void Shaper::calculatePriorityPercentage(void)
 		totalAlphas += alphas[i];
 	}
 	
-	assert(totalAlphas <= 1);
+	assert(totalAlphas <= 1 && totalAlphas >= 0.98);
 }
