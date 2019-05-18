@@ -26,8 +26,7 @@
 #include <ndn-cxx/face.hpp>
 
 
-Shaper::Shaper()
+Shaper::Shaper(unsigned int capacity)
 {
-
-
+	this->capacity = capacity;
 }

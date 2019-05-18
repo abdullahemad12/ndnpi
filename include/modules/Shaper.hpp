@@ -28,21 +28,66 @@
 
 #include <queue>
 #include <mutex>
+#include <thread>
 #include <ndn-cxx/face.hpp>
 
 #define N_PRIORITIES 4
 
 
 using namespace std;
+using namespace ndn;
 
 class Shaper
 {
 	private:
+		thread* t; /*thread that forwards the interests*/
 		mutex lock;
-		queue<ndn::Interest> shaping_queues[N_PRIORITIES];
+		unsigned int capacity; /*The capacity of this router expressed in Packets/second*/
+		queue<Interest> shaping_queues[N_PRIORITIES];
+		float weights[N_PRIORITIES];
+		float alphas[N_PRIORITIES];
+
+
+		/**
+		  * EFFECTS: forwards the packets to their destination while considering 
+		  *          the priority of each packet
+		  * MODIFIES: this
+		  */
+		void forward(void);
+
+		/**
+		  * EFFECTS: calculates the alphas given the initial weights 
+		  *          rule: 
+                  *            alphas[i] = weight[i] if shaping_queues[i] is not empty
+		  *            alphas[i] = 0         if shaping_queues[i] is empty
+                  * MODIFIES: alphas
+	          * REQUIRES: sum weights = 1
+		  */  
+		void calculatePriorityPercentage(void);
 	public:
-		Shaper();
-	
+
+		Shaper(unsigned int capacity);
+		
+		/**
+		  * EFFECTS: adds interest to the relevant queue according to it's priority
+		  * MODIFIES: this
+		  * REQUIRES: interest to have priority < N_PRIORITIES
+		  * RETURNS: true if the packet was packet was inserted successfully in the queue
+		  *          returns false if the full capacity was reached and the packet has to be dropped
+		  */
+		bool addInterest(Interest interest);
+		
+		/**
+		  * EFFECTS: spawns the thread that keeps forwarding packets
+		  */
+		void run(void);
+
+		/**
+		  * EFFECTS: sets the ith weight value
+		  * MODIFIES: this 
+		  * REQUIRES: 0 < i < N_PRIORITY
+		  */
+		void setWeight(float weight, int i);
 };
 
 
