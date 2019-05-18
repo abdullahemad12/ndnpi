@@ -29,10 +29,9 @@
 #include <ndnpi.hpp>
 #include <data/Interface.hpp>
 
-Request::Request(Interface* interface, Interest* interest, RequestsThread* rt, PendingInterestTable* pit, ForwardingInformationBase* fib)
+Request::Request(Interface* interface, Interest* interest, RequestsThread* rt, ForwardingInformationBase* fib)
 {
 	this->interface = interface;
-	this->pit = pit;
 	this->fib = fib;
 	this->face = new Face(interface->getIp(), interface->getPort());
 	this->interest = interest;

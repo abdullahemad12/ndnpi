@@ -45,12 +45,11 @@ class RequestsThread
 		thread* t;
 		int n_requests;
 		vector<Request*> requests;
-		PendingInterestTable* pit;
 		ForwardingInformationBase* fib;
 		Interest* interest;
 		void t_func(void);
 	public:
-		RequestsThread(Interest* interest, vector<Interface*> faces, PendingInterestTable* pit, ForwardingInformationBase* fib);
+		RequestsThread(Interest* interest, vector<Interface*> faces, ForwardingInformationBase* fib);
 		void run(void);
 		void decrementRequests(void);
 };

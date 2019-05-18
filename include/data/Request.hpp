@@ -40,10 +40,9 @@ class Request : noncopyable
 		Face* face;
 		Interest* interest;
 		RequestsThread* rt;
-		PendingInterestTable* pit;
 		ForwardingInformationBase* fib;
 	public:
-		Request(Interface* interface, Interest* interest, RequestsThread* rt, PendingInterestTable* pit, ForwardingInformationBase* fib);
+		Request(Interface* interface, Interest* interest, RequestsThread* rt,  ForwardingInformationBase* fib);
 		~Request(void);		
 		void expressInterest(void);	
 		void onData(const Interest& interest, const Data& data);

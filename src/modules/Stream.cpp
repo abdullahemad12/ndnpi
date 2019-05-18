@@ -40,7 +40,7 @@ void Stream::onInterest(const InterestFilter& filter, const Interest& interest)
 	Interest* interestc = new Interest(interest);
 
 	vector<Interface*> faces = this->fib->computeMatchingFaces((Name*) &interestc->getName());
-	RequestsThread* rt = new RequestsThread(interestc, faces, this->pit, this->fib);
+	RequestsThread* rt = new RequestsThread(interestc, faces, this->fib);
 	rt->run();
 }
 

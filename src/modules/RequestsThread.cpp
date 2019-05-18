@@ -27,14 +27,13 @@
 #include <data/Interface.hpp>
 #include <thread>
 
-RequestsThread::RequestsThread(Interest* interest, vector<Interface*> faces, PendingInterestTable* pit, ForwardingInformationBase* fib)
+RequestsThread::RequestsThread(Interest* interest, vector<Interface*> faces, ForwardingInformationBase* fib)
 {
 	for(int i = 0, n = faces.size(); i < n; i++)
 	{
-		Request* request = new Request(faces[i], interest, this, pit, fib);
+		Request* request = new Request(faces[i], interest, this, fib);
 		this->requests.push_back(request);
 	}
-	this->pit = pit;
 	this->fib = fib;
 	this->n_requests = faces.size();
 	this->interest = interest;
@@ -53,6 +52,7 @@ void RequestsThread::run(void)
 void RequestsThread::decrementRequests(void)
 {
 	--this->n_requests;
+	delete this->interest;
 	if(this->n_requests <= 0)
 	{
 		for(int i = 0, n = this->requests.size(); i < n; i++)

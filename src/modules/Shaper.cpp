@@ -23,12 +23,18 @@
   */
 
 #include <modules/Shaper.hpp>
+#include <modules/RequestsThread.hpp>
 #include <ndn-cxx/face.hpp>
 #include <assert.h>
 
-Shaper::Shaper(unsigned int capacity)
+
+using namespace std;
+using namespace ndn;
+
+Shaper::Shaper(unsigned int capacity, ForwardingInformationBase* fib)
 {
 	this->capacity = capacity;
+	this->fib = fib;
 }
 
 unsigned int Shaper::calculateCurrentLoad(void)
@@ -39,6 +45,36 @@ unsigned int Shaper::calculateCurrentLoad(void)
 		totalSize = shaping_queues[i].size();
 	}
 	return totalSize;
+}
+
+
+void Shaper::forward(void)
+{
+	while(true)
+	{
+		lock.lock();
+		unsigned int totalSize = calculateCurrentLoad();
+
+		if(totalSize > 0)
+		{
+			for(int i = 0; i < N_PRIORITIES; i++)
+			{
+				int n_packets = capacity * alphas[i];
+				for(int i = 0; i < n_packets && !shaping_queues[i].empty(); i++)
+				{
+					Interest interest = shaping_queues[i].front();
+					shaping_queues[i].pop();
+					vector<Interface*> faces = fib->computeMatchingFaces((Name*) &interest.getName());
+					Interest* interestc = new Interest(interest);
+					RequestsThread* rt = new RequestsThread(interestc, faces, fib);
+					rt->run();
+				}
+			}
+		}
+
+	
+		lock.unlock();
+	}
 }
 
 
@@ -95,8 +131,8 @@ bool Shaper::addInterest(Interest interest)
 	
 	unsigned int curLoad = calculateCurrentLoad();
 	
-	/*save 2 percent for burstiness*/	
-	if(curLoad < (int)(0.98 * (float) capacity))
+	/*Allow the qeue to store more than the capacity of the link*/
+	if(curLoad < (int)(1.5 * (float) capacity))
 	{
 		uint8_t priority = interest.getPriority();
 		assert(priority < N_PRIORITIES);
