@@ -31,17 +31,16 @@
 
 Stream::Stream(void)
 {
-	this->pit = new PendingInterestTable();
-	this->fib = new ForwardingInformationBase("rt");
+	ForwardingInformationBase* fib = new ForwardingInformationBase("rt");
+	int capacity = 100; /*should be changed later*/
+	shaper = new Shaper(capacity, fib);
+	shaper->run();
 }
 
 void Stream::onInterest(const InterestFilter& filter, const Interest& interest)
 {
-	Interest* interestc = new Interest(interest);
-
-	vector<Interface*> faces = this->fib->computeMatchingFaces((Name*) &interestc->getName());
-	RequestsThread* rt = new RequestsThread(interestc, faces, this->fib);
-	rt->run();
+	// forward the interest
+	shaper->addInterest(interest);
 }
 
 void Stream::listen(void)

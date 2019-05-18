@@ -30,14 +30,16 @@
 
 #include <modules/PendingInterestTable.hpp>
 #include <modules/ForwardingInformationBase.hpp>
+#include <modules/Shaper.hpp>
+
 
 class Stream
 {
 	private:
 		Face m_face;
 		KeyChain m_keyChain;
-		PendingInterestTable* pit;
-		ForwardingInformationBase* fib;
+		Shaper* shaper;
+
 		void onInterest(const InterestFilter& filter, const Interest& interest);
 		void onRegisterFailed(const Name& prefix, const std::string& reason);
 	public:
