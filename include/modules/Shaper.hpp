@@ -75,9 +75,10 @@ class Shaper
 		Shaper(unsigned int capacity);
 		
 		/**
+		  * Synchronized
 		  * EFFECTS: adds interest to the relevant queue according to it's priority
 		  * MODIFIES: this
-		  * REQUIRES: interest to have priority < N_PRIORITIES
+		  * REQUIRES: interest to have priority < N_PRIORITIES. 
 		  * RETURNS: true if the packet was packet was inserted successfully in the queue
 		  *          returns false if the full capacity was reached and the packet has to be dropped
 		  */
@@ -89,6 +90,7 @@ class Shaper
 		void run(void);
 
 		/**
+		  * Synchronized
 		  * EFFECTS: sets the ith weight value
 		  * MODIFIES: this 
 		  * REQUIRES: 0 < i < N_PRIORITY

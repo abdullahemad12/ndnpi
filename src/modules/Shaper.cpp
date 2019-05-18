@@ -81,3 +81,32 @@ void Shaper::calculatePriorityPercentage(void)
 	
 	assert(totalAlphas <= 1 && totalAlphas >= 0.98);
 }
+
+void Shaper::setWeight(float weight, int i)
+{
+	assert(i < N_PRIORITIES);
+	weights[i] = weight;
+}
+
+bool Shaper::addInterest(Interest interest)
+{
+	lock.lock();
+	bool ret = true;
+	
+	unsigned int curLoad = calculateCurrentLoad();
+	
+	/*save 2 percent for burstiness*/	
+	if(curLoad < (int)(0.98 * (float) capacity))
+	{
+		uint8_t priority = interest.getPriority();
+		assert(priority < N_PRIORITIES);
+		shaping_queues[priority].push(interest);
+	}
+	else
+	{
+		ret = false;
+	}
+
+	lock.unlock();	
+	return ret;
+}
