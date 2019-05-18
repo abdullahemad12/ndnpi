@@ -124,6 +124,11 @@ void Shaper::setWeight(float weight, int i)
 	weights[i] = weight;
 }
 
+void Shaper::run(void)
+{
+	this->t = new thread(bind(&Shaper::forward, this));
+}
+
 bool Shaper::addInterest(Interest interest)
 {
 	lock.lock();
