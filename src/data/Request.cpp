@@ -69,5 +69,8 @@ void Request::onTimeout(const Interest& interest)
 
 void Request::onNack(const Interest& interest, const lp::Nack& nack)
 {
-	this->rt->decrementRequests();
+	int requests = this->rt->decrementRequests();
+	if(requests == 0){
+
+	}
 }

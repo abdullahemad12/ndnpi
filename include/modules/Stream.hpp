@@ -46,6 +46,7 @@ class Stream
 		Stream(void);	
 		void listen(void);
 		void putData(const Data& data);
+		void putNack(lp::Nack& nack);
 };
 
 

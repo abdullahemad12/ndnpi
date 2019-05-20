@@ -49,9 +49,9 @@ void RequestsThread::run(void)
 {
 	this->t = new thread(bind(&RequestsThread::t_func, this));
 }
-void RequestsThread::decrementRequests(void)
+int RequestsThread::decrementRequests(void)
 {
-	--this->n_requests;
+	int ret = --this->n_requests;
 	delete this->interest;
 	if(this->n_requests <= 0)
 	{
@@ -61,4 +61,5 @@ void RequestsThread::decrementRequests(void)
 		}
 		delete this;	
 	}
+	return ret;
 }

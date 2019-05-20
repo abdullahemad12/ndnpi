@@ -51,7 +51,7 @@ class RequestsThread
 	public:
 		RequestsThread(Interest* interest, vector<Interface*> faces, ForwardingInformationBase* fib);
 		void run(void);
-		void decrementRequests(void);
+		int decrementRequests(void);
 };
 
 
