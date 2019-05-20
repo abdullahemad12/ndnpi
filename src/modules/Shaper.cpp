@@ -68,6 +68,7 @@ void Shaper::forward(void)
 					Interest* interestc = new Interest(interest);
 					RequestsThread* rt = new RequestsThread(interestc, faces, fib);
 					rt->run();
+					this->capacity += 1;
 				}
 			}
 		}
@@ -127,6 +128,16 @@ void Shaper::setWeight(float weight, int i)
 void Shaper::run(void)
 {
 	this->t = new thread(bind(&Shaper::forward, this));
+}
+
+void Shaper::decreaseCapacity(void){
+	capacityLock.lock();
+	this->capacity /= 2;
+	if(this->capacity == 0)
+	{
+		this->capacity = 1;
+	}
+	capacityLock.unlock();
 }
 
 bool Shaper::addInterest(Interest interest)

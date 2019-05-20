@@ -44,6 +44,7 @@ class Shaper
 	private:
 		thread* t; /*thread that forwards the interests*/
 		mutex lock;
+		mutex capacityLock;
 		unsigned int capacity; /*The capacity of this router expressed in Packets/second*/
 		queue<Interest> shaping_queues[N_PRIORITIES];
 		float weights[N_PRIORITIES];
@@ -98,6 +99,13 @@ class Shaper
 		  * REQUIRES: 0 < i < N_PRIORITY
 		  */
 		void setWeight(float weight, int i);
+
+		/**
+		  * Synchronized
+		  * EFFECTS: should be called on a congestion NACK. It will divide the current capacity by 2
+		  * MODIFIES: this->capacity
+		  */
+		void decreaseCapacity(void);
 };
 
 

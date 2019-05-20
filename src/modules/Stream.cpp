@@ -40,7 +40,13 @@ Stream::Stream(void)
 void Stream::onInterest(const InterestFilter& filter, const Interest& interest)
 {
 	// forward the interest
-	shaper->addInterest(interest);
+	if(!shaper->addInterest(interest))
+	{
+		lp::Nack nack(interest);
+		nack.setReason(lp::NackReason::CONGESTION);
+		const lp::Nack nack1(nack);
+		putNack(nack1);
+	}
 }
 
 void Stream::listen(void)
@@ -67,7 +73,12 @@ void Stream::putData(const Data& data)
 	 this->m_face.put(data);
 }
 
-void Stream::putNack(lp::Nack& nack)
+void Stream::putNack(const lp::Nack& nack)
 {
 	this->m_face.put(nack);
+}
+
+void Stream::decreaseCapacity(void)
+{
+	this->shaper->decreaseCapacity();
 }

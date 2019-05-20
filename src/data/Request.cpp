@@ -70,7 +70,12 @@ void Request::onTimeout(const Interest& interest)
 void Request::onNack(const Interest& interest, const lp::Nack& nack)
 {
 	int requests = this->rt->decrementRequests();
-	if(requests == 0){
-
+	if(requests == 0) {
+		if(nack.getReason() == lp::NackReason::CONGESTION){
+			stream->decreaseCapacity();	
+		}
+		stream->putNack(nack);
 	}
+	
+	
 }
