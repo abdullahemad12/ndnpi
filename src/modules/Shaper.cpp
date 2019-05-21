@@ -61,7 +61,7 @@ void Shaper::forward(void)
 			for(int i = 0; i < N_PRIORITIES; i++)
 			{
 				int n_packets = capacity * alphas[i];
-				for(int i = 0; i < n_packets && !shaping_queues[i].empty(); i++)
+				for(int j = 0; j < n_packets && !shaping_queues[i].empty(); j++)
 				{
 					Interest interest = shaping_queues[i].front();
 					shaping_queues[i].pop();
