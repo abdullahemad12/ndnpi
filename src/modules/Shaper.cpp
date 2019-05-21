@@ -57,6 +57,7 @@ void Shaper::forward(void)
 
 		if(totalSize > 0)
 		{
+			calculatePriorityPercentage();
 			for(int i = 0; i < N_PRIORITIES; i++)
 			{
 				int n_packets = capacity * alphas[i];
