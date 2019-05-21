@@ -71,6 +71,7 @@ void Request::onNack(const Interest& interest, const lp::Nack& nack)
 {
 	int requests = this->rt->decrementRequests();
 	if(requests == 0) {
+		std::cout << "Request zero\n\n";
 		if(nack.getReason() == lp::NackReason::CONGESTION){
 			stream->decreaseCapacity();	
 		}

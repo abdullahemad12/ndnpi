@@ -130,7 +130,7 @@ vector<Interface*> ForwardingInformationBase::computeMatchingFaces(Name* name)
 		}
 		cur = cur->next;
 	}
-	
+	ret = NULL; /*for now forward to all faces*/
 	if(ret == NULL)
 	{
 		cur = this->faces->head;
