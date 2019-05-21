@@ -93,7 +93,8 @@ void Shaper::calculatePriorityPercentage(void)
 		{
 			// distribute the percentage among other weights
 			acc += weights[i];
-			--n_priorities;			
+			--n_priorities;	
+			alphas[i] = 0;		
 		}
 		else
 		{
