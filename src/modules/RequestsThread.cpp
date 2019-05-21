@@ -52,13 +52,13 @@ void RequestsThread::run(void)
 int RequestsThread::decrementRequests(void)
 {
 	int ret = --this->n_requests;
-	delete this->interest;
 	if(this->n_requests <= 0)
 	{
 		for(int i = 0, n = this->requests.size(); i < n; i++)
 		{
 			delete requests[i];
 		}
+		delete this->interest;
 		delete this;	
 	}
 	return ret;
