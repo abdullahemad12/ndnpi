@@ -42,7 +42,7 @@ unsigned int Shaper::calculateCurrentLoad(void)
 	unsigned int totalSize = 0;
 	for(int i = 0; i < N_PRIORITIES; i++)
 	{
-		totalSize = shaping_queues[i].size();
+		totalSize += shaping_queues[i].size();
 	}
 	return totalSize;
 }
