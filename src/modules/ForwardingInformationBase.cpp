@@ -195,6 +195,10 @@ static int computeLongestCommonPrefixSize(Name* name1, Name* name2)
 		{
 			++score;
 		}
+		else
+		{
+			break;
+		}
 	}
 	return score;	
 }
