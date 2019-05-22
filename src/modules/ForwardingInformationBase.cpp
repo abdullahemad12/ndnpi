@@ -86,7 +86,7 @@ void ForwardingInformationBase::parseTable(const char* tpath)
 		ll_add(this->faces, interface);
 	}
 
-	
+	fclose(file);
 }
 
 ForwardingInformationBase::ForwardingInformationBase(const char* tpath)
