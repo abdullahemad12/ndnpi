@@ -32,7 +32,7 @@
 Stream::Stream(void)
 {
 	ForwardingInformationBase* fib = new ForwardingInformationBase("rt");
-	int capacity = 100; /*should be changed later*/
+	int capacity = 25; /*should be changed later*/
 	shaper = new Shaper(capacity, fib);
 	shaper->setWeight(0.50, 0);
 	shaper->setWeight(0.25, 1);
