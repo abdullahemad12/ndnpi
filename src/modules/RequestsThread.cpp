@@ -26,6 +26,7 @@
 #include <data/Request.hpp>
 #include <data/Interface.hpp>
 #include <thread>
+#include <iostream>
 
 RequestsThread::RequestsThread(Interest* interest, vector<Interface*> faces, ForwardingInformationBase* fib)
 {
@@ -55,6 +56,7 @@ int RequestsThread::decrementRequests(void)
 	int ret = --this->n_requests;
 	if(this->n_requests <= 0)
 	{
+		std::cout << "deleted Thread\n";
 		for(int i = 0, n = this->requests.size(); i < n; i++)
 		{
 			delete requests[i];
