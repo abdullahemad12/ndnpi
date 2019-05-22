@@ -52,7 +52,6 @@ void RequestsThread::run(void)
 }
 int RequestsThread::decrementRequests(void)
 {
-	this->t->join();
 	int ret = --this->n_requests;
 	if(this->n_requests <= 0)
 	{
