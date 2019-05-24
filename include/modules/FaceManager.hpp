@@ -22,28 +22,47 @@
   * SOFTWARE.
   */
 
-#ifndef _OBSERVER_REQUESTSUBJECT_
-#define _OBSERVER_REQUESTSUBJECT_
+#ifndef _MODULES_FACEMANAGER_
+#define _MODULES_FACEMANAGER_
 
-#include <list>
-#include <observer/RequestObserver.hpp>
+#include <queue>
+#include <bits/stdc++.h> 
+#include <string>
+#include <observer/RequestSubject.hpp>
 #include <ndn-cxx/face.hpp>
+#include <data/Request.hpp>
 
 using namespace std;
 using namespace ndn;
 
-class RequestSubject
+class FaceManager : public RequestSubject
 {
 	private:
-		bool hasChanged;
-		list<RequestObserver*> observers;
+		unordered_set<string> currentNames;	
+		queue<Request> requests;
+		queue<const lp::Nack> nacks;
+		unordered_set<Face*> faces;
+
 	public:
-		RequestSubject(void);
-		void addObserver(RequestObserver* observer);
-		void setHasChanged(void);
-		void notifyObservers(const Data& data);
-		void notifyObservers(void);
-		void notifyObservers(const lp::Nack& nack);
+		/**
+		  * EFFECTS: adds as many interests as necessary in the requests queue according to the
+		  * 		 decision of the FIB
+		  * MODIFIES: this
+		  * REQUIRES: do not call this function on the same interest twice
+		  * PARAMETERS:
+		  * - Interest interest: the interest to be inserted
+		  */
+		void addRequest(Interest interest);
+		
+		/**
+		  * EFFECTS: expresses all the interests that were previously added by addRequest 
+		  * MODIFIES: this
+		  */
+		void sendAll(void);
 };
 
-#endif /*..._OBSERVER_REQUESTSUBJECT_*/
+
+#endif /*...MODULES_FACEMANAGER_*/
+
+
+

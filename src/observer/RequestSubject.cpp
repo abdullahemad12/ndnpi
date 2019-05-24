@@ -30,7 +30,10 @@ RequestSubject::RequestSubject(void)
 	hasChanged = false;
 }
 
-
+void RequestSubject::addObserver(RequestObserver* observer)
+{
+	observers.push_back(observer);
+}
 void RequestSubject::setHasChanged(void)
 {
 	hasChanged = true;

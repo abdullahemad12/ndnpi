@@ -27,7 +27,9 @@
 
 
 #include <modules/Stream.hpp>
+#include <modules/ForwardingInformationBase.hpp>
 
 extern Stream* stream;
+extern ForwardingInformationBase* fib;
 
 #endif /*..._NDNPI_HPP*/

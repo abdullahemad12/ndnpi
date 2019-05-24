@@ -22,28 +22,15 @@
   * SOFTWARE.
   */
 
-#ifndef _OBSERVER_REQUESTSUBJECT_
-#define _OBSERVER_REQUESTSUBJECT_
-
-#include <list>
-#include <observer/RequestObserver.hpp>
 #include <ndn-cxx/face.hpp>
-
-using namespace std;
-using namespace ndn;
-
-class RequestSubject
+#include <modules/FaceManager.hpp>
+#include <data/Request.hpp>
+void FaceManager::addRequest(Interest interest)
 {
-	private:
-		bool hasChanged;
-		list<RequestObserver*> observers;
-	public:
-		RequestSubject(void);
-		void addObserver(RequestObserver* observer);
-		void setHasChanged(void);
-		void notifyObservers(const Data& data);
-		void notifyObservers(void);
-		void notifyObservers(const lp::Nack& nack);
-};
+	
+}
 
-#endif /*..._OBSERVER_REQUESTSUBJECT_*/
+void FaceManager::sendAll(void)
+{
+
+}
