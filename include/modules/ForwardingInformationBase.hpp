@@ -28,6 +28,11 @@
 #include <datastructures/linkedlist.h>
 #include <vector> 
 #include <data/Interface.hpp>
+#include <data/Request.hpp>
+
+
+class Request;
+
 using namespace std;
 using namespace ndn;
 class ForwardingInformationBase
@@ -57,7 +62,7 @@ class ForwardingInformationBase
 		  * PARAMETERS:
 		  *  - Name* name: the name to perform the lpm on
 		  */ 
-		vector<Interface*> computeMatchingFaces(Name* name);
+		vector<Interface*> computeMatchingFaces(const Name& name);
 
 		/**
 		  * EFFECTS: inserts a new Name entry in the FIB. If the name already exists, then it updates it
@@ -66,7 +71,7 @@ class ForwardingInformationBase
 		  * - Name* name: the name of the new data
 		  * - Face* face: the face of that the data was received on
 		  */
-		void insert(Name* name, Interface* interface);
+		void insert(Request request, Interface* interface);
 
 		/**
           * EFFECTS: gets the linkedlist of faces 

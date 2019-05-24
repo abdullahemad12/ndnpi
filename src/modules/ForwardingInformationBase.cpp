@@ -28,12 +28,13 @@
 #include <vector>
 #include <iostream>
 #include <data/FIBEntry.hpp> 
+#include <data/Request.hpp>
 
 /**
   * Prototypes for helper functions
   */
-static bool compare(FIBEntry* entry, Name* name);
-static int computeLongestCommonPrefixSize(Name* name1, Name* name2);
+static bool compare(FIBEntry& entry, const Name& name);
+static int computeLongestCommonPrefixSize(const Name& name1, const Name& name2);
 static char* readline(FILE* file);
 static int str_split(char* str, char c, char*** strret);
 /**
@@ -107,63 +108,20 @@ ForwardingInformationBase::ForwardingInformationBase(const char* tpath)
 }
 
 
-vector<Interface*> ForwardingInformationBase::computeMatchingFaces(Name* name)
+vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Name& name)
 {
-
-	vector<Interface*> faces;
+	vector<Interface*> interfaces;
+	(void)computeLongestCommonPrefixSize;
+	(void) compare;
 	
-	int maxScore = 0;
-	Interface* ret = NULL;
-
-	/**
-      * Iterate over the linkedlist
-      */
-	struct ll_node* cur = this->entries->head;
-	while(cur != NULL)
-	{
-		FIBEntry* entry = (FIBEntry*) cur->object;
-		int curScore = computeLongestCommonPrefixSize(entry->getName(), name);
-		if(curScore > maxScore)
-		{
-			ret = entry->getInterface();
-			maxScore = curScore;
-		}
-		cur = cur->next;
-	}
-	ret = NULL; /*for now forward to all faces*/
-	if(ret == NULL)
-	{
-		cur = this->faces->head;
-		while(cur != NULL)
-		{
-			faces.push_back((Interface*) cur->object);
-			cur = cur->next;	
-		}
-	}
-	else
-	{
-		faces.push_back(ret);
-	}
-	return faces;	
-}
-
-struct linkedlist* ForwardingInformationBase::getFaces(void)
-{
-	return this->faces;
+	return interfaces;
 }
 
 
-void ForwardingInformationBase::insert(Name* name, Interface* interface)
+
+void ForwardingInformationBase::insert(Request request, Interface* interface)
 {
-	FIBEntry* entry = (FIBEntry*) ll_search(this->entries, name, (bool (*)(void*, void*)) compare);
-	if(entry != NULL)
-	{
-		return;
-	}
-
-	entry = new FIBEntry(name, interface);
-
-	ll_add(this->entries, entry);
+	
 }
 
 /***********************
@@ -173,24 +131,24 @@ void ForwardingInformationBase::insert(Name* name, Interface* interface)
   * EFFECTS: used to search for an entry in the linkedlist
   * RETURNS: true if the name of the entry and the given name match
   */
-static bool compare(FIBEntry* entry, Name* name)
+static bool compare(FIBEntry& entry, const Name& name)
 {
-	return entry->getName()->compare(*name) == 0;
+	return entry.getName().compare(name) == 0;
 }
 
 /**
   * EFFECTS: calculates how many prefix consecutive components of the given two names are equal
   * RETUNRS: the number of matching components
   */
-static int computeLongestCommonPrefixSize(Name* name1, Name* name2)
+static int computeLongestCommonPrefixSize(const Name& name1, const Name& name2)
 {
-	size_t n = min(name1->size(), name2->size());
+	size_t n = min(name1.size(), name2.size());
 	int score = 0;
 
 	for(size_t i = 0; i < n; i++)
 	{
-		name::Component comp1 = name1->at(i);
-		name::Component comp2 = name2->at(i);
+		name::Component comp1 = name1.at(i);
+		name::Component comp2 = name2.at(i);
 		if(comp1.compare(comp2) == 0)
 		{
 			++score;

@@ -33,12 +33,12 @@ using namespace ndn;
 class FIBEntry
 {
 	private: 
-		Name* name;
+		Name name;
 		Interface* interface;
 	public:
-		FIBEntry(Name* name, Interface* interface);
+		FIBEntry(Name name, Interface* interface);
 		~FIBEntry(void);
-		Name* getName(void);
+		const Name getName(void);
 		Interface* getInterface(void);
 };
 

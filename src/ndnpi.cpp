@@ -23,12 +23,17 @@
   */
 
 #include <modules/Stream.hpp>
+#include <modules/ForwardingInformationBase.hpp>
+#include <ndnpi.hpp>
+
 Stream* stream; 
+ForwardingInformationBase* fib;
 
 int main(int argc, char* argv[])
 {
 	chdir("bin");
 	stream = new Stream();
+	fib = new ForwardingInformationBase("rt");
 	stream->listen();
 	
 }

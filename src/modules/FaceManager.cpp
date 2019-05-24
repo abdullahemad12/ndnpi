@@ -25,9 +25,21 @@
 #include <ndn-cxx/face.hpp>
 #include <modules/FaceManager.hpp>
 #include <data/Request.hpp>
+#include <vector>
+#include <ndnpi.hpp>
+#include <data/Interface.hpp>
+
+using namespace ndn;
+using namespace std;
+
 void FaceManager::addRequest(Interest interest)
 {
-	
+	vector<Interface*> interfaces =  fib->computeMatchingFaces(interest.getName());
+	for(Interface* interface : interfaces)
+	{
+		Request request(interest, interface);
+		requests.push(request);
+	}
 }
 
 void FaceManager::sendAll(void)

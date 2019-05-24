@@ -31,6 +31,7 @@
 #include <observer/RequestSubject.hpp>
 #include <ndn-cxx/face.hpp>
 #include <data/Request.hpp>
+#include <data/Interface.hpp>
 
 using namespace std;
 using namespace ndn;
@@ -40,7 +41,7 @@ class FaceManager : public RequestSubject
 	private:
 		unordered_set<string> currentNames;	
 		queue<Request> requests;
-		queue<const lp::Nack> nacks;
+		queue<const lp::Nack*> nacks;
 		unordered_set<Face*> faces;
 
 	public:

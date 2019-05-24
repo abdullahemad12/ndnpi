@@ -28,20 +28,20 @@
 
 using namespace ndn;
 
-FIBEntry::FIBEntry(Name* name, Interface* interface)
+FIBEntry::FIBEntry(Name name, Interface* interface)
 {
-	this->name = new Name(*name);
+	this->name = name;
 	this->interface = interface;
 }
 
 FIBEntry::~FIBEntry(void)
 {
-	delete this->name;
+
 }
 
-Name* FIBEntry::getName(void)
+const Name FIBEntry::getName(void)
 {
-	return this->name;
+	return (const Name) this->name;
 }
 
 Interface* FIBEntry::getInterface(void)
