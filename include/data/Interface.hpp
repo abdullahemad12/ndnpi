@@ -25,19 +25,23 @@
 
 #ifndef _DATA_INTERFACE_
 #define _DATA_INTERFACE_
-
+#include <ndn-cxx/face.hpp>
 #include <string>
+
 using namespace std;
+using namespace ndn;
 
 class Interface
 {
 	private:
 		string ip;
 		string port;
+		Face* face;
 	public:
 		Interface(string ip, string port);
-		string getIp();
-		string getPort();
+		string getIp(void);
+		string getPort(void);
+		Face* getFace(void);
 };
 
 

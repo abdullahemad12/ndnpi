@@ -25,13 +25,15 @@
 
 #include <string>
 #include <data/Interface.hpp>
+#include <ndn-cxx/face.hpp>
 
 using namespace std;
-
+using namespace ndn;
 Interface::Interface(string ip, string port)
 {
 	this->ip = ip;
 	this->port = port;
+	face = new Face(ip, port);
 }
 
 
@@ -43,4 +45,9 @@ string Interface::getIp(void)
 string Interface::getPort(void)
 {
 	return this->port;
+}
+
+Face* Interface::getFace(void)
+{
+	return this->face;
 }

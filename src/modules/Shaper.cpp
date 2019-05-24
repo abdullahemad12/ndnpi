@@ -23,7 +23,6 @@
   */
 
 #include <modules/Shaper.hpp>
-#include <modules/RequestsThread.hpp>
 #include <ndn-cxx/face.hpp>
 #include <assert.h>
 
@@ -31,10 +30,9 @@
 using namespace std;
 using namespace ndn;
 
-Shaper::Shaper(unsigned int capacity, ForwardingInformationBase* fib)
+Shaper::Shaper(unsigned int capacity)
 {
 	this->capacity = capacity;
-	this->fib = fib;
 }
 
 unsigned int Shaper::calculateCurrentLoad(void)
@@ -63,13 +61,13 @@ void Shaper::forward(void)
 				int n_packets = capacity * alphas[i];
 				for(int j = 0; j < n_packets && !shaping_queues[i].empty(); j++)
 				{
-					Interest interest = shaping_queues[i].front();
+					/*Interest interest = shaping_queues[i].front();
 					shaping_queues[i].pop();
 					vector<Interface*> faces = fib->computeMatchingFaces((Name*) &interest.getName());
 					Interest* interestc = new Interest(interest);
 					RequestsThread* rt = new RequestsThread(interestc, faces, fib);
 					rt->run();
-					this->capacity += 1;
+					this->capacity += 1;*/
 				}
 			}
 		}

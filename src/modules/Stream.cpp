@@ -23,7 +23,6 @@
   */
 
 #include <modules/Stream.hpp>
-#include <modules/RequestsThread.hpp>
 #include <modules/PendingInterestTable.hpp>
 #include <modules/ForwardingInformationBase.hpp>
 #include <iostream>
@@ -31,9 +30,8 @@
 
 Stream::Stream(void)
 {
-	ForwardingInformationBase* fib = new ForwardingInformationBase("rt");
 	int capacity = 25; /*should be changed later*/
-	shaper = new Shaper(capacity, fib);
+	shaper = new Shaper(capacity);
 	shaper->setWeight(0.50, 0);
 	shaper->setWeight(0.25, 1);
 	shaper->setWeight(0.15, 2);

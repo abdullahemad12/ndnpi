@@ -22,37 +22,27 @@
   * SOFTWARE.
   */
 
+#ifndef _OBSERVER_REQUESTSUBJECT_
+#define _OBSERVER_REQUESTSUBJECT_
 
-#ifndef _MODULES_REQUESTSTHREAD_
-#define _MODULES_REQUESTSTHREAD_
-
+#include <list>
+#include <observer/RequestObserver.hpp>
 #include <ndn-cxx/face.hpp>
-#include <thread>
-#include <vector>
-#include <modules/ForwardingInformationBase.hpp>
-#include <modules/PendingInterestTable.hpp>
-#include <data/FIBEntry.hpp>
-#include <mutex>
-#include <data/Interface.hpp>
+
 using namespace std;
+using namespace ndn;
 
-class Request;
-
-class RequestsThread
+class RequestSubject
 {
 	private:
-		mutex lock;
-		thread* t;
-		int n_requests;
-		vector<Request*> requests;
-		ForwardingInformationBase* fib;
-		Interest* interest;
-		void t_func(void);
+		bool hasChanged;
+		list<RequestObserver*> observers;
 	public:
-		RequestsThread(Interest* interest, vector<Interface*> faces, ForwardingInformationBase* fib);
-		void run(void);
-		int decrementRequests(void);
+		RequestSubject(void);
+		void setHasChanged(void);
+		void notifyObservers(const Data& data);
+		void notifyObservers(void);
+		void notifyObservers(const lp::Nack& nack);
 };
 
-
-#endif /*..._MODULES_REQUESTSTHREAD_*/
+#endif /*..._OBSERVER_REQUESTSUBJECT_*/

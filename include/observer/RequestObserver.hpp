@@ -22,46 +22,26 @@
   * SOFTWARE.
   */
 
-#include <modules/RequestsThread.hpp>
-#include <data/Request.hpp>
-#include <data/Interface.hpp>
-#include <thread>
-#include <iostream>
 
-RequestsThread::RequestsThread(Interest* interest, vector<Interface*> faces, ForwardingInformationBase* fib)
-{
-	for(int i = 0, n = faces.size(); i < n; i++)
-	{
-		Request* request = new Request(faces[i], interest, this, fib);
-		this->requests.push_back(request);
-	}
-	this->fib = fib;
-	this->n_requests = faces.size();
-	this->interest = interest;
-}
 
-void RequestsThread::t_func(void)
+#ifndef _OBSERVER_REQUESTOBSERVER_
+#define _OBSERVER_REQUESTOBSERVER_
+
+#include <list>
+#include <observer/RequestSubject.hpp>
+#include <ndn-cxx/face.hpp>
+
+using namespace std;
+using namespace ndn;
+
+class RequestSubject;
+
+class RequestObserver
 {
-	for(int i = 0, n = this->requests.size(); i < n; i++){
-		this->requests[i]->expressInterest();
-	}
-}
-void RequestsThread::run(void)
-{
-	this->t_func();
-}
-int RequestsThread::decrementRequests(void)
-{
-	int ret = --this->n_requests;
-	if(this->n_requests <= 0)
-	{
-		std::cout << "deleted Thread\n";
-		for(int i = 0, n = this->requests.size(); i < n; i++)
-		{
-			delete requests[i];
-		}
-		delete this->interest;
-		delete this;	
-	}
-	return ret;
-}
+	public:
+		virtual void update(RequestSubject* subject) = 0;
+		virtual void update(RequestSubject* subject, const Data& data) = 0;
+		virtual void update(RequestSubject* subject, const lp::Nack& nack) = 0;
+};
+
+#endif /*..._OBSERVER_REQUESTOBSERVER_*/

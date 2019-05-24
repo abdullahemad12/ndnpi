@@ -20,7 +20,7 @@ HDRS = include/cranbtree.h
 LIBS = -lcunit -lndn-cxx -lboost_system -lpthread
 
 # space-separated list of source files
-SRCS = src/datastructures/* src/modules/* src/data/*
+SRCS = src/datastructures/* src/modules/* src/data/* src/observer/*
 
 
 # Included folders

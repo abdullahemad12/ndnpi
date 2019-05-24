@@ -22,33 +22,52 @@
   * SOFTWARE.
   */
 
-#ifndef _DATA_REQUEST_
-#define _DATA_REQUEST_
-
-#include <ndn-cxx/face.hpp>
-#include <modules/PendingInterestTable.hpp>
-#include <modules/ForwardingInformationBase.hpp>
-#include <data/Interface.hpp>
 #include <observer/RequestSubject.hpp>
+#include <observer/RequestObserver.hpp>
 
-
-class Request : RequestSubject
+RequestSubject::RequestSubject(void)
 {
-	private:
-		float start;
-		float end;
-		Interest interest;
-		Interface* interface;
-	public:
-		Request(Interest interest, Interface* interface);
-
-		void expressInterest(void);	
-		void onData(const Interest& interest, const Data& data);
-		void onTimeout(const Interest& interest);
-		void onNack(const Interest& interest, const lp::Nack& nack);
-};
+	hasChanged = false;
+}
 
 
+void RequestSubject::setHasChanged(void)
+{
+	hasChanged = true;
+}
 
 
-#endif /*..._DATA_REQUEST_*/
+void RequestSubject::notifyObservers(const Data& data)
+{
+	if(hasChanged)
+	{
+		for(RequestObserver* o : observers)
+		{
+			o->update(this, data);
+		}
+	}
+	hasChanged = false;	
+}
+void RequestSubject::notifyObservers(void)
+{
+	if(hasChanged)
+	{
+		for(RequestObserver* o : observers)
+		{
+			o->update(this);
+		}
+	}
+	hasChanged = false;	
+}
+void RequestSubject::notifyObservers(const lp::Nack& nack)
+{
+	if(hasChanged)
+	{
+		for(RequestObserver* o : observers)
+		{
+			o->update(this, nack);
+		}
+	}
+	hasChanged = false;	
+}
+

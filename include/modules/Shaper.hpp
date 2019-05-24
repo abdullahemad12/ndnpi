@@ -49,7 +49,6 @@ class Shaper
 		queue<Interest> shaping_queues[N_PRIORITIES];
 		float weights[N_PRIORITIES];
 		float alphas[N_PRIORITIES];
-		ForwardingInformationBase* fib;
 
 		/**
 		  * EFFECTS: calculates the sum of all the queues size
@@ -75,7 +74,7 @@ class Shaper
 		void calculatePriorityPercentage(void);
 	public:
 
-		Shaper(unsigned int capacity, ForwardingInformationBase* fib);
+		Shaper(unsigned int capacity);
 		
 		/**
 		  * Synchronized
