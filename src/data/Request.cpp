@@ -27,6 +27,9 @@
 #include <data/Request.hpp>
 #include <ndnpi.hpp>
 #include <data/Interface.hpp>
+#include <chrono>
+
+using namespace std;
 
 Request::Request(Interest interest,  Interface* interface)
 {
@@ -40,30 +43,36 @@ void Request::expressInterest(void)
                            bind(&Request::onData, this,  _1, _2),
                            bind(&Request::onNack, this, _1, _2),
                            bind(&Request::onTimeout, this, _1));
+
+	start = std::chrono::steady_clock::now();
 }	
 
 
 void Request::onData(const Interest& interest, const Data& data)
 {
-	//Name name = interest.getName();
-	//this->fib->insert(&name, this->interface);
-	//stream->putData(data);	
-	//this->rt->decrementRequests();
+	end = std::chrono::steady_clock::now();
+	setHasChanged();
+	notifyObservers(data);
+	
 }
 
 void Request::onTimeout(const Interest& interest)
 {
-	//this->rt->decrementRequests();
+	setHasChanged();
+	notifyObservers();
 }
 
 void Request::onNack(const Interest& interest, const lp::Nack& nack)
 {
-	//int requests = this->rt->decrementRequests();
-	//if(requests == 0) {
-		//if(nack.getReason() == lp::NackReason::CONGESTION){
-			//stream->decreaseCapacity();	
-		//}
-		//stream->putNack(nack);
-	//}
-	
+	/*need to improve the design of this*/
+	if(nack.getReason() == lp::NackReason::CONGESTION){
+		stream->decreaseCapacity();	
+	}
+	setHasChanged();
+	notifyObservers(nack);
+}
+
+Interest Request::getInterest(void)
+{
+	return this->interest;
 }

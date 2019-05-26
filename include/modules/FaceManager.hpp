@@ -26,24 +26,33 @@
 #define _MODULES_FACEMANAGER_
 
 #include <queue>
-#include <bits/stdc++.h> 
+#include <unordered_set>
 #include <string>
 #include <observer/RequestSubject.hpp>
 #include <ndn-cxx/face.hpp>
 #include <data/Request.hpp>
 #include <data/Interface.hpp>
+#include <mutex>
 
 using namespace std;
 using namespace ndn;
 
-class FaceManager : public RequestSubject
+class FaceManager : public RequestObserver
 {
 	private:
+		mutex currentNamesLock; 
+		mutex nackslock;
+
 		unordered_set<string> currentNames;	
 		queue<Request> requests;
 		queue<const lp::Nack*> nacks;
-		unordered_set<Face*> faces;
+		unordered_set<Interface*> interfaces;
 
+		void expressAllInterests(void);
+		void processEventsForAllInterfaces(void);
+		void joinAllInterfaces(void);
+		void sendNacks(void);
+	
 	public:
 		/**
 		  * EFFECTS: adds as many interests as necessary in the requests queue according to the
@@ -60,6 +69,10 @@ class FaceManager : public RequestSubject
 		  * MODIFIES: this
 		  */
 		void sendAll(void);
+	
+		void update(RequestSubject* subject);
+		void update(RequestSubject* subject, const Data& data);
+		void update(RequestSubject* subject, const lp::Nack& nack);
 };
 
 

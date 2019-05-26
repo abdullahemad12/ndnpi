@@ -51,3 +51,8 @@ Face* Interface::getFace(void)
 {
 	return this->face;
 }
+
+void Interface::processEvents(void)
+{
+	
+}

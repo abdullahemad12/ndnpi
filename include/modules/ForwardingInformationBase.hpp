@@ -71,7 +71,7 @@ class ForwardingInformationBase
 		  * - Name* name: the name of the new data
 		  * - Face* face: the face of that the data was received on
 		  */
-		void insert(Request request, Interface* interface);
+		void insert(Request request);
 
 		/**
           * EFFECTS: gets the linkedlist of faces 

@@ -30,19 +30,25 @@
 #include <modules/ForwardingInformationBase.hpp>
 #include <data/Interface.hpp>
 #include <observer/RequestSubject.hpp>
+#include <chrono>
+#include <ctime>
+#include <ratio>
+#include <chrono>
 
+using namespace std;
 
-class Request : RequestSubject
+class Request : public RequestSubject
 {
 	private:
-		float start;
-		float end;
+		chrono::steady_clock::time_point start;
+		chrono::steady_clock::time_point end;
 		Interest interest;
 		Interface* interface;
 	public:
 		Request(Interest interest, Interface* interface);
 
 		void expressInterest(void);	
+		Interest getInterest(void);
 		void onData(const Interest& interest, const Data& data);
 		void onTimeout(const Interest& interest);
 		void onNack(const Interest& interest, const lp::Nack& nack);

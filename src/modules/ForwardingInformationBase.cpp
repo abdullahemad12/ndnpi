@@ -113,15 +113,15 @@ vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Name& n
 	vector<Interface*> interfaces;
 	(void)computeLongestCommonPrefixSize;
 	(void) compare;
-	
+	/*TODO: compute all matching Interfaces*/
 	return interfaces;
 }
 
 
 
-void ForwardingInformationBase::insert(Request request, Interface* interface)
+void ForwardingInformationBase::insert(Request request)
 {
-	
+	/*TODO: insert a new FIBEntry*/
 }
 
 /***********************

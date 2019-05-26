@@ -27,9 +27,11 @@
 #define _DATA_INTERFACE_
 #include <ndn-cxx/face.hpp>
 #include <string>
+#include <thread>
 
 using namespace std;
 using namespace ndn;
+
 
 class Interface
 {
@@ -37,11 +39,15 @@ class Interface
 		string ip;
 		string port;
 		Face* face;
+		void t_func(void);
+		thread* t;
 	public:
 		Interface(string ip, string port);
 		string getIp(void);
 		string getPort(void);
 		Face* getFace(void);
+		void processEvents(void);
+		void join(void);
 };
 
 

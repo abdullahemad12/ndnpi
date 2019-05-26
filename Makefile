@@ -8,7 +8,6 @@ CC = g++
 
 # flags to pass compiler
 CFLAGS = -ggdb3 -O0 -Wall -Werror
-
 # name for executable
 EXE = bin/ndnpi
 

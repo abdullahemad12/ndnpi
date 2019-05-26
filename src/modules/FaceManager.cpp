@@ -28,6 +28,8 @@
 #include <vector>
 #include <ndnpi.hpp>
 #include <data/Interface.hpp>
+#include <unordered_set>
+#include <string>
 
 using namespace ndn;
 using namespace std;
@@ -37,12 +39,116 @@ void FaceManager::addRequest(Interest interest)
 	vector<Interface*> interfaces =  fib->computeMatchingFaces(interest.getName());
 	for(Interface* interface : interfaces)
 	{
+		string namestr = interest.getName().toUri();
+		currentNames.insert(namestr);
 		Request request(interest, interface);
+		request.addObserver(this);		
 		requests.push(request);
+		this->interfaces.insert(interface);
 	}
 }
 
+
+
+
 void FaceManager::sendAll(void)
 {
+	
+	expressAllInterests();
 
+	processEventsForAllInterfaces();
+	
+	/*will wait until response for all interests has been recieved*/
+	joinAllInterfaces();
+
+	interfaces.clear();
+
+	/*send nacks as necessary*/
+	sendNacks();
 }
+
+// timeout
+void FaceManager::update(RequestSubject* subject)
+{
+	// do nothing for now 
+}
+
+// data
+void FaceManager::update(RequestSubject* subject, const Data& data)
+{
+
+	stream->putData(data); /*put data*/
+	
+	Request* request = (Request*) subject;
+	currentNamesLock.lock();	
+	fib->insert(*request);
+	/*TODO: add function that gets name uri to requests */
+	string namestr = request->getInterest().getName().toUri();
+	currentNames.erase(namestr);
+	currentNamesLock.unlock();	
+}
+
+// Nack
+void FaceManager::update(RequestSubject* subject, const lp::Nack& nack)
+{
+	nackslock.lock();
+	/*must delete it*/
+	const lp::Nack* nacknew = new lp::Nack(nack);
+	nacks.push(nacknew);
+
+	nackslock.unlock();
+}
+
+
+/***********************
+ *   private helpers   *
+ ***********************/
+
+void FaceManager::expressAllInterests(void)
+{
+	while(!requests.empty())
+	{
+		Request request = requests.front();
+		requests.pop();
+		request.expressInterest();
+	}
+}
+
+void FaceManager::processEventsForAllInterfaces(void)
+{
+	for(Interface* interface : interfaces)
+	{
+		/*non-blocking function that will start sending all the interests*/
+		interface->processEvents();
+	}
+}
+
+
+void FaceManager::joinAllInterfaces(void)
+{
+	/*Makes sure all the interest was send and all the responses was recieved*/
+	for(Interface* interface : interfaces)
+	{
+		interface->join();
+	}
+}
+
+
+void FaceManager::sendNacks(void)
+{
+	while(!nacks.empty())
+	{
+		const lp::Nack* nack = nacks.front();
+		nacks.pop();
+		string namestr = nack->getInterest().getName().toUri();	
+		if(currentNames.find(namestr) != currentNames.end())
+		{
+			stream->putNack(*nack);
+			currentNames.erase(namestr);
+		}
+		delete nack;
+	}
+	currentNames.clear();
+}
+
+
