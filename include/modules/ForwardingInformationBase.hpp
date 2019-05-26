@@ -30,6 +30,7 @@
 #include <data/Interface.hpp>
 #include <data/Request.hpp>
 #include <data/FIBEntry.hpp>
+#include <unordered_map>
 
 class Request;
 
@@ -52,6 +53,40 @@ class ForwardingInformationBase
 		  */
 		void parseTable(const char* tpath);
 
+		/**
+		  * EFFECTS: initializes the score map for the computeMatchingFaces function
+		  * RETURNS: the unordered_map
+		  */
+		unordered_map<Interface*, int> initScoreMap(void);
+	
+		/**
+		  * EFFECTS: computes the score for all the interfaces according to the 
+		  * 		 longest prefix match
+		  * MODIFIES: scoreMap
+		  * PARAMETERS:
+		  * unordered_map& scoreMap: the score map to be modified
+		  */ 
+		void computeScores(unordered_map<Interface*, int>& scoreMap, const Name& name);
+
+		/**
+		  * EFFECTS: Checks if it is the first time to forward this name or not
+		  * RETURNS: true if it is the first time, false otherwise
+		  */
+		bool isFirstForward(unordered_map<Interface*, int>& scoreMap);
+
+
+		/**
+		  * EFFECTS: Checks if it is the first time to forward this name or not
+		  * RETURNS: true if it is the first time, false otherwise
+		  */
+		vector<Interface*> calculateFinalSetAccordingToPriority(vector<Interface*>& intarr, uint8_t priority);
+
+		/**
+		  * EFFECTS: sorts the interfaces according to the score of each one 
+		  * RETURNS: list of sorted interfaces
+		  */
+		vector<Interface*> sortInterfaces(unordered_map<Interface*, int>& scoreMap);
+
 	public:
 		/**
 		  * const char* tpath: the path to the routing table
@@ -65,7 +100,7 @@ class ForwardingInformationBase
 		  * PARAMETERS:
 		  *  - Name* name: the name to perform the lpm on
 		  */ 
-		vector<Interface*> computeMatchingFaces(const Name& name);
+		vector<Interface*> computeMatchingFaces(const Interest& name);
 
 		/**
 		  * EFFECTS: inserts a new Name entry in the FIB. If the name already exists, then it updates it

@@ -36,7 +36,7 @@ using namespace std;
 
 void FaceManager::addRequest(Interest interest)
 {
-	vector<Interface*> interfaces =  fib->computeMatchingFaces(interest.getName());
+	vector<Interface*> interfaces =  fib->computeMatchingFaces(interest);
 	for(Interface* interface : interfaces)
 	{
 		string namestr = interest.getName().toUri();

@@ -29,11 +29,12 @@
 #include <iostream>
 #include <data/FIBEntry.hpp> 
 #include <data/Request.hpp>
+#include <unordered_map>
 
+using namespace std;
 /**
   * Prototypes for helper functions
   */
-static bool compare(FIBEntry& entry, const Name& name);
 static int computeLongestCommonPrefixSize(const Name& name1, const Name& name2);
 static char* readline(FILE* file);
 static int str_split(char* str, char c, char*** strret);
@@ -101,15 +102,35 @@ ForwardingInformationBase::ForwardingInformationBase(const char* tpath)
 }
 
 
-vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Name& name)
+vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Interest& interest)
 {
+	const Name& name = interest.getName();
 	vector<Interface*> interfaces;
 
+	/*initialize the score Map*/
+	unordered_map<Interface*, int> scoreMap = initScoreMap();
 	
 
-	(void)computeLongestCommonPrefixSize;
-	(void) compare;
-	/*TODO: compute all matching Interfaces*/
+	/**
+	  * Priority 1 will be forwarded to all Interfaces
+	  * Priority 2 will be forwarded to all the interfaces except 2
+	  * and so On
+      */	
+	computeScores(scoreMap, name);
+
+	if(isFirstForward(scoreMap))
+	{
+		/*I have to broadcast regardless of the priority because I dont know which interface
+		  will fetch the data back for sure*/
+		return interfaces;
+	}
+
+
+	
+	vector<Interface*> intarr = sortInterfaces(scoreMap);
+	
+	interfaces = calculateFinalSetAccordingToPriority(interfaces, interest.getPriority());
+	
 	return interfaces;
 }
 
@@ -136,17 +157,98 @@ void ForwardingInformationBase::insert(Request& request)
 
 }
 
+
+/*************************
+ *    private functions  *
+ *************************/
+unordered_map<Interface*, int> ForwardingInformationBase::initScoreMap(void)
+{
+	unordered_map<Interface*, int> scoreMap;
+	for(Interface* interface : this->interfaces)
+	{
+		scoreMap[interface] = 0;
+	}
+	return scoreMap;
+}
+
+void ForwardingInformationBase::computeScores(unordered_map<Interface*, int>& scoreMap, const Name& name)
+{
+	for(auto& item : entries)
+	{
+		FIBEntry* entry = item.second;
+		int curScore = computeLongestCommonPrefixSize(name, entry->getName());
+		if(curScore > scoreMap[entry->getInterface()])
+		{
+			scoreMap[entry->getInterface()] = curScore;
+		}
+	}
+}
+
+bool ForwardingInformationBase::isFirstForward(unordered_map<Interface*, int>& scoreMap)
+{
+	int totalScore = 0;
+	for(auto& item: scoreMap)
+	{
+		totalScore += item.second;
+	}
+
+	return totalScore <= 0;
+}
+
+vector<Interface*> ForwardingInformationBase::sortInterfaces(unordered_map<Interface*, int>& scoreMap)
+{
+	/*now sort the interfaces according to the score (descendingly)*/
+	vector<Interface*> intarr;
+	for(auto pair : scoreMap)
+	{
+		intarr.push_back(pair.first);
+	}
+
+	for(unsigned int i = 0; i < scoreMap.size(); i++)
+	{
+		int maxScore = 0;
+		Interface* maxInterface = NULL;
+		int pos = i;
+		for(unsigned int j = i; j < scoreMap.size(); j++)
+		{
+			if(scoreMap[intarr[j]] >= maxScore)
+			{
+				maxScore = scoreMap[intarr[j]];
+				maxInterface = intarr[j];
+				pos = j;
+			}
+		}
+		
+		intarr[pos] = intarr[i];
+		intarr[i] = maxInterface;
+	}
+	return intarr;	
+}
+
+vector<Interface*> ForwardingInformationBase::calculateFinalSetAccordingToPriority(vector<Interface*>& intarr, uint8_t priority)
+{
+	vector<Interface*> interfaces;
+	if(intarr.size() <= priority)
+	{
+		interfaces.push_back(intarr[0]); /*if there is not enough interfaces to remove just send to the first one*/
+	}
+	else
+	{
+		/*forward to as many interfaces as the priority allows*/
+		int n_removed = intarr.size() - priority;
+		for(int i = 0; i < n_removed; i++)
+		{
+			interfaces.push_back(intarr[i]);
+		}
+	}
+
+	return interfaces;
+}
+
 /***********************
  *    Static helper    *
  ***********************/ 
-/**
-  * EFFECTS: used to search for an entry in the linkedlist
-  * RETURNS: true if the name of the entry and the given name match
-  */
-static bool compare(FIBEntry& entry, const Name& name)
-{
-	return entry.getName().compare(name) == 0;
-}
+
 
 /**
   * EFFECTS: calculates how many prefix consecutive components of the given two names are equal
