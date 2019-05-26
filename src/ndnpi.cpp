@@ -25,15 +25,55 @@
 #include <modules/Stream.hpp>
 #include <modules/ForwardingInformationBase.hpp>
 #include <ndnpi.hpp>
+#include <iostream>
+
+using namespace std;
+
+/*prototypes*/
+void init_shaper(int capacity);
 
 Stream* stream; 
 ForwardingInformationBase* fib;
+Shaper* shaper;
+
+
 
 int main(int argc, char* argv[])
 {
+	if(argc != 2)
+	{
+		cout << "USAGE: ./bin/ndnpi CAPACITY_IN_PACKETS_PER_SECOND\n";
+		cout << "EXAMPLE: ./bin/ndnpi 100\n";
+	}
+
+	int capacity = atoi(argv[1]);
+
 	chdir("bin");
-	stream = new Stream();
+
+
+	/*create and initialize the shaper*/
+	init_shaper(capacity);
+
+	/*create the Forwarding information base*/
 	fib = new ForwardingInformationBase("rt");
+
+	/*create a new Stream*/
+	stream = new Stream();
+	
+	/*start Listening on for Interests*/	
 	stream->listen();
 	
+}
+
+
+void init_shaper(int capacity)
+{
+	shaper = new Shaper(capacity);
+	
+	/*set the weight of each priority*/	
+	shaper->setWeight(0.50, 0);
+	shaper->setWeight(0.25, 1);
+	shaper->setWeight(0.15, 2);
+	shaper->setWeight(0.10, 3);
+	shaper->run();
 }

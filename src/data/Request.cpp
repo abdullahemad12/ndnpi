@@ -28,6 +28,7 @@
 #include <ndnpi.hpp>
 #include <data/Interface.hpp>
 #include <chrono>
+#include <string>
 
 using namespace std;
 
@@ -64,9 +65,8 @@ void Request::onTimeout(const Interest& interest)
 
 void Request::onNack(const Interest& interest, const lp::Nack& nack)
 {
-	/*need to improve the design of this*/
-	if(nack.getReason() == lp::NackReason::CONGESTION){
-		stream->decreaseCapacity();	
+	if(IS_CONGESTION_NACK(nack)){
+		shaper->decreaseCapacity();	
 	}
 	setHasChanged();
 	notifyObservers(nack);
@@ -75,4 +75,9 @@ void Request::onNack(const Interest& interest, const lp::Nack& nack)
 Interest Request::getInterest(void)
 {
 	return this->interest;
+}
+
+string Request::getInterestNameUri()
+{
+	return interest.getName().toUri();
 }

@@ -34,6 +34,9 @@
 #include <ctime>
 #include <ratio>
 #include <chrono>
+#include <string>
+
+#define IS_CONGESTION_NACK(nack) nack.getReason() == lp::NackReason::CONGESTION
 
 using namespace std;
 
@@ -52,6 +55,7 @@ class Request : public RequestSubject
 		void onData(const Interest& interest, const Data& data);
 		void onTimeout(const Interest& interest);
 		void onNack(const Interest& interest, const lp::Nack& nack);
+		string getInterestNameUri(void);
 };
 
 

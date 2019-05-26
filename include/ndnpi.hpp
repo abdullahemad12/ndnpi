@@ -28,8 +28,11 @@
 
 #include <modules/Stream.hpp>
 #include <modules/ForwardingInformationBase.hpp>
+#include <modules/Shaper.hpp>
+
 
 extern Stream* stream;
 extern ForwardingInformationBase* fib;
+extern Shaper* shaper;
 
 #endif /*..._NDNPI_HPP*/

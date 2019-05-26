@@ -27,16 +27,11 @@
 #include <modules/ForwardingInformationBase.hpp>
 #include <iostream>
 #include <data/Interface.hpp>
+#include <ndnpi.hpp>
 
 Stream::Stream(void)
 {
-	int capacity = 25; /*should be changed later*/
-	shaper = new Shaper(capacity);
-	shaper->setWeight(0.50, 0);
-	shaper->setWeight(0.25, 1);
-	shaper->setWeight(0.15, 2);
-	shaper->setWeight(0.10, 3);
-	shaper->run();
+	
 }
 
 void Stream::onInterest(const InterestFilter& filter, const Interest& interest)
@@ -80,7 +75,3 @@ void Stream::putNack(const lp::Nack& nack)
 	this->m_face.put(nack);
 }
 
-void Stream::decreaseCapacity(void)
-{
-	this->shaper->decreaseCapacity();
-}

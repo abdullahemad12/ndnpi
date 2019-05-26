@@ -82,8 +82,7 @@ void FaceManager::update(RequestSubject* subject, const Data& data)
 	Request* request = (Request*) subject;
 	currentNamesLock.lock();	
 	fib->insert(*request);
-	/*TODO: add function that gets name uri to requests */
-	string namestr = request->getInterest().getName().toUri();
+	string namestr = request->getInterestNameUri();
 	currentNames.erase(namestr);
 	currentNamesLock.unlock();	
 }

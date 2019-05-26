@@ -26,6 +26,8 @@
 #include <string>
 #include <data/Interface.hpp>
 #include <ndn-cxx/face.hpp>
+#include <thread>
+
 
 using namespace std;
 using namespace ndn;
@@ -52,7 +54,22 @@ Face* Interface::getFace(void)
 	return this->face;
 }
 
+
+void Interface::t_func(void)
+{
+	face->processEvents();
+}
+
 void Interface::processEvents(void)
 {
-	
+	/*create a new thread so it does not block
+      the execution of the parent thread will sending the
+      packets*/
+	t = new thread(bind(&Interface::t_func, this));
+}
+
+void Interface::join(void)
+{
+	t->join();
+	delete t;
 }

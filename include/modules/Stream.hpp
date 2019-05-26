@@ -38,7 +38,6 @@ class Stream
 	private:
 		Face m_face;
 		KeyChain m_keyChain;
-		Shaper* shaper;
 
 		void onInterest(const InterestFilter& filter, const Interest& interest);
 		void onRegisterFailed(const Name& prefix, const std::string& reason);
@@ -47,7 +46,6 @@ class Stream
 		void listen(void);
 		void putData(const Data& data);
 		void putNack(const lp::Nack& nack);
-		void decreaseCapacity(void);
 };
 
 
