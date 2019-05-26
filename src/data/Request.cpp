@@ -81,3 +81,15 @@ string Request::getInterestNameUri()
 {
 	return interest.getName().toUri();
 }
+
+Interface* Request::getInterface(void)
+{
+	return interface;
+}
+
+float Request::calculateRtt(void)
+{
+	const auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+	float time = duration.count() / 1000.0 ;
+	return time;
+}	

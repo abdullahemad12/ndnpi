@@ -37,6 +37,8 @@ static bool compare(FIBEntry& entry, const Name& name);
 static int computeLongestCommonPrefixSize(const Name& name1, const Name& name2);
 static char* readline(FILE* file);
 static int str_split(char* str, char c, char*** strret);
+static void destroy_char_arr(char** arr, int length);
+
 /**
   * EFFECTS: gets the minimum of the two given numbers
   * RETURNS: the mininmum
@@ -84,7 +86,10 @@ void ForwardingInformationBase::parseTable(const char* tpath)
 		string ip(arr[1]);
 		string port(arr[2]);
 		Interface* interface = new Interface(ip, port);
-		ll_add(this->faces, interface);
+		interfaces.push_back(interface);
+
+		/*free memory to avoid memory leaks*/
+		destroy_char_arr(arr, n);
 	}
 
 	fclose(file);
@@ -92,18 +97,6 @@ void ForwardingInformationBase::parseTable(const char* tpath)
 
 ForwardingInformationBase::ForwardingInformationBase(const char* tpath)
 {
-	this->faces = ll_create();
-	if(this->faces == NULL)
-	{
-		std::cout << "ENOMEM\n";
-		exit(1);
-	}
-	this->entries = ll_create();
-	if(this->entries == NULL)
-	{
-		std::cout << "ENOMEM\n";
-		exit(1);
-	}
 	this->parseTable(tpath);
 }
 
@@ -111,6 +104,9 @@ ForwardingInformationBase::ForwardingInformationBase(const char* tpath)
 vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Name& name)
 {
 	vector<Interface*> interfaces;
+
+	
+
 	(void)computeLongestCommonPrefixSize;
 	(void) compare;
 	/*TODO: compute all matching Interfaces*/
@@ -119,9 +115,25 @@ vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Name& n
 
 
 
-void ForwardingInformationBase::insert(Request request)
+void ForwardingInformationBase::insert(Request& request)
 {
-	/*TODO: insert a new FIBEntry*/
+	string key = request.getInterestNameUri();
+	
+	Name name = request.getInterest().getName();
+	Interface* interface = request.getInterface();
+	float rtt = request.calculateRtt();
+	
+	if(entries.find(key) == entries.end())
+	{
+		FIBEntry* entry = new FIBEntry(name, interface, rtt);
+		entries[key] = entry;
+	}
+	else
+	{
+		entries[key]->setRtt(rtt);
+	}
+	
+
 }
 
 /***********************
@@ -238,4 +250,13 @@ static int str_split(char* str, char c, char*** strret)
 	}
 	*strret = arr;
 	return m;
+}
+
+static void destroy_char_arr(char** arr, int length)
+{
+	for(int i = 0; i < length; i++)
+	{
+		free(arr[i]);
+	}
+	free(arr);
 }

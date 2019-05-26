@@ -28,10 +28,11 @@
 
 using namespace ndn;
 
-FIBEntry::FIBEntry(Name name, Interface* interface)
+FIBEntry::FIBEntry(Name name, Interface* interface, float rtt)
 {
 	this->name = name;
 	this->interface = interface;
+	this->rtt = rtt;
 }
 
 FIBEntry::~FIBEntry(void)
@@ -50,7 +51,12 @@ Interface* FIBEntry::getInterface(void)
 }
 
 
+float FIBEntry::getRtt(void)
+{
+	return this->rtt;
+}
 
-
-
-
+void FIBEntry::setRtt(float rtt)
+{
+	this->rtt = rtt;
+}

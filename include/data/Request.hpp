@@ -56,6 +56,8 @@ class Request : public RequestSubject
 		void onTimeout(const Interest& interest);
 		void onNack(const Interest& interest, const lp::Nack& nack);
 		string getInterestNameUri(void);
+		Interface* getInterface(void);
+		float calculateRtt(void);
 };
 
 

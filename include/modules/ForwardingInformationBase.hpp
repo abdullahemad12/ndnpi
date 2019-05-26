@@ -29,7 +29,7 @@
 #include <vector> 
 #include <data/Interface.hpp>
 #include <data/Request.hpp>
-
+#include <data/FIBEntry.hpp>
 
 class Request;
 
@@ -38,8 +38,9 @@ using namespace ndn;
 class ForwardingInformationBase
 {
 	private:
-		struct linkedlist* faces;
-		struct linkedlist* entries;
+		vector<Interface*> interfaces;
+		unordered_map<string, FIBEntry*> entries;
+
 		/**
 		  * EFFECTS: parses the interfaces file and intializes the faces accordingly  
 		  * MODIFIES: this 
@@ -58,6 +59,8 @@ class ForwardingInformationBase
 		ForwardingInformationBase(const char* tpath);
 		/**
 		  * EFFECTS: given a name performs the lognest prefix match and decides the next hop(s)
+		  *			 default behaviour if the name does not match any prefix or if the FIB is empty
+		  *			 is to return a list of all the interfaces
 		  * RETURNS: vector of faces
 		  * PARAMETERS:
 		  *  - Name* name: the name to perform the lpm on
@@ -71,7 +74,7 @@ class ForwardingInformationBase
 		  * - Name* name: the name of the new data
 		  * - Face* face: the face of that the data was received on
 		  */
-		void insert(Request request);
+		void insert(Request& request);
 
 		/**
           * EFFECTS: gets the linkedlist of faces 
