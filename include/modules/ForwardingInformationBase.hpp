@@ -31,6 +31,8 @@
 #include <data/Request.hpp>
 #include <data/FIBEntry.hpp>
 #include <unordered_map>
+#include <mutex>
+
 
 class Request;
 
@@ -39,6 +41,7 @@ using namespace ndn;
 class ForwardingInformationBase
 {
 	private:
+		mutex entriesLock;
 		vector<Interface*> interfaces;
 		unordered_map<string, FIBEntry*> entries;
 
@@ -112,6 +115,16 @@ class ForwardingInformationBase
 		  * - Face* face: the face of that the data was received on
 		  */
 		void insert(Request& request);
+
+		/**
+		  * EFFECTS: removes the FIBEntry related to this request's name if it exists
+		  * REQUIRES: an NACK for this name to be recieved from the associated interface
+		  * Note: this is synchronized. make sure you are not holding any locks while calling it
+		  * 	  to avoid deadlocks and program crash 
+		  * PARAMETERS:
+		  * Request& request: the request whose FIBEntry will be removed
+		  */
+		void remove(Request& request);
 
 		/**
           * EFFECTS: gets the linkedlist of faces 

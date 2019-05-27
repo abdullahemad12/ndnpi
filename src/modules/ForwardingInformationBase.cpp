@@ -152,6 +152,7 @@ void ForwardingInformationBase::insert(Request& request)
 	Interface* interface = request.getInterface();
 	float rtt = request.calculateRtt();
 	
+	entriesLock.lock();
 	if(entries.find(key) == entries.end())
 	{
 		FIBEntry* entry = new FIBEntry(name, interface, rtt);
@@ -161,8 +162,20 @@ void ForwardingInformationBase::insert(Request& request)
 	{
 		entries[key]->setRtt(rtt);
 	}
-	
+	entriesLock.unlock();
 
+}
+
+void ForwardingInformationBase::remove(Request& request)
+{
+	string key = request.getInterestNameUri();
+
+	entriesLock.lock();
+	if(entries.find(key) != entries.end())
+	{
+		entries.erase(key);
+	}
+	entriesLock.unlock();
 }
 
 vector<Interface*> ForwardingInformationBase::getInterfaces(void)

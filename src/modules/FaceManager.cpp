@@ -77,24 +77,28 @@ void FaceManager::update(RequestSubject* subject)
 void FaceManager::update(RequestSubject* subject, const Data& data)
 {
 
-	stream->putData(data); /*put data*/
-	
 	Request* request = (Request*) subject;
-	currentNamesLock.lock();	
-	fib->insert(*request);
+	stream->putData(data); /*put data*/
+	fib->insert(*request); /*this operation is synchronized, so I better call it before acquiring the lock*/	
+
+
 	string namestr = request->getInterestNameUri();
-	currentNames.erase(namestr);
+
+	currentNamesLock.lock();	
+		currentNames.erase(namestr);
 	currentNamesLock.unlock();	
 }
 
 // Nack
 void FaceManager::update(RequestSubject* subject, const lp::Nack& nack)
 {
-	nackslock.lock();
-	/*must delete it*/
-	const lp::Nack* nacknew = new lp::Nack(nack);
-	nacks.push(nacknew);
+	Request* request = (Request*) subject;
+	fib->remove(*request);	
 
+	nackslock.lock();
+		/*must delete it*/
+		const lp::Nack* nacknew = new lp::Nack(nack);
+		nacks.push(nacknew);
 	nackslock.unlock();
 }
 
