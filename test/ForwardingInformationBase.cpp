@@ -11,6 +11,8 @@
 #include <fstream>
 #include <iostream>
 #include <ndnpi.hpp>
+#include <string>
+
 
 using namespace std;
 
@@ -19,7 +21,7 @@ Shaper* shaper = NULL;
 FaceManager* faceManager = NULL;
 Stream* stream = NULL;
 
-const char* names[] = {
+string names[] = {
 	"/test/app/ndn",
 	"/test/daron/ndn/ip",
 	"/test/schubert/api",
@@ -37,7 +39,8 @@ const char* names[] = {
 	"/test/down/victims",
 	"/lost/wild/ndn/api",
 	"/dreams/clothes/ip",
-	"/injustice/space/gloor"
+	"/injustice/space/gloor",
+	NULL
 };
 
 
@@ -110,5 +113,33 @@ void fib_lpm_test1(void)
 
 	interfaces = fib->computeMatchingFaces(interest4);
 	CU_ASSERT(interfaces == fib->getInterfaces());
+	delete fib;
+}
+
+/**  
+  * Insert some entries in the table and try to compute a name that does not exist 
+  * in the table. It should return all the interfaces
+  */
+void fib_lpm_test2(void)
+{
+	chdir("test");
+	
+	fib = new ForwardingInformationBase("routingtable/rt1");
+	vector<Interface*> interfaces = fib->getInterfaces();
+
+	for(int i = 0; names[i] != NULL; i++)
+	{
+		Interest interest(Name(names[i]));
+		Request request(interest, interfaces[i % interfaces.size()]);
+		
+		fib->insert(request);
+	}
+	
+
+	Interest interest1(Name("/melody/mira/cat"));
+	CU_ASSERT(interfaces == fib->computeMatchingFaces(interest1));
+
+	Interest interest2(Name("/uni/stutt/gart"));
+	CU_ASSERT(interfaces == fib->computeMatchingFaces(interest2));
 	delete fib;
 }
