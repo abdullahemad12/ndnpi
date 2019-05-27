@@ -91,6 +91,7 @@ void ForwardingInformationBase::parseTable(const char* tpath)
 
 		/*free memory to avoid memory leaks*/
 		destroy_char_arr(arr, n);
+		free(line);
 	}
 
 	fclose(file);
