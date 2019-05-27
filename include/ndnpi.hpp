@@ -29,10 +29,11 @@
 #include <modules/Stream.hpp>
 #include <modules/ForwardingInformationBase.hpp>
 #include <modules/Shaper.hpp>
-
+#include <modules/FaceManager.hpp>
 
 extern Stream* stream;
 extern ForwardingInformationBase* fib;
 extern Shaper* shaper;
+extern FaceManager* faceManager;
 
 #endif /*..._NDNPI_HPP*/

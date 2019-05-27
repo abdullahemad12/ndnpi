@@ -22,6 +22,7 @@
   * SOFTWARE.
   */
 
+#include <ndnpi.hpp>
 #include <modules/Shaper.hpp>
 #include <ndn-cxx/face.hpp>
 #include <assert.h>
@@ -52,28 +53,30 @@ void Shaper::forward(void)
 	{
 		lock.lock();
 		unsigned int totalSize = calculateCurrentLoad();
-
+		
 		if(totalSize > 0)
 		{
+			/*iterate over all the queues according to the given percentage*/
 			calculatePriorityPercentage();
 			for(int i = 0; i < N_PRIORITIES; i++)
 			{
 				int n_packets = capacity * alphas[i];
 				for(int j = 0; j < n_packets && !shaping_queues[i].empty(); j++)
 				{
-					/*Interest interest = shaping_queues[i].front();
+					Interest interest = shaping_queues[i].front();
 					shaping_queues[i].pop();
-					vector<Interface*> faces = fib->computeMatchingFaces((Name*) &interest.getName());
-					Interest* interestc = new Interest(interest);
-					RequestsThread* rt = new RequestsThread(interestc, faces, fib);
-					rt->run();
-					this->capacity += 1;*/
+					faceManager->addRequest(interest);
+					this->capacity += 1;
 				}
 			}
 		}
-
-	
+		/* At this point we dont need the shaping queues anymore
+         * and faceManager->sendAll() is a blocking function call 
+		 * Therefore it's better to release the lock now inorder to allow other threads to
+		 * Add the shaping queues
+ 		 */
 		lock.unlock();
+		faceManager->sendAll();
 	}
 }
 

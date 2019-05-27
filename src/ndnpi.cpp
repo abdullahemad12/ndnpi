@@ -24,6 +24,7 @@
 
 #include <modules/Stream.hpp>
 #include <modules/ForwardingInformationBase.hpp>
+#include <modules/FaceManager.hpp>
 #include <ndnpi.hpp>
 #include <iostream>
 
@@ -35,7 +36,7 @@ void init_shaper(int capacity);
 Stream* stream; 
 ForwardingInformationBase* fib;
 Shaper* shaper;
-
+FaceManager* faceManager;
 
 
 int main(int argc, char* argv[])

@@ -63,7 +63,7 @@ void Interface::t_func(void)
 void Interface::processEvents(void)
 {
 	/*create a new thread so it does not block
-      the execution of the parent thread will sending the
+      the execution of the parent thread while sending the
       packets*/
 	t = new thread(bind(&Interface::t_func, this));
 }
