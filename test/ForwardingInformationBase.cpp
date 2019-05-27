@@ -5,6 +5,7 @@
 #include <modules/FaceManager.hpp>
 #include <modules/Stream.hpp>
 #include <data/Interface.hpp>
+#include <data/Request.hpp>
 #include <datastructures/linkedlist.h>
 #include <ndn-cxx/face.hpp>
 #include <fstream>
@@ -76,17 +77,38 @@ void fib_constructor_test(void)
 	CU_ASSERT_EQUAL(size, fib->getInterfaces().size());
 
 	delete fib;
+	fib = NULL;
 }
 
-
-void fib_lpm_test(void)
+/**
+  * Test the case where the ForwardingInformationBase is initially empty
+  */
+void fib_lpm_test1(void)
 {
 	chdir("test");
 	
-	ForwardingInformationBase* fib = new ForwardingInformationBase("routingtable/rt1");
+	fib = new ForwardingInformationBase("routingtable/rt1");
 	
-			
+	Interest interest1(Name("/test/app/green/eye"));
+	Interest interest2(Name("/chicken/voices/will"));
+	Interest interest3(Name("/electric/waves/on/off"));
+	Interest interest4(Name("/injustice/space/gloor"));
 
 
+	vector<Interface*> interfaces;
+
+	interfaces = fib->computeMatchingFaces(interest1);
+	CU_ASSERT(interfaces == fib->getInterfaces());
+	
+
+	interfaces = fib->computeMatchingFaces(interest2);
+	CU_ASSERT(interfaces == fib->getInterfaces());
+
+	interfaces = fib->computeMatchingFaces(interest3);
+	CU_ASSERT(interfaces == fib->getInterfaces());
+
+
+	interfaces = fib->computeMatchingFaces(interest4);
+	CU_ASSERT(interfaces == fib->getInterfaces());
 	delete fib;
 }

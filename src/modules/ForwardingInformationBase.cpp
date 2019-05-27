@@ -130,14 +130,14 @@ vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Interes
 	{
 		/*I have to broadcast regardless of the priority because I dont know which interface
 		  will fetch the data back for sure*/
-		return interfaces;
+		return this->interfaces;
 	}
 
 
 	
 	vector<Interface*> intarr = sortInterfaces(scoreMap);
 	
-	interfaces = calculateFinalSetAccordingToPriority(interfaces, interest.getPriority());
+	interfaces = calculateFinalSetAccordingToPriority(intarr, interest.getPriority());
 	
 	return interfaces;
 }
@@ -163,7 +163,6 @@ void ForwardingInformationBase::insert(Request& request)
 		entries[key]->setRtt(rtt);
 	}
 	entriesLock.unlock();
-
 }
 
 void ForwardingInformationBase::remove(Request& request)
