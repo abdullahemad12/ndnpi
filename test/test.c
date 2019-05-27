@@ -29,6 +29,9 @@ static struct test utests[] = {
 	{"ht_test", ht_test},
 	{"fib_constructor_test", fib_constructor_test},
 	{"fib_lpm_test1", fib_lpm_test1},
+	{"fib_lpm_test2", fib_lpm_test2},
+	{"fib_lpm_test3", fib_lpm_test3},
+	{"fib_lpm_test4", fib_lpm_test4},
 	{NULL, NULL}
 
 };

@@ -12,7 +12,7 @@
 #include <iostream>
 #include <ndnpi.hpp>
 #include <string>
-
+#include <unordered_map>
 
 using namespace std;
 
@@ -40,7 +40,7 @@ string names[] = {
 	"/lost/wild/ndn/api",
 	"/dreams/clothes/ip",
 	"/injustice/space/gloor",
-	NULL
+	""
 };
 
 
@@ -127,7 +127,7 @@ void fib_lpm_test2(void)
 	fib = new ForwardingInformationBase("routingtable/rt1");
 	vector<Interface*> interfaces = fib->getInterfaces();
 
-	for(int i = 0; names[i] != NULL; i++)
+	for(int i = 0; names[i].length() != 0; i++)
 	{
 		Interest interest(Name(names[i]));
 		Request request(interest, interfaces[i % interfaces.size()]);
@@ -141,5 +141,109 @@ void fib_lpm_test2(void)
 
 	Interest interest2(Name("/uni/stutt/gart"));
 	CU_ASSERT(interfaces == fib->computeMatchingFaces(interest2));
+	delete fib;
+}
+
+/**
+  * Insert Some Entries and check that it returns the most interface that this entry lpm matches
+  * the priority of these interest is 3
+  */
+void fib_lpm_test3(void)
+{
+	fib = new ForwardingInformationBase("routingtable/rt1");
+	vector<Interface*> interfaces = fib->getInterfaces();
+	unordered_map<string, Interface*> map;
+
+	for(int i = 0; names[i].length() != 0; i++)
+	{
+		Interest interest(Name(names[i]));
+		Request request(interest, interfaces[i % interfaces.size()]);
+		map[names[i]] = interfaces[i % interfaces.size()];
+		fib->insert(request);
+	}
+
+	
+	/*now try some matching some names that is similar*/
+
+	Interest interest1(Name("/cranberries/melody/app"));
+	interest1.setPriority(3);
+	interfaces = fib->computeMatchingFaces(interest1);
+	CU_ASSERT_EQUAL(interfaces.size(), 1);
+	CU_ASSERT_EQUAL(interfaces[0], map[names[7]]);		
+	
+	Interest interest2(Name("/test/down/system"));
+	interest2.setPriority(3);
+	interfaces = fib->computeMatchingFaces(interest2);
+	CU_ASSERT_EQUAL(interfaces.size(), 1);
+	CU_ASSERT_EQUAL(interfaces[0], map[names[14]]);		
+	
+
+	Interest interest3(Name("/trees/zizo"));
+	interest3.setPriority(3);
+	interfaces = fib->computeMatchingFaces(interest3);
+	CU_ASSERT_EQUAL(interfaces.size(), 1);
+	CU_ASSERT_EQUAL(interfaces[0], map[names[8]]);		
+	
+
+	Interest interest4(Name("/chicken/and/meat"));
+	interest4.setPriority(3);
+	interfaces = fib->computeMatchingFaces(interest4);
+	CU_ASSERT_EQUAL(interfaces.size(), 1);
+	CU_ASSERT_EQUAL(interfaces[0], map[names[11]]);		
+	
+
+	
+	delete fib;
+}
+
+/**
+  * same as test 3 but with mixed priorities
+  */
+void fib_lpm_test4(void)
+{
+	fib = new ForwardingInformationBase("routingtable/rt1");
+	vector<Interface*> interfaces = fib->getInterfaces();
+	unordered_map<string, Interface*> map;
+
+	for(int i = 0; names[i].length() != 0; i++)
+	{
+		Interest interest(Name(names[i]));
+		Request request(interest, interfaces[i % interfaces.size()]);
+		map[names[i]] = interfaces[i % interfaces.size()];
+		fib->insert(request);
+	}
+
+	
+	/*now try some matching some names that is similar*/
+
+	Interest interest1(Name("/cranberries/melody/app"));
+	interest1.setPriority(1);
+	interfaces = fib->computeMatchingFaces(interest1);
+	CU_ASSERT_EQUAL(interfaces.size(), 2);
+	CU_ASSERT_EQUAL(interfaces[0], map[names[7]]);	
+	CU_ASSERT_EQUAL(interfaces[1], fib->getInterfaces()[2]);			
+
+	Interest interest2(Name("/test/down/system"));
+	interest2.setPriority(3);
+	interfaces = fib->computeMatchingFaces(interest2);
+	CU_ASSERT_EQUAL(interfaces.size(), 1);
+	CU_ASSERT_EQUAL(interfaces[0], map[names[14]]);
+	
+
+	Interest interest3(Name("/trees/zizo"));
+	interest3.setPriority(2);
+	interfaces = fib->computeMatchingFaces(interest3);
+	CU_ASSERT_EQUAL(interfaces.size(), 1);
+	CU_ASSERT_EQUAL(interfaces[0], map[names[8]]);
+	
+
+	Interest interest4(Name("/chicken/and/meat"));
+	interest4.setPriority(0);
+	interfaces = fib->computeMatchingFaces(interest4);
+	CU_ASSERT_EQUAL(interfaces.size(), fib->getInterfaces().size());
+
+	
+
+	
 	delete fib;
 }
