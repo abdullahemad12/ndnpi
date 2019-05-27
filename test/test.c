@@ -7,6 +7,7 @@
 #include "hashtable.c"
 #include "ForwardingInformationBase.cpp"
 #include "Shaper.cpp"
+#include "FaceManager.cpp"
 
 /*prototypes*/
 static int init(void);

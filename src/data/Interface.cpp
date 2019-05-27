@@ -54,11 +54,11 @@ string Interface::getPort(void)
 	return this->port;
 }
 
-Face* Interface::getFace(void)
+void Interface::expressInterest(const Interest &interest, const DataCallback &afterSatisfied, 
+							 const NackCallback &afterNacked, const TimeoutCallback &afterTimeout)
 {
-	return this->face;
+	face->expressInterest(interest, afterSatisfied, afterNacked, afterTimeout);
 }
-
 
 void Interface::t_func(void)
 {

@@ -40,7 +40,7 @@ Request::Request(Interest interest,  Interface* interface)
 
 void Request::expressInterest(void)
 {
-	interface->getFace()->expressInterest(interest,
+	interface->expressInterest(interest,
                            bind(&Request::onData, this,  _1, _2),
                            bind(&Request::onNack, this, _1, _2),
                            bind(&Request::onTimeout, this, _1));

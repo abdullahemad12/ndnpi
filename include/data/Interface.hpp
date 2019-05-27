@@ -46,7 +46,8 @@ class Interface
 		~Interface(void);
 		string getIp(void);
 		string getPort(void);
-		Face* getFace(void);
+		void expressInterest(const Interest &interest, const DataCallback &afterSatisfied, 
+							 const NackCallback &afterNacked, const TimeoutCallback &afterTimeout);
 		void processEvents(void);
 		void join(void);
 };
