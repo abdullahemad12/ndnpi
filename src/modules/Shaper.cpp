@@ -34,6 +34,18 @@ using namespace ndn;
 Shaper::Shaper(unsigned int capacity)
 {
 	this->capacity = capacity;
+	this->terminated = false;
+	this->t = NULL;
+}
+
+Shaper::~Shaper(void)
+{
+	if(t != NULL)
+	{
+		terminated = true;
+		t->join();
+		delete t;	
+	}
 }
 
 unsigned int Shaper::calculateCurrentLoad(void)
@@ -49,7 +61,7 @@ unsigned int Shaper::calculateCurrentLoad(void)
 
 void Shaper::forward(void)
 {
-	while(true)
+	while(!terminated)
 	{
 		lock.lock();
 		unsigned int totalSize = calculateCurrentLoad();

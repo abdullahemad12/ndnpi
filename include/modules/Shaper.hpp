@@ -49,6 +49,7 @@ class Shaper
 		queue<Interest> shaping_queues[N_PRIORITIES];
 		float weights[N_PRIORITIES];
 		float alphas[N_PRIORITIES];
+		bool terminated;
 
 		/**
 		  * EFFECTS: calculates the sum of all the queues size
@@ -75,6 +76,8 @@ class Shaper
 	public:
 
 		Shaper(unsigned int capacity);
+
+		~Shaper(void);
 		
 		/**
 		  * Synchronized

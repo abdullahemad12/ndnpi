@@ -104,6 +104,10 @@ ForwardingInformationBase::ForwardingInformationBase(const char* tpath)
 
 ForwardingInformationBase::~ForwardingInformationBase(void)
 {
+	for(auto& item : entries)
+	{
+		delete item.second;
+	}
 	for(Interface* interface : interfaces)
 	{
 		delete interface;

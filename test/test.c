@@ -6,6 +6,7 @@
 #include "linkedlist.c"
 #include "hashtable.c"
 #include "ForwardingInformationBase.cpp"
+#include "Shaper.cpp"
 
 /*prototypes*/
 static int init(void);
@@ -32,6 +33,9 @@ static struct test utests[] = {
 	{"fib_lpm_test2", fib_lpm_test2},
 	{"fib_lpm_test3", fib_lpm_test3},
 	{"fib_lpm_test4", fib_lpm_test4},
+	{"shaper_forward_test1", shaper_forward_test1},
+	{"shaper_forward_test2", shaper_forward_test2},
+	{"shaper_forward_test3", shaper_forward_test3},
 	{NULL, NULL}
 
 };
