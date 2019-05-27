@@ -101,6 +101,13 @@ ForwardingInformationBase::ForwardingInformationBase(const char* tpath)
 	this->parseTable(tpath);
 }
 
+ForwardingInformationBase::~ForwardingInformationBase(void)
+{
+	for(Interface* interface : interfaces)
+	{
+		delete interface;
+	}
+}
 
 vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Interest& interest)
 {
@@ -155,6 +162,11 @@ void ForwardingInformationBase::insert(Request& request)
 	}
 	
 
+}
+
+vector<Interface*> ForwardingInformationBase::getInterfaces(void)
+{
+	return interfaces;
 }
 
 
@@ -244,6 +256,7 @@ vector<Interface*> ForwardingInformationBase::calculateFinalSetAccordingToPriori
 
 	return interfaces;
 }
+
 
 /***********************
  *    Static helper    *

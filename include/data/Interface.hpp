@@ -43,6 +43,7 @@ class Interface
 		thread* t;
 	public:
 		Interface(string ip, string port);
+		~Interface(void);
 		string getIp(void);
 		string getPort(void);
 		Face* getFace(void);

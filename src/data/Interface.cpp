@@ -38,6 +38,11 @@ Interface::Interface(string ip, string port)
 	face = new Face(ip, port);
 }
 
+Interface::~Interface(void)
+{
+	face->shutdown();
+	delete face;
+}
 
 string Interface::getIp(void)
 {

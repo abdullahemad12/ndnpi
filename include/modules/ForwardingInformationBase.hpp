@@ -92,6 +92,8 @@ class ForwardingInformationBase
 		  * const char* tpath: the path to the routing table
 		  */
 		ForwardingInformationBase(const char* tpath);
+		
+		~ForwardingInformationBase(void);
 		/**
 		  * EFFECTS: given a name performs the lognest prefix match and decides the next hop(s)
 		  *			 default behaviour if the name does not match any prefix or if the FIB is empty
@@ -116,7 +118,7 @@ class ForwardingInformationBase
           * NOTE: Never delete, modify or write to this linkedlist or its elements 
 		  *       Only use for reading
  		  */ 
-		struct linkedlist* getFaces(void);
+		vector<Interface*> getInterfaces(void);
 
 };
 
