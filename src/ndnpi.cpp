@@ -45,6 +45,7 @@ int main(int argc, char* argv[])
 	{
 		cout << "USAGE: ./bin/ndnpi CAPACITY_IN_PACKETS_PER_SECOND\n";
 		cout << "EXAMPLE: ./bin/ndnpi 100\n";
+		exit(1);
 	}
 
 	int capacity = atoi(argv[1]);
