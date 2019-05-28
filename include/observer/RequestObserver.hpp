@@ -39,6 +39,7 @@ class RequestSubject;
 class RequestObserver
 {
 	public:
+		virtual ~RequestObserver(void) {}
 		virtual void update(RequestSubject* subject) = 0;
 		virtual void update(RequestSubject* subject, const Data& data) = 0;
 		virtual void update(RequestSubject* subject, const lp::Nack& nack) = 0;

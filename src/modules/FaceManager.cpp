@@ -34,6 +34,16 @@
 using namespace ndn;
 using namespace std;
 
+FaceManager::~FaceManager(void)
+{
+	while(!nacks.empty())
+	{
+		const lp::Nack* nack = nacks.front();
+		nacks.pop();
+		delete nack;
+	}
+}
+
 void FaceManager::addRequest(Interest interest)
 {
 	vector<Interface*> interfaces =  fib->computeMatchingFaces(interest);

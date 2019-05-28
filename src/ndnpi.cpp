@@ -27,6 +27,7 @@
 #include <modules/FaceManager.hpp>
 #include <ndnpi.hpp>
 #include <iostream>
+#include <cstdlib>
 
 using namespace std;
 
@@ -38,6 +39,7 @@ ForwardingInformationBase* fib;
 Shaper* shaper;
 FaceManager* faceManager;
 
+void exiting(void);
 
 int main(int argc, char* argv[])
 {
@@ -53,8 +55,6 @@ int main(int argc, char* argv[])
 	chdir("bin");
 
 
-	/*create and initialize the shaper*/
-	init_shaper(capacity);
 
 	/*create the Forwarding information base*/
 	fib = new ForwardingInformationBase("rt");
@@ -62,11 +62,29 @@ int main(int argc, char* argv[])
 	/*create a new Stream*/
 	stream = new Stream();
 	
+	/*initialize the FaceManager*/
+	faceManager = new FaceManager();
+
+	/*create and initialize the shaper*/
+	init_shaper(capacity);
+	
+	/*on exit signal free all the memory*/
+	atexit(exiting);
+
+
 	/*start Listening on for Interests*/	
 	stream->listen();
+
 	
 }
 
+void exiting(void)
+{
+	delete fib;
+	delete stream;
+	delete faceManager;
+	delete shaper;
+}
 
 void init_shaper(int capacity)
 {

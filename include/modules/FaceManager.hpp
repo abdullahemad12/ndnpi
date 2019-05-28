@@ -54,6 +54,8 @@ class FaceManager : public RequestObserver
 		void sendNacks(void);
 	
 	public:
+
+		~FaceManager(void);
 		/**
 		  * EFFECTS: adds as many interests as necessary in the requests queue according to the
 		  * 		 decision of the FIB
