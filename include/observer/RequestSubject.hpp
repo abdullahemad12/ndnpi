@@ -25,7 +25,7 @@
 #ifndef _OBSERVER_REQUESTSUBJECT_
 #define _OBSERVER_REQUESTSUBJECT_
 
-#include <list>
+#include <vector>
 #include <observer/RequestObserver.hpp>
 #include <ndn-cxx/face.hpp>
 
@@ -36,7 +36,7 @@ class RequestSubject
 {
 	private:
 		bool hasChanged;
-		list<RequestObserver*> observers;
+		vector<RequestObserver*> observers;
 	public:
 		RequestSubject(void);
 		void addObserver(RequestObserver* observer);

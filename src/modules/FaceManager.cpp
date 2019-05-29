@@ -42,6 +42,7 @@ FaceManager::~FaceManager(void)
 		nacks.pop();
 		delete nack;
 	}
+	deleteAllRequest();
 }
 
 void FaceManager::addRequest(Interest interest)
@@ -51,9 +52,9 @@ void FaceManager::addRequest(Interest interest)
 	{
 		string namestr = interest.getName().toUri();
 		currentNames.insert(namestr);
-		Request request(interest, interface);
-		request.addObserver(this);		
-		requests.push(request);
+		Request* request = new Request(interest, interface);
+		request->addObserver(this);		
+		requests.push_back(request);
 		this->interfaces.insert(interface);
 	}
 }
@@ -75,6 +76,8 @@ void FaceManager::sendAll(void)
 
 	/*send nacks as necessary*/
 	sendNacks();
+
+	deleteAllRequest();
 }
 
 // timeout
@@ -119,12 +122,19 @@ void FaceManager::update(RequestSubject* subject, const lp::Nack& nack)
 
 void FaceManager::expressAllInterests(void)
 {
-	while(!requests.empty())
+	for(Request* request : requests)
 	{
-		Request request = requests.front();
-		requests.pop();
-		request.expressInterest();
+		request->expressInterest();
 	}
+}
+
+void FaceManager::deleteAllRequest(void)
+{
+	for(Request* request : requests)
+	{
+		delete request;
+	}
+	requests.clear();
 }
 
 void FaceManager::processEventsForAllInterfaces(void)

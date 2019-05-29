@@ -32,10 +32,16 @@
 
 using namespace std;
 
-Request::Request(Interest interest,  Interface* interface)
+Request::Request(Interest interest,  Interface* interface) : RequestSubject()
 {
 	this->interface = interface;	
 	this->interest = interest;
+	this->name = interest.getName();
+}
+
+Request::~Request(void)
+{
+
 }
 
 void Request::expressInterest(void)
@@ -79,7 +85,7 @@ Interest Request::getInterest(void)
 
 string Request::getInterestNameUri()
 {
-	return interest.getName().toUri();
+	return name.toUri();
 }
 
 Interface* Request::getInterface(void)

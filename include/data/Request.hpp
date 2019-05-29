@@ -46,10 +46,12 @@ class Request : public RequestSubject
 		chrono::steady_clock::time_point start;
 		chrono::steady_clock::time_point end;
 		Interest interest;
+		Name name;
 		Interface* interface;
 	public:
 		Request(Interest interest, Interface* interface);
-
+		~Request(void);
+	
 		void expressInterest(void);	
 		Interest getInterest(void);
 		void onData(const Interest& interest, const Data& data);

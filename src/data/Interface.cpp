@@ -27,7 +27,8 @@
 #include <data/Interface.hpp>
 #include <ndn-cxx/face.hpp>
 #include <thread>
-
+#include <iostream>
+#include <ndnpi.hpp>
 
 using namespace std;
 using namespace ndn;
@@ -57,12 +58,38 @@ string Interface::getPort(void)
 void Interface::expressInterest(const Interest &interest, const DataCallback &afterSatisfied, 
 							 const NackCallback &afterNacked, const TimeoutCallback &afterTimeout)
 {
+	afterNackeds.push_back(afterNacked);
+	interests.push_back(interest);
 	face->expressInterest(interest, afterSatisfied, afterNacked, afterTimeout);
 }
 
 void Interface::t_func(void)
 {
-	face->processEvents();
+	try
+	{
+		// try processing the event
+		face->processEvents();
+	}
+	catch (const std::exception& e)
+	{
+		cout << "Couldn't forward on this face\n";
+		/*
+		 * this face is down
+         * Important to send back an Nack to prevent 
+		 * the client from waiting on data that is never coming back
+		 * and also to update the FIB to execlude this interface later
+         */
+		for(unsigned int i = 0; i < interests.size(); i++)
+		{
+			lp::Nack nack(interests[i]);
+			nack.setReason(lp::NackReason::NONE);
+			afterNackeds[i](interests[i], nack);
+		}
+		
+		/*clear the lists*/
+		afterNackeds.clear();
+		interests.clear();
+	}
 }
 
 void Interface::processEvents(void)

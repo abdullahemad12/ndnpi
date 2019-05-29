@@ -28,6 +28,7 @@
 #include <ndn-cxx/face.hpp>
 #include <string>
 #include <thread>
+#include <vector>
 
 using namespace std;
 using namespace ndn;
@@ -41,6 +42,9 @@ class Interface
 		Face* face;
 		void t_func(void);
 		thread* t;
+		/*additional memory to handle failures gracefully*/
+		vector<NackCallback> afterNackeds;
+		vector<Interest> interests;
 	public:
 		Interface(string ip, string port);
 		~Interface(void);

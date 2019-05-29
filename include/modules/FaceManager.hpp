@@ -44,7 +44,7 @@ class FaceManager : public RequestObserver
 		mutex nackslock;
 
 		unordered_set<string> currentNames;	
-		queue<Request> requests;
+		vector<Request*> requests;
 		queue<const lp::Nack*> nacks;
 		unordered_set<Interface*> interfaces;
 
@@ -71,6 +71,12 @@ class FaceManager : public RequestObserver
 		  * MODIFIES: this
 		  */
 		void sendAll(void);
+	
+		/**
+		  * EFFECTS: deletes all the request in the requests queue
+		  * MODIFIES: this->requests
+		  */
+		void deleteAllRequest(void);
 	
 		void update(RequestSubject* subject);
 		void update(RequestSubject* subject, const Data& data);
