@@ -169,10 +169,8 @@ void ForwardingInformationBase::insert(Request& request)
 	entriesLock.unlock();
 }
 
-void ForwardingInformationBase::remove(Request& request)
+void ForwardingInformationBase::remove(string key)
 {
-	string key = request.getInterestNameUri();
-
 	entriesLock.lock();
 	if(entries.find(key) != entries.end())
 	{

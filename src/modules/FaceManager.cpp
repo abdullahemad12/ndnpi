@@ -105,9 +105,6 @@ void FaceManager::update(RequestSubject* subject, const Data& data)
 // Nack
 void FaceManager::update(RequestSubject* subject, const lp::Nack& nack)
 {
-	Request* request = (Request*) subject;
-	fib->remove(*request);	
-
 	nackslock.lock();
 		/*must delete it*/
 		const lp::Nack* nacknew = new lp::Nack(nack);
@@ -169,6 +166,7 @@ void FaceManager::sendNacks(void)
 			stream->putNack(*nack);
 			currentNames.erase(namestr);
 		}
+		fib->remove(nack->getInterest().getName().toUri());
 		delete nack;
 	}
 	currentNames.clear();

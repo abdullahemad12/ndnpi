@@ -124,7 +124,7 @@ class ForwardingInformationBase
 		  * PARAMETERS:
 		  * Request& request: the request whose FIBEntry will be removed
 		  */
-		void remove(Request& request);
+		void remove(string key);
 
 		/**
           * EFFECTS: gets the linkedlist of faces 
