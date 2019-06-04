@@ -104,9 +104,13 @@ ForwardingInformationBase::ForwardingInformationBase(const char* tpath)
 
 ForwardingInformationBase::~ForwardingInformationBase(void)
 {
-	for(auto& item : entries)
+	for(auto& list : entries)
 	{
-		delete item.second;
+		for(unsigned int i = 0; i < list.second.size(); i++)
+		{
+			auto& item = list.second[i];
+			delete item;
+		}
 	}
 	for(Interface* interface : interfaces)
 	{
@@ -159,22 +163,54 @@ void ForwardingInformationBase::insert(Request& request)
 	entriesLock.lock();
 	if(entries.find(key) == entries.end())
 	{
+		vector<FIBEntry*> list;	
 		FIBEntry* entry = new FIBEntry(name, interface, rtt);
-		entries[key] = entry;
+		list.push_back(entry);
+		entries[key] = list;
 	}
 	else
 	{
-		entries[key]->setRtt(rtt);
+		vector<FIBEntry*>& vec = entries[key];
+		FIBEntry* entry = NULL;		
+		for(unsigned int i = 0; i < vec.size(); i++)
+		{
+			if(vec[i]->getInterface() == interface)
+			{	
+				entry = vec[i];
+			}
+		}
+		if(entry == NULL)
+		{
+			entry = new FIBEntry(name, interface, rtt);
+			vec.push_back(entry);
+		}
+		else
+		{
+			entry->setRtt(rtt); 
+		}
 	}
 	entriesLock.unlock();
 }
 
-void ForwardingInformationBase::remove(string key)
+void ForwardingInformationBase::remove(string key, Interface* interface)
 {
 	entriesLock.lock();
 	if(entries.find(key) != entries.end())
 	{
-		entries.erase(key);
+		vector<FIBEntry*>& vec = entries[key];
+		for(unsigned int i = 0; i < vec.size(); i++) 
+		{
+			if(vec[i]->getInterface() == interface)
+			{	
+				FIBEntry* entry = vec[i];
+				vec.erase(vec.begin() + i);
+				delete entry;
+			}
+		}
+		if(vec.empty())
+		{
+			entries.erase(key);
+		}
 	}
 	entriesLock.unlock();
 }
@@ -200,13 +236,16 @@ unordered_map<Interface*, int> ForwardingInformationBase::initScoreMap(void)
 
 void ForwardingInformationBase::computeScores(unordered_map<Interface*, int>& scoreMap, const Name& name)
 {
-	for(auto& item : entries)
+	for(auto& list : entries)
 	{
-		FIBEntry* entry = item.second;
-		int curScore = computeLongestCommonPrefixSize(name, entry->getName());
-		if(curScore > scoreMap[entry->getInterface()])
+		for(unsigned int i = 0; i < list.second.size(); i++)
 		{
-			scoreMap[entry->getInterface()] = curScore;
+			FIBEntry* entry = list.second[i];
+			int curScore = computeLongestCommonPrefixSize(name, entry->getName());
+			if(curScore > scoreMap[entry->getInterface()])
+			{
+				scoreMap[entry->getInterface()] = curScore;
+			}
 		}
 	}
 }

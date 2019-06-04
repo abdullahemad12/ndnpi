@@ -43,7 +43,7 @@ class ForwardingInformationBase
 	private:
 		mutex entriesLock;
 		vector<Interface*> interfaces;
-		unordered_map<string, FIBEntry*> entries;
+		unordered_map<string, vector<FIBEntry*>> entries;
 
 		/**
 		  * EFFECTS: parses the interfaces file and intializes the faces accordingly  
@@ -124,7 +124,7 @@ class ForwardingInformationBase
 		  * PARAMETERS:
 		  * Request& request: the request whose FIBEntry will be removed
 		  */
-		void remove(string key);
+		void remove(string key, Interface* interface);
 
 		/**
           * EFFECTS: gets the linkedlist of faces 
@@ -132,6 +132,7 @@ class ForwardingInformationBase
 		  *       Only use for reading
  		  */ 
 		vector<Interface*> getInterfaces(void);
+
 
 };
 
