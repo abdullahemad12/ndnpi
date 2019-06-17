@@ -38,6 +38,7 @@ void Stream::onInterest(const InterestFilter& filter, const Interest& interest)
 {
 	// forward the interest
     faceManager->addRequest(interest);
+    faceManager->sendAll();
 }
 
 void Stream::listen(void)
