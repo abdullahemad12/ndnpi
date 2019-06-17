@@ -100,8 +100,8 @@ void Shaper::calculatePriorityPercentage(void)
 
 void Shaper::setWeight(float weight, int i)
 {
-	assert(i < N_PRIORITIES);
-	weights[i] = weight;
+    i = 0;
+	weights[i] = 1;
 }
 
 void Shaper::run(void)
