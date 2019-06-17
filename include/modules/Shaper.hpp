@@ -33,7 +33,7 @@
 #include <modules/ForwardingInformationBase.hpp>
 
 
-#define N_PRIORITIES 4
+#define N_PRIORITIES 1
 
 
 using namespace std;

@@ -95,43 +95,7 @@ void Shaper::forward(void)
 
 void Shaper::calculatePriorityPercentage(void)
 {
-	float acc = 0;
-
-	/*how many queues will the acc be divided on*/
-	int n_priorities = N_PRIORITIES;
-
-	for(int i = 0; i < N_PRIORITIES; i++)
-	{
-		if(shaping_queues[i].size() == 0)
-		{
-			// distribute the percentage among other weights
-			acc += weights[i];
-			--n_priorities;	
-			alphas[i] = 0;		
-		}
-		else
-		{
-			alphas[i] = weights[i];
-		}
-	}
-	
-	acc /= n_priorities;
-	for(int i = 0; i < N_PRIORITIES; i++)
-	{
-		if(shaping_queues[i].size() > 0)
-		{
-			alphas[i] += acc;
-		}		
-	}
-	
-	/*just for debugging purpose*/	
-	float totalAlphas = 0;	
-	for(int i = 0; i < N_PRIORITIES; i++)	
-	{
-		totalAlphas += alphas[i];
-	}
-	
-	assert(totalAlphas <= 1 && totalAlphas >= 0.98);
+    alphas[0] = 1;
 }
 
 void Shaper::setWeight(float weight, int i)
@@ -165,7 +129,7 @@ bool Shaper::addInterest(Interest interest)
 	/*Allow the qeue to store more than the capacity of the link*/
 	if(curLoad < (int)(1.5 * (float) capacity))
 	{
-		uint8_t priority = interest.getPriority();
+		uint8_t priority = 0;
 		assert(priority < N_PRIORITIES);
 		shaping_queues[priority].push(interest);
 	}

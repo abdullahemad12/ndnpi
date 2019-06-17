@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
 		exit(1);
 	}
 
-
+	int capacity = atoi(argv[1]);
 
 	chdir("bin");
 
@@ -65,6 +65,9 @@ int main(int argc, char* argv[])
 	/*initialize the FaceManager*/
 	faceManager = new FaceManager();
 
+	/*create and initialize the shaper*/
+	init_shaper(capacity);
+	
 	/*on exit signal free all the memory*/
 	atexit(exiting);
 

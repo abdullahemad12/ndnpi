@@ -37,8 +37,13 @@ Stream::Stream(void)
 void Stream::onInterest(const InterestFilter& filter, const Interest& interest)
 {
 	// forward the interest
-    faceManager->addRequest(interest);
-    faceManager->sendAll();
+	if(!shaper->addInterest(interest))
+	{
+		lp::Nack nack(interest);
+		nack.setReason(lp::NackReason::CONGESTION);
+		const lp::Nack nack1(nack);
+		putNack(nack1);
+	}
 }
 
 void Stream::listen(void)
