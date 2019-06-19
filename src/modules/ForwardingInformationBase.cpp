@@ -145,7 +145,7 @@ vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Interes
 	
 	vector<Interface*> intarr = sortInterfaces(scoreMap);
 	
-	interfaces = calculateFinalSetAccordingToPriority(intarr, interest.getPriority());
+    interfaces.push_back(intarr[0]);
 	
 	return interfaces;
 }
