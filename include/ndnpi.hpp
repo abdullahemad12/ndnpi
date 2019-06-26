@@ -30,10 +30,11 @@
 #include <modules/ForwardingInformationBase.hpp>
 #include <modules/Shaper.hpp>
 #include <modules/FaceManager.hpp>
+#include <modules/Classifier.hpp>
 
 extern Stream* stream;
 extern ForwardingInformationBase* fib;
 extern Shaper* shaper;
 extern FaceManager* faceManager;
-
+extern Classifier* classifier;
 #endif /*..._NDNPI_HPP*/

@@ -24,6 +24,7 @@
 
 #include <modules/Classifier.hpp>
 #include <vector>
+#include <ndnpi.hpp>
 
 using namespace std;
 using namespace ndn;
@@ -50,7 +51,6 @@ void Classifier::classifyInterestPriority(Interest& interest)
     priorityList.push_back(interest.getPriority());
     
 
-
    probability = calculatePriorityAccordingToProbability(interest, priorityList, 0, probability);
    probability = calculatePriorityAccordingToProbability(interest, priorityList, 1, probability);
    probability = calculatePriorityAccordingToProbability(interest, priorityList, 2, probability);
@@ -58,19 +58,48 @@ void Classifier::classifyInterestPriority(Interest& interest)
     
 }
 
-
-
 uint8_t Classifier::caclulateRTTFeature(Interest& interest)
 {
-    return 0;
+    float min = fib->getMinimumRTT();
+    float max = fib->getMaximumRTT();
+    float range = max - min;
+
+    float div = range / 4.0; 
+    float rtt = fib->getLPMRtt(interest.getName());
+
+    for(int i = 0; i < 4; i++)
+    {
+        if(min + (i * div) <= rtt && rtt < min + ((i + 1) * div))
+        {
+            return 3 - i;
+        }
+    }
+    return 2;/*not found*/
+
 }
 uint8_t Classifier::calculateFreshnessFeature(Interest& interest)
 {
-    return 0;
+    return interest.getMustBeFresh() ? 1 : 2;
 }
 uint8_t Classifier::calculatePrefixTrafficFrequencyFeature(Interest& interest)
 {
-    return 0;
+    int min = fib->getMinimumFrequency();
+    int max = fib->getMaximumFrequency();
+    float range = max - min;
+
+    float div = range / 4.0;
+
+    int freq = fib->getLPMFrequency(interest.getName());
+    for(int i = 0; i < 4; i++)
+    {
+        if(min + (i * div) <= freq && freq < min + ((i + 1) * div))
+        {
+            return 3 - i;
+        }
+    }
+
+    
+    return 2; /*not found*/
 }
 
 

@@ -186,7 +186,8 @@ void ForwardingInformationBase::insert(Request& request)
 		}
 		else
 		{
-			entry->setRtt(rtt); 
+			entry->setRtt(rtt);
+            entry->incrementFrequency(); 
 		}
 	}
 	entriesLock.unlock();
@@ -220,6 +221,123 @@ vector<Interface*> ForwardingInformationBase::getInterfaces(void)
 	return interfaces;
 }
 
+int ForwardingInformationBase::getMinimumFrequency(void)
+{
+    int min = INT_MAX;
+    for(auto& list : entries){
+        for(unsigned int i = 0; i < list.second.size(); i++)
+        {
+            FIBEntry* entry = list.second[i];
+            if(entry->getFrequency() < min)
+            {
+               min = entry->getFrequency();
+            }
+        }    
+    }
+    return min;
+}
+
+int ForwardingInformationBase::getMaximumFrequency(void)
+{
+    int max = INT_MIN;
+    for(auto& list : entries){
+        for(unsigned int i = 0; i < list.second.size(); i++)
+        {
+            FIBEntry* entry = list.second[i];
+            if(entry->getFrequency() > max)
+            {
+               max = entry->getFrequency();
+            }
+        }    
+    }
+    return max;
+}
+
+
+float ForwardingInformationBase::getMaximumRTT(void)
+{
+    float max = LONG_MIN;
+    for(auto& list : entries){
+        for(unsigned int i = 0; i < list.second.size(); i++)
+        {
+            FIBEntry* entry = list.second[i];
+            if(entry->getRtt() > max)
+            {
+               max = entry->getRtt();
+            }
+        }    
+    }
+    return max;
+}
+
+
+
+float ForwardingInformationBase::getMinimumRTT(void)
+{
+    float min = LONG_MAX;
+    for(auto& list : entries){
+        for(unsigned int i = 0; i < list.second.size(); i++)
+        {
+            FIBEntry* entry = list.second[i];
+            if(entry->getRtt() < min)
+            {
+               min = entry->getRtt();
+            }
+        }    
+    }
+    return min;
+}
+
+int ForwardingInformationBase::getLPMFrequency(const Name& name)
+{
+    int maxScore = 0;   
+    FIBEntry* finalEntry = NULL;
+    for(auto& list : entries)
+	{
+		for(unsigned int i = 0; i < list.second.size(); i++)
+		{
+			FIBEntry* entry = list.second[i];
+            int curScore = computeLongestCommonPrefixSize(name, entry->getName()); 
+            if(curScore > maxScore) 
+            {
+                maxScore = curScore;
+                finalEntry = entry;
+            }
+        }
+    }
+
+    if(finalEntry == NULL)
+    {
+        return INT_MAX;
+    }
+    return finalEntry->getRtt();
+}
+
+
+float ForwardingInformationBase::getLPMRtt(const Name& name)
+{
+    int maxScore = 0;   
+    FIBEntry* finalEntry = NULL;
+    for(auto& list : entries)
+	{
+		for(unsigned int i = 0; i < list.second.size(); i++)
+		{
+			FIBEntry* entry = list.second[i];
+            int curScore = computeLongestCommonPrefixSize(name, entry->getName()); 
+            if(curScore > maxScore) 
+            {
+                maxScore = curScore;
+                finalEntry = entry;
+            }
+        }
+    }
+
+    if(finalEntry == NULL)
+    {
+        return INT_MAX;
+    }
+    return finalEntry->getFrequency();   
+}
 
 /*************************
  *    private functions  *

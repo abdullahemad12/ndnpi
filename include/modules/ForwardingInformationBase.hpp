@@ -133,7 +133,42 @@ class ForwardingInformationBase
  		  */ 
 		vector<Interface*> getInterfaces(void);
 
+        /*
+         * EFFECTS: calculates the prefix that has the minimum frequency
+         * RETURNS: returns the minimum frequency 
+         */
+        int getMinimumFrequency(void);
 
+        /*
+         * EFFECTS: calculates the prefix that has the maximum frequency
+         * RETURNS: returns the maximum frequency 
+         */
+        int getMaximumFrequency(void);
+        
+        /*
+         * EFFECTS: calculates the prefix that has the minimum frequency
+         * RETURNS: returns the minimum frequency 
+         */
+        float getMinimumRTT(void);
+
+        /*
+         * EFFECTS: calculates the prefix that has the maximum frequency
+         * RETURNS: returns the maximum frequency 
+         */
+        float getMaximumRTT(void);
+
+
+        /**
+          * EFFECTS: gets the frequency of the longest prefix matched entry
+          * RETURNS: the frequency
+          */
+        int getLPMFrequency(const Name& name);
+
+        /**
+          * EFFECTS: gets the frequency of the longest prefix matched entry
+          * RETURNS: the frequency
+          */
+        float getLPMRtt(const Name& name);
 };
 
 #endif /*..._MODULES_FORWARDINGINFORMATIONBASE_*/

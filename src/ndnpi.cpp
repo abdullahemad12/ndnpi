@@ -38,6 +38,7 @@ Stream* stream;
 ForwardingInformationBase* fib;
 Shaper* shaper;
 FaceManager* faceManager;
+Classifier* classifier;
 
 void exiting(void);
 
@@ -58,6 +59,9 @@ int main(int argc, char* argv[])
 
 	/*create the Forwarding information base*/
 	fib = new ForwardingInformationBase("rt");
+    
+    /*create the packets classifier*/
+    classifier = new Classifier();
 
 	/*create a new Stream*/
 	stream = new Stream();

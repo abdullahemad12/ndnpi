@@ -33,7 +33,10 @@ FIBEntry::FIBEntry(Name name, Interface* interface, float rtt)
 	this->name = name;
 	this->interface = interface;
 	this->rtt = rtt;
+    this->frequency = 1;
 }
+
+
 
 FIBEntry::~FIBEntry(void)
 {
@@ -59,4 +62,14 @@ float FIBEntry::getRtt(void)
 void FIBEntry::setRtt(float rtt)
 {
 	this->rtt = rtt;
+}
+
+void FIBEntry::incrementFrequency(void)
+{
+    ++this->frequency;
+}
+
+int FIBEntry::getFrequency(void)
+{
+    return this->frequency;
 }

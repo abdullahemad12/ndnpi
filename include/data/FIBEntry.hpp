@@ -36,7 +36,7 @@ class FIBEntry
 		Name name;
 		Interface* interface;
 		float rtt; /*expected RTT for this name when forwarded on this interface*/
-
+        int frequency;
 	public:
 		FIBEntry(Name name, Interface* interface, float rtt);
 		~FIBEntry(void);
@@ -44,6 +44,8 @@ class FIBEntry
 		Interface* getInterface(void);
 		float getRtt(void);
 		void setRtt(float rtt);
+        void incrementFrequency(void);
+        int getFrequency(void);
 };
 
 

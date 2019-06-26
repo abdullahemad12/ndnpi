@@ -36,10 +36,14 @@ Stream::Stream(void)
 
 void Stream::onInterest(const InterestFilter& filter, const Interest& interest)
 {
+
+    Interest interestt(interest);
+    classifier->classifyInterestPriority(interestt);
+
 	// forward the interest
-	if(!shaper->addInterest(interest))
+	if(!shaper->addInterest(interestt))
 	{
-		lp::Nack nack(interest);
+		lp::Nack nack(interestt);
 		nack.setReason(lp::NackReason::CONGESTION);
 		const lp::Nack nack1(nack);
 		putNack(nack1);
