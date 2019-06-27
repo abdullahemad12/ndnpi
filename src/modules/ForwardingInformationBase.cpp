@@ -310,7 +310,7 @@ int ForwardingInformationBase::getLPMFrequency(const Name& name)
     {
         return INT_MAX;
     }
-    return finalEntry->getRtt();
+    return finalEntry->getFrequency();
 }
 
 
@@ -336,7 +336,7 @@ float ForwardingInformationBase::getLPMRtt(const Name& name)
     {
         return INT_MAX;
     }
-    return finalEntry->getFrequency();   
+    return finalEntry->getRtt();   
 }
 
 /*************************
