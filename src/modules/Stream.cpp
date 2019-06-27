@@ -28,7 +28,7 @@
 #include <iostream>
 #include <data/Interface.hpp>
 #include <ndnpi.hpp>
-
+#include <stdio.h>
 Stream::Stream(void)
 {
 	
@@ -39,7 +39,7 @@ void Stream::onInterest(const InterestFilter& filter, const Interest& interest)
 
     Interest interestt(interest);
     classifier->classifyInterestPriority(interestt);
-    std::cout << interest.getPriority() << "\n";
+    printf("%d\n", interest.getPriority());
 	// forward the interest
 	if(!shaper->addInterest(interestt))
 	{
