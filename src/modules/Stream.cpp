@@ -39,7 +39,7 @@ void Stream::onInterest(const InterestFilter& filter, const Interest& interest)
 
     Interest interestt(interest);
     classifier->classifyInterestPriority(interestt);
-
+    std::cout << interest.getPriority() << "\n";
 	// forward the interest
 	if(!shaper->addInterest(interestt))
 	{
