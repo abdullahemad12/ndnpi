@@ -29,6 +29,15 @@
 #include <data/Interface.hpp>
 #include <ndnpi.hpp>
 #include <stdio.h>
+
+/**
+  *
+  * prototypes
+  *
+  */
+static Interest copyInterest(const Interest& interest);
+
+
 Stream::Stream(void)
 {
 	
@@ -37,7 +46,8 @@ Stream::Stream(void)
 void Stream::onInterest(const InterestFilter& filter, const Interest& interest)
 {
 
-    Interest interestt(interest);
+
+    Interest interestt = copyInterest(interest);
     classifier->classifyInterestPriority(interestt);
     printf("%d\n", interest.getPriority());
 	// forward the interest
@@ -79,3 +89,16 @@ void Stream::putNack(const lp::Nack& nack)
 	this->m_face.put(nack);
 }
 
+
+
+static Interest copyInterest(const Interest& interest)
+{
+    Interest interest_cpy(interest.getName());
+
+    interest_cpy.setMustBeFresh(interest.getMustBeFresh());
+    interest_cpy.setNonce(interest.getNonce());
+    
+    interest_cpy.setPriority(interest.getPriority());
+    
+    return interest_cpy;
+}
