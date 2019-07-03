@@ -416,16 +416,7 @@ vector<Interface*> ForwardingInformationBase::calculateFinalSetAccordingToPriori
 	{
 		interfaces.push_back(intarr[0]); /*if there is not enough interfaces to remove just send to the first one*/
 	}
-	else
-	{
-		/*forward to as many interfaces as the priority allows*/
-		int n_removed = intarr.size() - priority;
-		for(int i = 0; i < n_removed; i++)
-		{
-			interfaces.push_back(intarr[i]);
-		}
-	}
-
+	
 	return interfaces;
 }
 
