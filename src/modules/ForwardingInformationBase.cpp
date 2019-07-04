@@ -139,8 +139,7 @@ void ForwardingInformationBase::parseTable(string tpath)
         int nextHop = graph->calculateNextHop(nodeIds[i]);
         if(nextHop == -1)
         {
-            std::cout << "Malformed graph\n";       
-            exit(1);    
+            continue;
         }
         for(Interface* interfaceTmp : this->interfaces)
         {
