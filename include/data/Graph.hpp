@@ -47,6 +47,7 @@ class Graph
 {
     private:
         vector<vector<Pair>> graph;
+        vector<vector<Pair>> tree;
         vector<vector<int>> edges;
         int sourceNode; 
         
@@ -65,9 +66,31 @@ class Graph
           */
        void constructGraph(int** edges, int n, int m);
 
+        /**
+          * EFFECTS: adds a new undirected edge to the graph
+          * MODIFIES: this 
+          * PARAMETERS: 
+          * int v1: vertex1
+          * int v2: vertex2
+          * int cost: the cost of the edge
+          */   
+        void addEdge(int v1, int v2, int cost);
+
 
     public: 
         Graph(int** edges, int n, int m, int sourceNode);
+
+        /**
+          * EFFECTS: calculates the minimum spanning tree on the current graph
+          * MODIFIES: this
+          * REQUIRES: the edges to be sorted. Otherwise the spanning tree created is not minimum
+          */
+        void calculateMST(void);
+    
+        /**
+          * EFFECTS: gets the id of the verticies directly connected to the source vertex
+          */
+        vector<int> getSourceNeighbors(void);
     
 };
 

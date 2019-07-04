@@ -1,6 +1,7 @@
 #include <data/Graph.hpp>
 #include <vector>
 #include<bits/stdc++.h> 
+#include <datastructures/UnionFind.hpp>
 
 using namespace std;
 
@@ -14,6 +15,26 @@ Graph::Graph(int** edges, int n, int m, int sourceNode)
 }
 
 
+void Graph::calculateMST(void)
+{
+    int n = graph.size();
+
+    UnionFind uf(n);
+    for(int i = 0; i < n; i++)
+    {
+        vector<Pair> vec;
+        tree.push_back(vec);
+    }
+    for(vector<int> edge : edges)
+    {
+        if(!uf.isInSameComponent(edge[0], edge[1]))
+        {
+           addEdge(edge[0], edge[1], edge[2]);
+           uf.join(edge[0], edge[1]);
+        }
+
+    }
+}
 
 
 /******************
@@ -30,14 +51,7 @@ void Graph::constructGraph(int** edges, int n, int m)
 
     for(int i = 0; i < m; i++)
     {
-        int v1 = edges[i][0];
-        int v2 = edges[i][1];
-        int cost = edges[i][2];
-        Pair p1(v2, cost);  
-        Pair p2(v1, cost);
-
-        graph[v1].push_back(p1);
-        graph[v2].push_back(p2);
+        addEdge(edges[i][0], edges[i][1], edges[i][2]);
     }
 }
 void Graph::sortAndCopy(int** edges, int m)
@@ -64,4 +78,13 @@ void Graph::sortAndCopy(int** edges, int m)
         this->edges.push_back(vec);
     }
 
+}
+
+void Graph::addEdge(int v1, int v2, int cost)
+{
+    Pair p1(v2, cost);  
+    Pair p2(v1, cost);
+
+    graph[v1].push_back(p1);
+    graph[v2].push_back(p2);
 }
