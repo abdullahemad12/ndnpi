@@ -218,66 +218,12 @@ vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Interes
 
 void ForwardingInformationBase::insert(Request& request)
 {
-	string key = request.getInterestNameUri();
 	
-	Name name = request.getInterest().getName();
-	Interface* interface = request.getInterface();
-	float rtt = request.calculateRtt();
-	
-	entriesLock.lock();
-	if(entries.find(key) == entries.end())
-	{
-		vector<FIBEntry*> list;	
-		FIBEntry* entry = new FIBEntry(name, interface, rtt);
-		list.push_back(entry);
-		entries[key] = list;
-	}
-	else
-	{
-		vector<FIBEntry*>& vec = entries[key];
-		FIBEntry* entry = NULL;		
-		for(unsigned int i = 0; i < vec.size(); i++)
-		{
-			if(vec[i]->getInterface() == interface)
-			{	
-				entry = vec[i];
-			}
-		}
-		if(entry == NULL)
-		{
-			entry = new FIBEntry(name, interface, rtt);
-			vec.push_back(entry);
-		}
-		else
-		{
-			entry->setRtt(rtt);
-            entry->incrementFrequency(); 
-		}
-	}
-	entriesLock.unlock();
 }
 
 void ForwardingInformationBase::remove(string key, Interface* interface)
 {
-	entriesLock.lock();
-	if(entries.find(key) != entries.end())
-	{
-		vector<FIBEntry*>& vec = entries[key];
-		for(unsigned int i = 0; i < vec.size(); i++) 
-		{
-			if(vec[i]->getInterface() == interface)
-			{	
-				FIBEntry* entry = vec[i];
-				vec.erase(vec.begin() + i);
-				delete entry;
-			}
-		}
-		if(vec.empty())
-		{
-			entries.erase(key);
-		}
-	}
-	entriesLock.unlock();
+	
 }
 
 vector<Interface*> ForwardingInformationBase::getInterfaces(void)
