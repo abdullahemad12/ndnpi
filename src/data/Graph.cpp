@@ -34,8 +34,41 @@ void Graph::calculateMST(void)
         }
 
     }
+  
 }
 
+vector<int> Graph::getSourceNeighbors(void)
+{
+    vector<Pair> edges = graph[sourceNode];
+
+    vector<int> incident;
+    for(Pair pair : edges)
+    {
+        incident.push_back(pair.vertex);
+    }
+
+    return incident;
+}
+
+int Graph::calculateNextHop(int destination)
+{
+
+    for(unsigned int i = 0; i < tree[sourceNode].size(); i++)
+    {   
+        int vertex = tree[sourceNode][i].vertex;
+        bool* visited = new bool[tree.size()];
+        bool reachable = canBeReached(vertex, destination, visited);
+        delete visited;
+        if(reachable)
+        {
+            return vertex;
+        }
+    }
+
+
+
+    return -1;
+}
 
 /******************
  * private helpers*
@@ -87,4 +120,20 @@ void Graph::addEdge(int v1, int v2, int cost)
 
     graph[v1].push_back(p1);
     graph[v2].push_back(p2);
+}
+
+bool Graph::canBeReached(int source, int destination, bool* visited)
+{
+    bool ret = false;
+    for(unsigned int i = 0; i < tree[source].size(); i++)
+    {
+        int vertex = tree[source][i].vertex;
+        if(!visited[vertex])
+        {   
+            visited[vertex] = true;
+            ret = ret || canBeReached(vertex, destination, visited);
+        }
+    }
+
+    return ret;
 }

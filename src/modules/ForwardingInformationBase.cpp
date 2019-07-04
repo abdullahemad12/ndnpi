@@ -72,13 +72,13 @@ void ForwardingInformationBase::parseTable(string tpath)
     int nInterfaces; 
     file >> nInterfaces;
     
-    vector<Interface*> interfaces;
+    vector<Interface> interfaces;
     for(int i = 0; i < nInterfaces; i++)
     {
         string ip;
         string port;
         file >> ip >> port;
-        Interface* interface = new Interface(ip, port);
+        Interface interface(i, ip, port);
         interfaces.push_back(interface);
     }
 
@@ -101,13 +101,23 @@ void ForwardingInformationBase::parseTable(string tpath)
     }
 
     graph = new Graph(graph_edges, interfaces.size(), nEdges, source_node);
+    graph->calculateMST();
+
 
     for(int i = 0; i < nEdges; i++)
     {
         delete graph_edges[i];
     }
     delete graph_edges;
+
+    vector<int> incident = graph->getSourceNeighbors();
     
+    for(int id : incident)
+    {
+        Interface* interface = new Interface(interfaces[id].getId(), interfaces[id].getIp(), interfaces[id].getPort());
+        this->interfaces.push_back(interface); 
+    }
+
     int nPrefixes;
 
     file >> nPrefixes;
@@ -118,6 +128,26 @@ void ForwardingInformationBase::parseTable(string tpath)
     for(int i = 0; i < nPrefixes; i++)
     {
         file >> nodeIds[i] >> prefixes[i];
+    }
+
+    for(int i = 0; i < nPrefixes; i++)
+    {
+        Name name(prefixes[i]);
+        Interface* interface = NULL;
+
+        int nextHop = graph->calculateNextHop(nodeIds[i]);
+        for(Interface* interfaceTmp : this->interfaces)
+        {
+            if(interfaceTmp->getId() == nextHop){
+                interface = interfaceTmp;
+                break;
+            }
+        }
+
+        vector<FIBEntry*> list;	
+		FIBEntry* entry = new FIBEntry(name, interface, 100);
+		list.push_back(entry);
+		entries[prefixes[i]] = list;
     }
     
     delete nodeIds;
@@ -144,6 +174,7 @@ ForwardingInformationBase::~ForwardingInformationBase(void)
 	{
 		delete interface;
 	}
+    delete graph;
 }
 
 vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Interest& interest)

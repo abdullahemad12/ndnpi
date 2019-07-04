@@ -34,12 +34,12 @@ using namespace std;
 class Pair
 {
     public:
-        int x;
-        int y;
-    Pair(int x, int y)
+        int vertex;
+        int cost;
+    Pair(int vertex, int cost)
     {
-        this->x = x; 
-        this->y = y;
+        this->vertex = vertex; 
+        this->cost = cost;
     }
 };
 
@@ -76,6 +76,11 @@ class Graph
           */   
         void addEdge(int v1, int v2, int cost);
 
+        /**
+          * EFFECTS: checks if the destination node can be reached from the source
+          * RETURNS: true if the source can be reached, false otherwise
+          */
+       bool canBeReached(int source, int destination, bool* visited);
 
     public: 
         Graph(int** edges, int n, int m, int sourceNode);
@@ -91,7 +96,14 @@ class Graph
           * EFFECTS: gets the id of the verticies directly connected to the source vertex
           */
         vector<int> getSourceNeighbors(void);
-    
+  
+
+        /**
+          * EFFECTS: calculates the nexthop in the graph according to the MST
+          * MODIFIES: this
+          * REQUIRES: calculateMST to be called one time before this is called
+          */
+        int calculateNextHop(int destination);
 };
 
 #endif 

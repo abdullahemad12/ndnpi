@@ -37,6 +37,7 @@ using namespace ndn;
 class Interface
 {
 	private:
+        int id;
 		string ip;
 		string port;
 		Face* face;
@@ -46,10 +47,11 @@ class Interface
 		vector<NackCallback> afterNackeds;
 		vector<Interest> interests;
 	public:
-		Interface(string ip, string port);
+		Interface(int id, string ip, string port);
 		~Interface(void);
 		string getIp(void);
 		string getPort(void);
+		int getId(void);
 		void expressInterest(const Interest &interest, const DataCallback &afterSatisfied, 
 							 const NackCallback &afterNacked, const TimeoutCallback &afterTimeout);
 		void processEvents(void);

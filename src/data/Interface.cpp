@@ -32,12 +32,14 @@
 
 using namespace std;
 using namespace ndn;
-Interface::Interface(string ip, string port)
+Interface::Interface(int id, string ip, string port)
 {
+    this->id = id;
 	this->ip = ip;
 	this->port = port;
 	face = new Face(ip, port);
 }
+
 
 Interface::~Interface(void)
 {
@@ -53,6 +55,12 @@ string Interface::getIp(void)
 string Interface::getPort(void)
 {
 	return this->port;
+}
+
+
+int Interface::getId(void)
+{
+    return this->id;
 }
 
 void Interface::expressInterest(const Interest &interest, const DataCallback &afterSatisfied, 
