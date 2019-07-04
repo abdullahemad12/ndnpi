@@ -37,14 +37,21 @@ Interface::Interface(int id, string ip, string port)
     this->id = id;
 	this->ip = ip;
 	this->port = port;
-	face = new Face(ip, port);
+	face = NULL;
 }
 
+void Interface::connectToFace(void)
+{
+    face = new Face(ip, port);
+}
 
 Interface::~Interface(void)
 {
-	face->shutdown();
-	delete face;
+    if(face != NULL)
+    {
+    	face->shutdown();
+    	delete face;
+    }
 }
 
 string Interface::getIp(void)

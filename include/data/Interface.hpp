@@ -56,6 +56,7 @@ class Interface
 							 const NackCallback &afterNacked, const TimeoutCallback &afterTimeout);
 		void processEvents(void);
 		void join(void);
+        void connectToFace(void);
 };
 
 

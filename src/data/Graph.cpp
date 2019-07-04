@@ -29,7 +29,7 @@ void Graph::calculateMST(void)
     {
         if(!uf.isInSameComponent(edge[0], edge[1]))
         {
-           addEdge(edge[0], edge[1], edge[2]);
+           addEdgeToTree(edge[0], edge[1], edge[2]);
            uf.join(edge[0], edge[1]);
         }
 
@@ -52,11 +52,13 @@ vector<int> Graph::getSourceNeighbors(void)
 
 int Graph::calculateNextHop(int destination)
 {
-
+    
     for(unsigned int i = 0; i < tree[sourceNode].size(); i++)
     {   
         int vertex = tree[sourceNode][i].vertex;
         bool* visited = new bool[tree.size()];
+        visited[sourceNode] = true;
+        visited[vertex] = true;
         bool reachable = canBeReached(vertex, destination, visited);
         delete visited;
         if(reachable)
@@ -122,8 +124,20 @@ void Graph::addEdge(int v1, int v2, int cost)
     graph[v2].push_back(p2);
 }
 
+void Graph::addEdgeToTree(int v1, int v2, int cost)
+{
+    Pair p1(v2, cost);  
+    Pair p2(v1, cost);
+
+    tree[v1].push_back(p1);
+    tree[v2].push_back(p2);
+}
 bool Graph::canBeReached(int source, int destination, bool* visited)
 {
+    if(source == destination)
+    {
+        return true;
+    }
     bool ret = false;
     for(unsigned int i = 0; i < tree[source].size(); i++)
     {

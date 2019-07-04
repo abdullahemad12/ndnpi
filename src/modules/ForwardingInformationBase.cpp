@@ -115,6 +115,7 @@ void ForwardingInformationBase::parseTable(string tpath)
     for(int id : incident)
     {
         Interface* interface = new Interface(interfaces[id].getId(), interfaces[id].getIp(), interfaces[id].getPort());
+        interface->connectToFace();
         this->interfaces.push_back(interface); 
     }
 
@@ -136,6 +137,11 @@ void ForwardingInformationBase::parseTable(string tpath)
         Interface* interface = NULL;
 
         int nextHop = graph->calculateNextHop(nodeIds[i]);
+        if(nextHop == -1)
+        {
+            std::cout << "Malformed graph\n";       
+            exit(1);    
+        }
         for(Interface* interfaceTmp : this->interfaces)
         {
             if(interfaceTmp->getId() == nextHop){
@@ -193,20 +199,19 @@ vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Interes
       */	
 	computeScores(scoreMap, name);
 
-	if(isFirstForward(scoreMap))
+	if(isNoMatch(scoreMap))
 	{
 		/*I have to broadcast regardless of the priority because I dont know which interface
 		  will fetch the data back for sure*/
-		return this->interfaces;
+		return interfaces;
 	}
 
-    return this->interfaces;
 	
-	//vector<Interface*> intarr = sortInterfaces(scoreMap);
+	vector<Interface*> intarr = sortInterfaces(scoreMap);
 	
-	//interfaces = calculateFinalSetAccordingToPriority(intarr, interest.getPriority());
+	interfaces = calculateFinalSetAccordingToPriority(intarr, interest.getPriority());
 	
-	//return interfaces;
+	return interfaces;
 }
 
 
@@ -427,7 +432,7 @@ void ForwardingInformationBase::computeScores(unordered_map<Interface*, int>& sc
 	}
 }
 
-bool ForwardingInformationBase::isFirstForward(unordered_map<Interface*, int>& scoreMap)
+bool ForwardingInformationBase::isNoMatch(unordered_map<Interface*, int>& scoreMap)
 {
 	int totalScore = 0;
 	for(auto& item: scoreMap)

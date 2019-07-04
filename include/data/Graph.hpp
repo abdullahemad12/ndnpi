@@ -75,6 +75,7 @@ class Graph
           * int cost: the cost of the edge
           */   
         void addEdge(int v1, int v2, int cost);
+        void addEdgeToTree(int v1, int v2, int cost);
 
         /**
           * EFFECTS: checks if the destination node can be reached from the source

@@ -77,7 +77,7 @@ class ForwardingInformationBase
 		  * EFFECTS: Checks if it is the first time to forward this name or not
 		  * RETURNS: true if it is the first time, false otherwise
 		  */
-		bool isFirstForward(unordered_map<Interface*, int>& scoreMap);
+		bool isNoMatch(unordered_map<Interface*, int>& scoreMap);
 
 
 		/**
