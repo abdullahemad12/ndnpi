@@ -47,7 +47,25 @@ class Graph
 {
     private:
         vector<vector<Pair>> graph;
+        vector<vector<int>> edges;
         int sourceNode; 
+        
+        /**
+          * EFFECTS: makes a sorted copy of edges and stores them in this->edges
+          * MODIFIES: this
+          */
+       void sortAndCopy(int** edges, int m);
+        /**
+          * EFFECTS: constructs the graph from the edges
+          * MODIFIES: this
+          * PARAMETERS:
+          * int** edges: the edges in the graph
+          * int n: the number of nodes in the graph
+          * int m: the number of edges in the graph
+          */
+       void constructGraph(int** edges, int n, int m);
+
+
     public: 
         Graph(int** edges, int n, int m, int sourceNode);
     

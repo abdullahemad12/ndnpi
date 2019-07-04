@@ -77,6 +77,7 @@ void ForwardingInformationBase::parseTable(string tpath)
     {
         string ip;
         string port;
+        file >> ip >> port;
         Interface* interface = new Interface(ip, port);
         interfaces.push_back(interface);
     }
@@ -89,7 +90,7 @@ void ForwardingInformationBase::parseTable(string tpath)
 
 
     int** graph_edges = new int*[nEdges];
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < nEdges; i++)
     {
         graph_edges[i] = new int[3];
     }
@@ -99,8 +100,9 @@ void ForwardingInformationBase::parseTable(string tpath)
         file >> graph_edges[i][0] >> graph_edges[i][1] >> graph_edges[i][2];        
     }
 
+    graph = new Graph(graph_edges, interfaces.size(), nEdges, source_node);
 
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < nEdges; i++)
     {
         delete graph_edges[i];
     }
@@ -118,7 +120,6 @@ void ForwardingInformationBase::parseTable(string tpath)
         file >> nodeIds[i] >> prefixes[i];
     }
     
-    delete prefixes; 
     delete nodeIds;
     file.close();
 

@@ -29,6 +29,7 @@
 #include <vector> 
 #include <data/Interface.hpp>
 #include <data/Request.hpp>
+#include <data/Graph.hpp>
 #include <data/FIBEntry.hpp>
 #include <unordered_map>
 #include <mutex>
@@ -44,6 +45,7 @@ class ForwardingInformationBase
 		mutex entriesLock;
 		vector<Interface*> interfaces;
 		unordered_map<string, vector<FIBEntry*>> entries;
+        Graph* graph; /*represents the network this node belongs to*/
 
 		/**
 		  * EFFECTS: parses the interfaces file and intializes the faces accordingly  
