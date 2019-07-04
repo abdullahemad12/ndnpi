@@ -81,6 +81,9 @@ void ForwardingInformationBase::parseTable(string tpath)
         interfaces.push_back(interface);
     }
 
+    int source_node;
+    file >> source_node;
+
     int nEdges;
     file >> nEdges;
 
