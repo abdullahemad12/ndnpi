@@ -57,6 +57,7 @@ int Graph::calculateNextHop(int destination)
     {   
         int vertex = tree[sourceNode][i].vertex;
         bool* visited = new bool[tree.size()];
+        for(unsigned int i = 0; i < tree.size(); i++) visited[i] = false;
         visited[sourceNode] = true;
         visited[vertex] = true;
         bool reachable = canBeReached(vertex, destination, visited);
@@ -93,6 +94,10 @@ void Graph::sortAndCopy(int** edges, int m)
 {
     /*store the edges (sorted by score) to make the calculation of the MST easier*/
     bool visited[m];
+    for(int i = 0; i < m; i++)
+    {
+        visited[i] = false;
+    }
     for(int i = 0; i < m; i++)
     {
         vector<int> vec;
