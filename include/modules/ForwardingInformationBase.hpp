@@ -54,7 +54,7 @@ class ForwardingInformationBase
 		  * PARAMETERS:
 		  * - const char* tpath: the path to the interfaces table
 		  */
-		void parseTable(const char* tpath);
+		void parseTable(string tpath);
 
 		/**
 		  * EFFECTS: initializes the score map for the computeMatchingFaces function
@@ -94,7 +94,7 @@ class ForwardingInformationBase
 		/**
 		  * const char* tpath: the path to the routing table
 		  */
-		ForwardingInformationBase(const char* tpath);
+		ForwardingInformationBase(string tpath);
 		
 		~ForwardingInformationBase(void);
 		/**

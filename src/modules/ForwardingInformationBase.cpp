@@ -30,15 +30,14 @@
 #include <data/FIBEntry.hpp> 
 #include <data/Request.hpp>
 #include <unordered_map>
+#include <fstream>
 
 using namespace std;
 /**
   * Prototypes for helper functions
   */
 static int computeLongestCommonPrefixSize(const Name& name1, const Name& name2);
-static char* readline(FILE* file);
-static int str_split(char* str, char c, char*** strret);
-static void destroy_char_arr(char** arr, int length);
+
 
 /**
   * EFFECTS: gets the minimum of the two given numbers
@@ -60,44 +59,69 @@ static size_t min(size_t x, size_t y) { return x < y ? x : y;}
   * PARAMETERS:
   * - const char* tpath: the path to the interfaces table
   */
-void ForwardingInformationBase::parseTable(const char* tpath)
+void ForwardingInformationBase::parseTable(string tpath)
 {
-	FILE* file = fopen(tpath, "r");
-	if(file == NULL)
-	{
-		cout << "Couldn't open the routing table file\n";
-		exit(1);
-	}
+    
+    std::ifstream file(tpath);
+    if (file.fail()) 
+    {
+        cout << "Couldn't open the routing table file\n";
+		exit(1);  
+    }
 	
+    int nInterfaces; 
+    file >> nInterfaces;
+    
+    vector<Interface*> interfaces;
+    for(int i = 0; i < nInterfaces; i++)
+    {
+        string ip;
+        string port;
+        Interface* interface = new Interface(ip, port);
+        interfaces.push_back(interface);
+    }
 
-	while(1)
-	{
-		char* line = readline(file);
-		if(line == NULL)
-		{
-			break;
-		}
-		char** arr;
-		int n = str_split(line, ' ', &arr);
-		if(n != 3)
-		{
-			cout << "Invalid Routing Table Format\n";
-			exit(1);		
-		}
-		string ip(arr[1]);
-		string port(arr[2]);
-		Interface* interface = new Interface(ip, port);
-		interfaces.push_back(interface);
+    int nEdges;
+    file >> nEdges;
 
-		/*free memory to avoid memory leaks*/
-		destroy_char_arr(arr, n);
-		free(line);
-	}
 
-	fclose(file);
+    int** graph_edges = new int*[nEdges];
+    for(int i = 0; i < 3; i++)
+    {
+        graph_edges[i] = new int[3];
+    }
+
+    for(int i = 0; i < nEdges; i++)
+    {
+        file >> graph_edges[i][0] >> graph_edges[i][1] >> graph_edges[i][2];        
+    }
+
+
+    for(int i = 0; i < 3; i++)
+    {
+        delete graph_edges[i];
+    }
+    delete graph_edges;
+    
+    int nPrefixes;
+
+    file >> nPrefixes;
+
+    string* prefixes = new string[nPrefixes];
+    int* nodeIds = new int[nPrefixes];
+    
+    for(int i = 0; i < nPrefixes; i++)
+    {
+        file >> nodeIds[i] >> prefixes[i];
+    }
+    
+    delete prefixes; 
+    delete nodeIds;
+    file.close();
+
 }
 
-ForwardingInformationBase::ForwardingInformationBase(const char* tpath)
+ForwardingInformationBase::ForwardingInformationBase(string tpath)
 {
 	this->parseTable(tpath);
 }
@@ -461,89 +485,3 @@ static int computeLongestCommonPrefixSize(const Name& name1, const Name& name2)
 }
 
 
-
-/**
-  * EFFECT: reads one line from the given file
-  * MODIFIES: file
-  * REQUIRES: the file to opened successfully
-  * NOTE: the returned string should be freed using free after it's no longer useful
-  */
-static char* readline(FILE* file)
-{
-	char* s = (char*) malloc(sizeof(char) * 1000);
-
-	if(fgets(s, 999, file) == NULL)
-	{
-		free(s);
-		return NULL;
-	}
-
-	int n = strlen(s);
-	char* ret = (char*) malloc(sizeof(char) * (n + 1));
-	for(int i = 0; i < n; i++)
-	{
-		if(s[i] !='\n')
-		{
-			ret[i] = s[i];
-		}
-		else
-		{
-			ret[i] = '\0';
-			break;
-		}
-	}
-	ret[n] = '\0';
-	free(s);
-	return ret;
-}
-
-/**
-  * EFFECTS: splits the given string with the given dilemeter
-  * RETURNS: the size of the array
-  * PARAMTERS:
-  * - char* str: the string to be 
-  * - char dil: the dilemeter
-  */
-static int str_split(char* str, char c, char*** strret)
-{
-	int m = 1; /*the number of words*/
-	int n = strlen(str);
-	for(int i = 0; i < n; i++)
-	{
-		if(i < n - 1 && str[i] == c)
-		{
-			++m;
-		}
-	}
-	char** arr = (char**)malloc(sizeof(char*) * m);
-
-
-	int ptr = 0;	
-	
-	for(int i = 0; i < m; i++)
-	{
-		int j;
-		for(j = ptr; j < n && str[j] != c; j++);
-		int len = (j - ptr) + 1;
-		char* word = (char*)malloc(sizeof(char) * len);
-		int tmpptr = 0;
-		for(int k = ptr; k < j; k++)
-		{
-			word[tmpptr++] = str[k];
-		}
-		word[tmpptr] = '\0'; 
-		arr[i] = word;
-		ptr = j + 1; 
-	}
-	*strret = arr;
-	return m;
-}
-
-static void destroy_char_arr(char** arr, int length)
-{
-	for(int i = 0; i < length; i++)
-	{
-		free(arr[i]);
-	}
-	free(arr);
-}
