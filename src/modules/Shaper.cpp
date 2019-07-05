@@ -78,7 +78,6 @@ void Shaper::forward(void)
 					Interest interest = shaping_queues[i].front();
 					shaping_queues[i].pop();
 					faceManager->addRequest(interest);
-					this->capacity += 1;
 				}
 			}
 		}
@@ -146,13 +145,7 @@ void Shaper::run(void)
 }
 
 void Shaper::decreaseCapacity(void){
-	capacityLock.lock();
-	this->capacity /= 2;
-	if(this->capacity == 0)
-	{
-		this->capacity = 1;
-	}
-	capacityLock.unlock();
+
 }
 
 bool Shaper::addInterest(Interest interest)
@@ -160,19 +153,10 @@ bool Shaper::addInterest(Interest interest)
 	lock.lock();
 	bool ret = true;
 	
-	unsigned int curLoad = calculateCurrentLoad();
-	
 	/*Allow the qeue to store more than the capacity of the link*/
-	if(curLoad < (int)(1.5 * (float) capacity))
-	{
-		uint8_t priority = interest.getPriority();
-		assert(priority < N_PRIORITIES);
-		shaping_queues[priority].push(interest);
-	}
-	else
-	{
-		ret = false;
-	}
+    uint8_t priority = interest.getPriority();
+	assert(priority < N_PRIORITIES);
+	shaping_queues[priority].push(interest);
 
 	lock.unlock();	
 	return ret;
