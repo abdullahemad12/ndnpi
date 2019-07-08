@@ -105,6 +105,12 @@ class Graph
           * REQUIRES: calculateMST to be called one time before this is called
           */
         int calculateNextHop(int destination);
+
+        /**
+          * EFFECTS: calculates the cost of reaching some destination node 
+          * MODIFIES: this
+          */
+        int calculateCost(int destination);
 };
 
 #endif 

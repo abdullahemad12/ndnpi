@@ -149,12 +149,15 @@ void ForwardingInformationBase::parseTable(string tpath)
             }
         }
 
+        int cost = graph->calculateCost(nodeIds[i]);
         vector<FIBEntry*> list;	
-		FIBEntry* entry = new FIBEntry(name, interface, 100);
+		FIBEntry* entry = new FIBEntry(name, interface, cost);
 		list.push_back(entry);
 		entries[prefixes[i]] = list;
     }
+
     
+
     delete nodeIds;
     file.close();
 

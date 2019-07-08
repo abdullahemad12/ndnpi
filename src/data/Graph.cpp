@@ -1,6 +1,7 @@
 #include <data/Graph.hpp>
 #include <vector>
 #include<bits/stdc++.h> 
+#include <stack>
 #include <datastructures/UnionFind.hpp>
 
 using namespace std;
@@ -49,6 +50,59 @@ vector<int> Graph::getSourceNeighbors(void)
 
     return incident;
 }
+
+
+int Graph::calculateCost(int destination)
+{
+    if(destination == sourceNode)
+    {
+        return 0;
+    }
+    stack<Pair> s;
+    s.push(Pair(sourceNode, 0));
+
+    bool* visited = new bool[tree.size()];
+    visited[sourceNode] = true;
+    bool found = false;
+    int cost = 0;
+    while(!s.empty())
+    {
+        if(found)
+        {
+            Pair p = s.top();
+            cost += p.cost;
+            s.pop();
+        }
+        else
+        {
+            Pair curP = s.top();
+            int cur = curP.vertex;
+            bool added = false;
+            for(unsigned int i = 0; i < tree[cur].size(); i++)
+            {
+                int vertex = tree[cur][i].vertex;
+                if(!visited[vertex])
+                {
+                    s.push(tree[cur][i]);
+                    visited[vertex] = true;
+                    added = true;
+                    if(vertex == destination)
+                    {
+                        found = true;
+                    }
+                }
+            }
+            if(!added)
+            {
+                s.pop();
+            }
+        }
+    }
+
+    delete visited;
+    return cost;
+}
+
 
 int Graph::calculateNextHop(int destination)
 {
@@ -156,3 +210,4 @@ bool Graph::canBeReached(int source, int destination, bool* visited)
 
     return ret;
 }
+

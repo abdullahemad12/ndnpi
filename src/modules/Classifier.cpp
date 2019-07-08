@@ -129,7 +129,7 @@ int calculateOcc(vector<int> priorityList, int target)
     {
         if(priorityList[i] == target)
         {
-            ++count;
+            count = count + 1 + i;
         }
     }
     return count;
