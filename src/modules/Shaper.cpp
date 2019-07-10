@@ -70,15 +70,18 @@ void Shaper::forward(void)
 		{
 			/*iterate over all the queues according to the given percentage*/
 			calculatePriorityPercentage();
+            int leftOvers = 0;
 			for(int i = 0; i < N_PRIORITIES; i++)
 			{
-				int n_packets = capacity * alphas[i];
+				int n_packets = capacity * alphas[i] + leftOvers;
 				for(int j = 0; j < n_packets && !shaping_queues[i].empty(); j++)
 				{
 					Interest interest = shaping_queues[i].front();
 					shaping_queues[i].pop();
 					faceManager->addRequest(interest);
+                    --n_packets;
 				}
+                leftOvers = n_packets;
 			}
 		}
 		/* At this point we dont need the shaping queues anymore

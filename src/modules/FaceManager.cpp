@@ -30,7 +30,8 @@
 #include <data/Interface.hpp>
 #include <unordered_set>
 #include <string>
-
+#include <assert.h>
+#include <iostream>
 using namespace ndn;
 using namespace std;
 
@@ -48,6 +49,7 @@ FaceManager::~FaceManager(void)
 void FaceManager::addRequest(Interest interest)
 {
 	vector<Interface*> interfaces =  fib->computeMatchingFaces(interest);
+    assert(interfaces.size() == 1);
 	for(Interface* interface : interfaces)
 	{
 		string namestr = interest.getName().toUri();
@@ -56,6 +58,7 @@ void FaceManager::addRequest(Interest interest)
 		request->addObserver(this);		
 		requests.push_back(request);
 		this->interfaces.insert(interface);
+        std::cout << namestr << " Forwarded to: " << interface->getIp() << "\n";
 	}
 }
 
