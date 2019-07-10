@@ -38,6 +38,7 @@ Interface::Interface(int id, string ip, string port)
 	this->ip = ip;
 	this->port = port;
 	face = NULL;
+    t = NULL;
 }
 
 void Interface::connectToFace(void)
@@ -80,31 +81,35 @@ void Interface::expressInterest(const Interest &interest, const DataCallback &af
 
 void Interface::t_func(void)
 {
-	try
-	{
-		// try processing the event
-		face->processEvents();
-	}
-	catch (const std::exception& e)
-	{
-		cout << "Couldn't forward on this face\n";
-		/*
-		 * this face is down
-         * Important to send back an Nack to prevent 
-		 * the client from waiting on data that is never coming back
-		 * and also to update the FIB to execlude this interface later
-         */
-		for(unsigned int i = 0; i < interests.size(); i++)
-		{
-			lp::Nack nack(interests[i]);
-			nack.setReason(lp::NackReason::NONE);
-			afterNackeds[i](interests[i], nack);
-		}
-		
-		/*clear the lists*/
-		afterNackeds.clear();
-		interests.clear();
-	}
+    while(1)
+    {
+	    try
+	    {
+            sem->wait();
+		    // try processing the event
+		    face->processEvents();
+	    }
+	    catch (const std::exception& e)
+	    {
+		    cout << "Couldn't forward on this face\n";
+		    /*
+		     * this face is down
+             * Important to send back an Nack to prevent 
+		     * the client from waiting on data that is never coming back
+		     * and also to update the FIB to execlude this interface later
+             */
+		    for(unsigned int i = 0; i < interests.size(); i++)
+		    {
+			    lp::Nack nack(interests[i]);
+			    nack.setReason(lp::NackReason::NONE);
+			    afterNackeds[i](interests[i], nack);
+		    }
+		    
+		    /*clear the lists*/
+		    afterNackeds.clear();
+		    interests.clear();
+	    }
+    }
 }
 
 void Interface::processEvents(void)
@@ -112,15 +117,14 @@ void Interface::processEvents(void)
 	/*create a new thread so it does not block
       the execution of the parent thread while sending the
       packets*/
-    if(threads.size() > 3)
+    if(t == NULL)
     {
-	    thread* t = threads.front();
-        threads.pop();
-        t->join();
-        delete t;
+        sem = new Semaphore();
+        t = new thread(bind(&Interface::t_func, this));
     }
-    thread* t = new thread(bind(&Interface::t_func, this));
-    threads.push(t);
+    
+    sem->notify();
+
 }
 
 void Interface::join(void)

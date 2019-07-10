@@ -29,11 +29,40 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <mutex>
+#include <condition_variable>
 #include <queue>
 using namespace std;
 using namespace ndn;
 
-
+/**
+  * Source: https://riptutorial.com/cplusplus/example/30142/semaphore-cplusplus-11
+  */
+class Semaphore {
+public:
+    Semaphore (int count_ = 0)
+    : count(count_) 
+    {
+    }
+    
+    inline void notify( ) {
+        std::unique_lock<std::mutex> lock(mtx);
+        count++;
+        //notify the waiting thread
+        cv.notify_one();
+    }
+    inline void wait() {
+        std::unique_lock<std::mutex> lock(mtx);
+        while(count == 0) {
+            cv.wait(lock);
+        }
+        count--;
+    }
+private:
+    std::mutex mtx;
+    std::condition_variable cv;
+    int count;
+};
 class Interface
 {
 	private:
@@ -42,10 +71,11 @@ class Interface
 		string port;
 		Face* face;
 		void t_func(void);
-		queue<thread*> threads;
+		thread* t;
 		/*additional memory to handle failures gracefully*/
 		vector<NackCallback> afterNackeds;
 		vector<Interest> interests;
+        Semaphore* sem;
 	public:
 		Interface(int id, string ip, string port);
 		~Interface(void);
