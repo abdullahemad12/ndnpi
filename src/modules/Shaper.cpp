@@ -26,7 +26,7 @@
 #include <modules/Shaper.hpp>
 #include <ndn-cxx/face.hpp>
 #include <assert.h>
-
+#include <iostream>
 
 using namespace std;
 using namespace ndn;
@@ -73,7 +73,7 @@ void Shaper::forward(void)
             int leftOvers = 0;
 			for(int i = 0; i < N_PRIORITIES; i++)
 			{
-				int n_packets = capacity * alphas[i] + leftOvers;
+ 				int n_packets = capacity * alphas[i] + leftOvers;
 				for(int j = 0; j < n_packets && !shaping_queues[i].empty(); j++)
 				{
 					Interest interest = shaping_queues[i].front();
@@ -82,6 +82,7 @@ void Shaper::forward(void)
                     --n_packets;
 				}
                 leftOvers = n_packets;
+
 			}
 		}
 		/* At this point we dont need the shaping queues anymore

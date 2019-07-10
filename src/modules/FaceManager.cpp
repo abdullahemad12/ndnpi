@@ -58,6 +58,7 @@ void FaceManager::addRequest(Interest interest)
 		request->addObserver(this);		
 		requests.push_back(request);
 		this->interfaces.insert(interface);
+        request->expressInterest();
         std::cout << namestr << " Forwarded to: " << interface->getIp() << "\n";
 	}
 }
@@ -68,7 +69,6 @@ void FaceManager::addRequest(Interest interest)
 void FaceManager::sendAll(void)
 {
 	
-	expressAllInterests();
 
 	processEventsForAllInterfaces();
 	
