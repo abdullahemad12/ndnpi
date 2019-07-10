@@ -69,7 +69,7 @@ uint8_t Classifier::caclulateRTTFeature(Interest& interest)
 
     for(int i = 0; i < 4; i++)
     {
-        if(min + (i * div) <= rtt && rtt < min + ((i + 1) * div))
+        if(min + (i * div) <= rtt && rtt <= min + ((i + 1) * div))
         {
             return 3 - i;
         }
@@ -92,7 +92,7 @@ uint8_t Classifier::calculatePrefixTrafficFrequencyFeature(Interest& interest)
     int freq = fib->getLPMFrequency(interest.getName());
     for(int i = 0; i < 4; i++)
     {
-        if(min + (i * div) <= freq && freq < min + ((i + 1) * div))
+        if(min + (i * div) <= freq && freq <= min + ((i + 1) * div))
         {
             return 3 - i;
         }
