@@ -85,6 +85,8 @@ void Stream::putData(const Data& data)
 
 void Stream::putNack(const lp::Nack& nack)
 {
+   std::cout << "received Nack with reason " << nack.getReason()
+              << " for interest " << std::endl; 
 	this->m_face.put(nack);
 }
 
