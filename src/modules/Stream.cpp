@@ -35,7 +35,7 @@
   * prototypes
   *
   */
-static Interest copyInterest(const Interest& interest);
+
 
 
 Stream::Stream(void)
@@ -43,17 +43,16 @@ Stream::Stream(void)
 	
 }
 
-void Stream::onInterest(const InterestFilter& filter, const Interest& interest)
+void Stream::onInterest(const InterestFilter& filter, const Interest& interestt)
 {
 
-
-    Interest interestt = copyInterest(interest);
-    classifier->classifyInterestPriority(interestt);
+    Interest interest(interest);
+    classifier->classifyInterestPriority(interest);
 
 	// forward the interest
-	if(!shaper->addInterest(interestt))
+	if(!shaper->addInterest(interest))
 	{
-		lp::Nack nack(interestt);
+		lp::Nack nack(interest);
 		nack.setReason(lp::NackReason::CONGESTION);
 		const lp::Nack nack1(nack);
 		putNack(nack1);
@@ -90,14 +89,3 @@ void Stream::putNack(const lp::Nack& nack)
 }
 
 
-
-static Interest copyInterest(const Interest& interest)
-{
-    Interest interest_cpy(interest.getName());
-
-    interest_cpy.setMustBeFresh(interest.getMustBeFresh());
-    interest_cpy.setNonce(interest.getNonce());
-    
-    
-    return interest_cpy;
-}

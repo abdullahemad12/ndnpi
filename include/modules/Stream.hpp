@@ -39,7 +39,7 @@ class Stream
 		Face m_face;
 		KeyChain m_keyChain;
 
-		void onInterest(const InterestFilter& filter, const Interest& interest);
+		void onInterest(const InterestFilter& filter, const Interest& interestt);
 		void onRegisterFailed(const Name& prefix, const std::string& reason);
 	public:
 		Stream(void);	
