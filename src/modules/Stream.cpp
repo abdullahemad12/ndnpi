@@ -47,7 +47,7 @@ void Stream::onInterest(const InterestFilter& filter, const Interest& interestt)
 {
 
     Interest interest(interestt);
-    classifier->classifyInterestPriority(interest);
+    //classifier->classifyInterestPriority(interest);
 
 	// forward the interest
 	if(!shaper->addInterest(interest))
