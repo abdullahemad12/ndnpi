@@ -103,6 +103,8 @@ void FaceManager::update(RequestSubject* subject, const Data& data)
 	currentNamesLock.lock();	
 		currentNames.erase(namestr);
 	currentNamesLock.unlock();	
+    
+    shaper->removeFromPit(namestr);
 }
 
 // Nack
@@ -116,6 +118,7 @@ void FaceManager::update(RequestSubject* subject, const lp::Nack& nack)
 		const lp::Nack* nacknew = new lp::Nack(nack);
 		nacks.push(nacknew);
 	nackslock.unlock();
+
 }
 
 
@@ -171,6 +174,7 @@ void FaceManager::sendNacks(void)
 		{
 			stream->putNack(*nack);
 			currentNames.erase(namestr);
+            shaper->removeFromPit(namestr);
 		}
 		delete nack;
 	}

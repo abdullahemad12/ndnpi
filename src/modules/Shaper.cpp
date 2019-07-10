@@ -153,6 +153,14 @@ void Shaper::decreaseCapacity(void){
 
 bool Shaper::addInterest(Interest interest)
 {
+    pitLock.lock();
+    bool contains = pit.find(interest.getName().toUri()) != pit.end();
+    pitLock.unlock();
+    if(contains)
+    {
+        return true;
+    }
+
 	lock.lock();
 	bool ret = true;
 	
@@ -162,5 +170,16 @@ bool Shaper::addInterest(Interest interest)
 	shaping_queues[priority].push(interest);
 
 	lock.unlock();	
+
+    pitLock.lock();
+    pit.insert(interest.getName().toUri());
+    pitLock.unlock();
 	return ret;
+}
+
+void Shaper::removeFromPit(string key)
+{
+    pitLock.lock();
+    pit.erase(key);
+    pitLock.unlock();   
 }
