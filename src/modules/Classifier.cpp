@@ -25,6 +25,7 @@
 #include <modules/Classifier.hpp>
 #include <vector>
 #include <ndnpi.hpp>
+#include <math.h>
 
 using namespace std;
 using namespace ndn;
@@ -42,19 +43,18 @@ Classifier::Classifier(void)
 
 void Classifier::classifyInterestPriority(Interest& interest)
 {
-    float probability = 0;
+    double priority = 0;
   
-    vector<int> priorityList;
-    priorityList.push_back(caclulateRTTFeature(interest));
-    priorityList.push_back(calculateFreshnessFeature(interest));
-    priorityList.push_back(calculatePrefixTrafficFrequencyFeature(interest));
-    priorityList.push_back(interest.getPriority());
-    
 
-   probability = calculatePriorityAccordingToProbability(interest, priorityList, 0, probability);
-   probability = calculatePriorityAccordingToProbability(interest, priorityList, 1, probability);
-   probability = calculatePriorityAccordingToProbability(interest, priorityList, 2, probability);
-   calculatePriorityAccordingToProbability(interest, priorityList, 3, probability);
+    priority += caclulateRTTFeature(interest) * 0.2;
+    priority += calculateFreshnessFeature(interest) * 0.1;
+    priority += calculatePrefixTrafficFrequencyFeature(interest) * 0.6;
+    priority += interest.getPriority() * 0.1;
+        
+
+    int finalPriority = round(priority);
+    
+    interest.setPriority(finalPriority);
     
 }
 

@@ -322,7 +322,9 @@ int ForwardingInformationBase::getLPMFrequency(const Name& name)
     {
         return INT_MAX;
     }
-    return finalEntry->getFrequency();
+    int frequency = finalEntry->getFrequency();
+    finalEntry->incrementFrequency();
+    return frequency;
 }
 
 
