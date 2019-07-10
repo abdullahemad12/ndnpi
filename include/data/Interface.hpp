@@ -29,7 +29,7 @@
 #include <string>
 #include <thread>
 #include <vector>
-
+#include <queue>
 using namespace std;
 using namespace ndn;
 
@@ -42,7 +42,7 @@ class Interface
 		string port;
 		Face* face;
 		void t_func(void);
-		thread* t;
+		queue<thread*> threads;
 		/*additional memory to handle failures gracefully*/
 		vector<NackCallback> afterNackeds;
 		vector<Interest> interests;

@@ -47,7 +47,7 @@ class FaceManager : public RequestObserver
 		vector<Request*> requests;
 		queue<const lp::Nack*> nacks;
 		unordered_set<Interface*> interfaces;
-
+        bool hasInterests;
 		void expressAllInterests(void);
 		void processEventsForAllInterfaces(void);
 		void joinAllInterfaces(void);
@@ -81,6 +81,11 @@ class FaceManager : public RequestObserver
 		void update(RequestSubject* subject);
 		void update(RequestSubject* subject, const Data& data);
 		void update(RequestSubject* subject, const lp::Nack& nack);
+
+
+        void onData(const Interest& interest, const Data& data);
+		void onTimeout(const Interest& interest);
+		void onNack(const Interest& interest, const lp::Nack& nack);
 };
 
 

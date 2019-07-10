@@ -112,11 +112,18 @@ void Interface::processEvents(void)
 	/*create a new thread so it does not block
       the execution of the parent thread while sending the
       packets*/
-	t = new thread(bind(&Interface::t_func, this));
+    if(threads.size() > 3)
+    {
+	    thread* t = threads.front();
+        threads.pop();
+        t->join();
+        delete t;
+    }
+    thread* t = new thread(bind(&Interface::t_func, this));
+    threads.push(t);
 }
 
 void Interface::join(void)
 {
-	t->join();
-	delete t;
+
 }

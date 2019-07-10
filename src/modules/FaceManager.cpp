@@ -48,16 +48,16 @@ FaceManager::~FaceManager(void)
 
 void FaceManager::addRequest(Interest interest)
 {
+    hasInterests = true;
 	vector<Interface*> interfaces =  fib->computeMatchingFaces(interest);
     assert(interfaces.size() == 1);
 	for(Interface* interface : interfaces)
 	{
 		string namestr = interest.getName().toUri();
-		currentNames.insert(namestr);
-		Request* request = new Request(interest, interface);
-		request->addObserver(this);		
-		requests.push_back(request);
-		this->interfaces.insert(interface);
+        interface->expressInterest(interest,  
+                           bind(&FaceManager::onData, this,  _1, _2),
+                           bind(&FaceManager::onNack, this, _1, _2),
+                           bind(&FaceManager::onTimeout, this, _1));
         std::cout << namestr << " Forwarded to: " << interface->getIp() << "\n";
 	}
 }
@@ -67,20 +67,9 @@ void FaceManager::addRequest(Interest interest)
 
 void FaceManager::sendAll(void)
 {
-	
-	expressAllInterests();
-
-	processEventsForAllInterfaces();
-	
-	/*will wait until response for all interests has been recieved*/
-	joinAllInterfaces();
-
-	interfaces.clear();
-
-	/*send nacks as necessary*/
-	sendNacks();
-
-	deleteAllRequest();
+    if(hasInterests)
+	    processEventsForAllInterfaces();
+    hasInterests = false;
 }
 
 // timeout
@@ -122,6 +111,24 @@ void FaceManager::update(RequestSubject* subject, const lp::Nack& nack)
 }
 
 
+void FaceManager::onData(const Interest& interest, const Data& data)
+{
+    string namestr = interest.getName().toUri();
+
+    shaper->removeFromPit(namestr);
+    
+    stream->putData(data);
+}
+
+void FaceManager::onTimeout(const Interest& interest)
+{
+
+}
+void FaceManager::onNack(const Interest& interest, const lp::Nack& nack)
+{
+    stream->putNack(nack);
+}
+
 /***********************
  *   private helpers   *
  ***********************/
@@ -145,6 +152,7 @@ void FaceManager::deleteAllRequest(void)
 
 void FaceManager::processEventsForAllInterfaces(void)
 {
+    vector<Interface*> interfaces = fib->getInterfaces();
 	for(Interface* interface : interfaces)
 	{
 		/*non-blocking function that will start sending all the interests*/
