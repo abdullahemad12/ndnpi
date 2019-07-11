@@ -27,6 +27,7 @@
 #include <ndn-cxx/face.hpp>
 #include <assert.h>
 #include <iostream>
+#include <unistd.h>
 
 using namespace std;
 using namespace ndn;
@@ -84,6 +85,7 @@ void Shaper::forward(void)
                 leftOvers = n_packets;
 			}
             faceManager->sendAll();
+            usleep(1000);
 		}
 		lock.unlock();
 	}
