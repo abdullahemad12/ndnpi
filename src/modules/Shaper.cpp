@@ -85,7 +85,7 @@ void Shaper::forward(void)
                 leftOvers = n_packets;
 			}
             faceManager->sendAll();
-            usleep(1000);
+            usleep(400);
 		}
 		lock.unlock();
 	}

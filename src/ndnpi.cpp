@@ -95,8 +95,8 @@ void init_shaper(int capacity)
 	shaper = new Shaper(capacity);
 	
 	/*set the weight of each priority*/	
-	shaper->setWeight(0.50, 0);
-	shaper->setWeight(0.25, 1);
+	shaper->setWeight(0.40, 0);
+	shaper->setWeight(0.35, 1);
 	shaper->setWeight(0.15, 2);
 	shaper->setWeight(0.10, 3);
 	shaper->run();
