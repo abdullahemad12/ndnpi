@@ -85,7 +85,6 @@ class Interface
 		void expressInterest(const Interest &interest, const DataCallback &afterSatisfied, 
 							 const NackCallback &afterNacked, const TimeoutCallback &afterTimeout);
 		void processEvents(void);
-		void join(void);
         void connectToFace(void);
 };
 

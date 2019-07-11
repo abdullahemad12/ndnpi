@@ -126,8 +126,3 @@ void Interface::processEvents(void)
     sem->notify();
 
 }
-
-void Interface::join(void)
-{
-
-}

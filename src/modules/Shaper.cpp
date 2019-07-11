@@ -82,16 +82,10 @@ void Shaper::forward(void)
                     --n_packets;
 				}
                 leftOvers = n_packets;
-
 			}
+            faceManager->sendAll();
 		}
-		/* At this point we dont need the shaping queues anymore
-         * and faceManager->sendAll() is a blocking function call 
-		 * Therefore it's better to release the lock now inorder to allow other threads to
-		 * Add the shaping queues
- 		 */
 		lock.unlock();
-		faceManager->sendAll();
 	}
 }
 
@@ -154,33 +148,19 @@ void Shaper::decreaseCapacity(void){
 
 bool Shaper::addInterest(Interest interest)
 {
-    pitLock.lock();
-    bool contains = pit.find(interest.getName().toUri()) != pit.end();
-    pitLock.unlock();
-    if(contains)
-    {
-        return true;
-    }
-
-	lock.lock();
-	bool ret = true;
-	
-	/*Allow the qeue to store more than the capacity of the link*/
+    /*Allow the qeue to store more than the capacity of the link*/
     uint8_t priority = interest.getPriority();
 	assert(priority < N_PRIORITIES);
+    bool ret = true;
+
+
+	lock.lock();
+
 	shaping_queues[priority].push(interest);
 
 	lock.unlock();	
 
-    pitLock.lock();
-    pit.insert(interest.getName().toUri());
-    pitLock.unlock();
+
 	return ret;
 }
 
-void Shaper::removeFromPit(string key)
-{
-    pitLock.lock();
-    pit.erase(key);
-    pitLock.unlock();   
-}

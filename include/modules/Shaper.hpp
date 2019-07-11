@@ -45,13 +45,13 @@ class Shaper
 		thread* t; /*thread that forwards the interests*/
 		mutex lock;
 		mutex capacityLock;
-        mutex pitLock;
+
 		unsigned int capacity; /*The capacity of this router expressed in Packets/second*/
 		queue<Interest> shaping_queues[N_PRIORITIES];
 		float weights[N_PRIORITIES];
 		float alphas[N_PRIORITIES];
 		bool terminated;
-        unordered_set<string> pit;
+
 
 		/**
 		  * EFFECTS: calculates the sum of all the queues size
@@ -112,11 +112,6 @@ class Shaper
 		void decreaseCapacity(void);
 
 
-        /** Synchronized
-          * EFFECTS: removes a key from the PIT set
-          * MODIFIES: this
-          */
-        void removeFromPit(string key);
 
 };
 

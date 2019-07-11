@@ -24,7 +24,6 @@
 
 #include <ndn-cxx/face.hpp>
 #include <modules/FaceManager.hpp>
-#include <data/Request.hpp>
 #include <vector>
 #include <ndnpi.hpp>
 #include <data/Interface.hpp>
@@ -37,18 +36,11 @@ using namespace std;
 
 FaceManager::~FaceManager(void)
 {
-	while(!nacks.empty())
-	{
-		const lp::Nack* nack = nacks.front();
-		nacks.pop();
-		delete nack;
-	}
-	deleteAllRequest();
+
 }
 
 void FaceManager::addRequest(Interest interest)
 {
-    hasInterests = true;
 	vector<Interface*> interfaces =  fib->computeMatchingFaces(interest);
     assert(interfaces.size() == 1);
 	for(Interface* interface : interfaces)
@@ -67,56 +59,14 @@ void FaceManager::addRequest(Interest interest)
 
 void FaceManager::sendAll(void)
 {
-    if(hasInterests)
-	    processEventsForAllInterfaces();
-    hasInterests = false;
+	processEventsForAllInterfaces();
 }
 
-// timeout
-void FaceManager::update(RequestSubject* subject)
-{
-	// do nothing for now 
-}
-
-// data
-void FaceManager::update(RequestSubject* subject, const Data& data)
-{
-
-	Request* request = (Request*) subject;
-	stream->putData(data); /*put data*/
-	fib->insert(*request); /*this operation is synchronized, so I better call it before acquiring the lock*/	
-
-
-	string namestr = request->getInterestNameUri();
-
-	currentNamesLock.lock();	
-		currentNames.erase(namestr);
-	currentNamesLock.unlock();	
-    
-    shaper->removeFromPit(namestr);
-}
-
-// Nack
-void FaceManager::update(RequestSubject* subject, const lp::Nack& nack)
-{
-	Request* request = (Request*) subject;
-	fib->remove(nack.getInterest().getName().toUri(), request->getInterface());	
-
-	nackslock.lock();
-		/*must delete it*/
-		const lp::Nack* nacknew = new lp::Nack(nack);
-		nacks.push(nacknew);
-	nackslock.unlock();
-
-}
 
 
 void FaceManager::onData(const Interest& interest, const Data& data)
 {
-    string namestr = interest.getName().toUri();
-
-    shaper->removeFromPit(namestr);
-    
+    /*send it back*/   
     stream->putData(data);
 }
 
@@ -133,23 +83,6 @@ void FaceManager::onNack(const Interest& interest, const lp::Nack& nack)
  *   private helpers   *
  ***********************/
 
-void FaceManager::expressAllInterests(void)
-{
-	for(Request* request : requests)
-	{
-		request->expressInterest();
-	}
-}
-
-void FaceManager::deleteAllRequest(void)
-{
-	for(Request* request : requests)
-	{
-		delete request;
-	}
-	requests.clear();
-}
-
 void FaceManager::processEventsForAllInterfaces(void)
 {
     vector<Interface*> interfaces = fib->getInterfaces();
@@ -160,33 +93,5 @@ void FaceManager::processEventsForAllInterfaces(void)
 	}
 }
 
-
-void FaceManager::joinAllInterfaces(void)
-{
-	/*Makes sure all the interest was send and all the responses was recieved*/
-	for(Interface* interface : interfaces)
-	{
-		interface->join();
-	}
-}
-
-
-void FaceManager::sendNacks(void)
-{
-	while(!nacks.empty())
-	{
-		const lp::Nack* nack = nacks.front();
-		nacks.pop();
-		string namestr = nack->getInterest().getName().toUri();	
-		if(currentNames.find(namestr) != currentNames.end())
-		{
-			stream->putNack(*nack);
-			currentNames.erase(namestr);
-            shaper->removeFromPit(namestr);
-		}
-		delete nack;
-	}
-	currentNames.clear();
-}
 
 

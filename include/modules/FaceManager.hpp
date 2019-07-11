@@ -30,28 +30,19 @@
 #include <string>
 #include <observer/RequestSubject.hpp>
 #include <ndn-cxx/face.hpp>
-#include <data/Request.hpp>
 #include <data/Interface.hpp>
 #include <mutex>
 
 using namespace std;
 using namespace ndn;
 
-class FaceManager : public RequestObserver
+class FaceManager
 {
 	private:
 		mutex currentNamesLock; 
 		mutex nackslock;
 
-		unordered_set<string> currentNames;	
-		vector<Request*> requests;
-		queue<const lp::Nack*> nacks;
-		unordered_set<Interface*> interfaces;
-        bool hasInterests;
-		void expressAllInterests(void);
 		void processEventsForAllInterfaces(void);
-		void joinAllInterfaces(void);
-		void sendNacks(void);
 	
 	public:
 
@@ -72,16 +63,7 @@ class FaceManager : public RequestObserver
 		  */
 		void sendAll(void);
 	
-		/**
-		  * EFFECTS: deletes all the request in the requests queue
-		  * MODIFIES: this->requests
-		  */
-		void deleteAllRequest(void);
 	
-		void update(RequestSubject* subject);
-		void update(RequestSubject* subject, const Data& data);
-		void update(RequestSubject* subject, const lp::Nack& nack);
-
 
         void onData(const Interest& interest, const Data& data);
 		void onTimeout(const Interest& interest);
