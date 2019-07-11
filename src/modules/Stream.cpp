@@ -80,14 +80,18 @@ void Stream::onRegisterFailed(const Name& prefix, const std::string& reason)
 
 void Stream::putData(const Data& data)
 {
+     lock.lock();
 	 this->m_face.put(data);
+     lock.unlock();
 }
 
 void Stream::putNack(const lp::Nack& nack)
 {
    std::cout << "received Nack with reason " << nack.getReason()
-              << " for interest " << std::endl; 
+              << " for interest " << std::endl;
+    lock.lock(); 
 	this->m_face.put(nack);
+    lock.unlock();
 }
 
 

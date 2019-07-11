@@ -31,14 +31,16 @@
 #include <modules/PendingInterestTable.hpp>
 #include <modules/ForwardingInformationBase.hpp>
 #include <modules/Shaper.hpp>
+#include <mutex>
 
+using namespace std;
 
 class Stream
 {
 	private:
 		Face m_face;
 		KeyChain m_keyChain;
-
+        mutex lock;
 		void onInterest(const InterestFilter& filter, const Interest& interestt);
 		void onRegisterFailed(const Name& prefix, const std::string& reason);
 	public:
