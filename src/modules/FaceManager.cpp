@@ -42,7 +42,7 @@ FaceManager::~FaceManager(void)
 void FaceManager::addRequest(Interest interest)
 {
 	vector<Interface*> interfaces =  fib->computeMatchingFaces(interest);
-    assert(interfaces.size() == 1);
+    assert(interfaces.size() <= 1);
 	for(Interface* interface : interfaces)
 	{
 		string namestr = interest.getName().toUri();
