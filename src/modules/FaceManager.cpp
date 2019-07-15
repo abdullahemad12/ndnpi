@@ -67,7 +67,6 @@ void FaceManager::sendAll(void)
 void FaceManager::onData(const Interest& interest, const Data& data)
 {
     /*send it back*/   
-    std::cout << "Data with name: " << interest.getName() << "\n"; 
     stream->putData(data);
 }
 
