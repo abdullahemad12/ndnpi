@@ -66,9 +66,11 @@ void Shaper::forward(void)
 	{
 		lock.lock();
 		unsigned int totalSize = calculateCurrentLoad();
-		
+		lock.unlock();
+
 		if(totalSize > 0)
 		{
+            lock.lock();
 			/*iterate over all the queues according to the given percentage*/
 			calculatePriorityPercentage();
             int leftOvers = 0;
@@ -85,9 +87,9 @@ void Shaper::forward(void)
                 leftOvers = n_packets;
 			}
             faceManager->sendAll();
+		    lock.unlock();
+            std::this_thread::sleep_for (std::chrono::milliseconds(800));
 		}
-		lock.unlock();
-        std::this_thread::sleep_for (std::chrono::milliseconds(800));
 	}
 }
 
