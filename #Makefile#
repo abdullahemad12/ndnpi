@@ -1,3 +1,4 @@
+
 #####################################
 # @author: Abdullah Emad 			#
 # Makefile for The binary tree test #
@@ -19,7 +20,8 @@ HDRS = include/cranbtree.h
 LIBS = -lcunit -lndn-cxx -lboost_system -lpthread
 
 # space-separated list of source files
-SRCS = src/datastructures/* src/modules/* src/data/* src/observer/* src/MDP/*
+SRCS = src/datastructures/* src/modules/* src/data/* src/observer/*
+
 
 # Included folders
 INCLUDES = include
