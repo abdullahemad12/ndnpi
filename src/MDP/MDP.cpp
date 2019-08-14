@@ -194,6 +194,21 @@ ublas::matrix<double> MDP::policyIteration() {
 }
 
 
+void MDP::updateRewards(std::vector<float> rtts)
+{
+    ublas::matrix<double> mat(N_STATES, numActions);
+
+    for(int i = 0; i < N_STATES; i++)
+    {
+        mat(i, 0) = 0;
+        for(int j = 1; j < numActions; j--)
+        {
+            mat(i, j) = rtts[j-1];
+        }
+    }
+    this->actionReward = mat;
+}
+
 /***************************************
  *  Code that initializes The Matrices *
  ***************************************/

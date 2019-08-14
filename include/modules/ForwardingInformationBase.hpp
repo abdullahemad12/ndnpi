@@ -92,6 +92,10 @@ class ForwardingInformationBase
 		  */
 		vector<Interface*> sortInterfaces(unordered_map<Interface*, int>& scoreMap);
 
+        /**
+          * EFFECTS: update the rewards in the MDP
+          */
+        void updateRewards(void);
 	public:
 		/**
 		  * const char* tpath: the path to the routing table
@@ -171,6 +175,13 @@ class ForwardingInformationBase
           * RETURNS: the frequency
           */
         float getLPMRtt(const Name& name);
+
+        /**
+          * EFFECTS: updates the RTT of the FIBEntry of the given Name
+          * MODIFIES: this
+          */
+        void updateRTT(const Name& name, float rtt);
+
 };
 
 #endif /*..._MODULES_FORWARDINGINFORMATIONBASE_*/

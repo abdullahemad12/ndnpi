@@ -40,11 +40,22 @@
 
 using namespace std;
 
+
+class ptimer {
+public:
+    std::chrono::time_point<std::chrono::high_resolution_clock> lastTime;
+    ptimer() : lastTime(std::chrono::high_resolution_clock::now()) {}
+    inline double elapsed() {
+        std::chrono::time_point<std::chrono::high_resolution_clock> thisTime=std::chrono::high_resolution_clock::now();
+        double deltaTime = std::chrono::duration<double>(thisTime-lastTime).count();
+        return deltaTime;
+    }
+};
+
 class Request : public RequestSubject
 {
 	private:
-		chrono::steady_clock::time_point start;
-		chrono::steady_clock::time_point end;
+		ptimer* timer;
 		Interest interest;
 		Name name;
 		Interface* interface;

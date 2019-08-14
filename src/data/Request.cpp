@@ -29,6 +29,7 @@
 #include <data/Interface.hpp>
 #include <chrono>
 #include <string>
+#include <float.h>
 
 using namespace std;
 
@@ -41,7 +42,7 @@ Request::Request(Interest interest,  Interface* interface) : RequestSubject()
 
 Request::~Request(void)
 {
-
+    delete timer;
 }
 
 void Request::expressInterest(void)
@@ -51,20 +52,20 @@ void Request::expressInterest(void)
                            bind(&Request::onNack, this, _1, _2),
                            bind(&Request::onTimeout, this, _1));
 
-	start = std::chrono::steady_clock::now();
+    timer = new ptimer();
 }	
 
 
 void Request::onData(const Interest& interest, const Data& data)
 {
-	end = std::chrono::steady_clock::now();
+    fib->updateRTT(interest.getName(), timer->elapsed());
 	setHasChanged();
-	notifyObservers(data);
-	
+	notifyObservers(data);	
 }
 
 void Request::onTimeout(const Interest& interest)
 {
+    fib->updateRTT(interest.getName(), FLT_MAX);
 	setHasChanged();
 	notifyObservers();
 }
@@ -95,7 +96,5 @@ Interface* Request::getInterface(void)
 
 float Request::calculateRtt(void)
 {
-	const auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
-	float time = duration.count() / 1000.0 ;
-	return time;
+	return 0;
 }	

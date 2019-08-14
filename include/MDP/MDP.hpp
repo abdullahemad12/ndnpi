@@ -15,6 +15,7 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <MDP/storage_adaptors.hpp>
 #include <boost/numeric/ublas/io.hpp>
+#include <vector>
 
 #define N_STATES 16
 
@@ -62,6 +63,10 @@ public:
 
 	//compute the optimal policy for this MDP (corresponding value function can be found using policyEvalution method)
 	ublas::matrix<double> policyIteration();
+
+
+    void updateRewards(std::vector<float> rtts);
+
 
 };
 

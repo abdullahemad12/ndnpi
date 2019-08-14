@@ -31,6 +31,9 @@
 #include <data/Request.hpp>
 #include <unordered_map>
 #include <fstream>
+#include <float.h>
+#include <ndnpi.hpp>
+#include <MDP/MDP.hpp>
 
 using namespace std;
 /**
@@ -149,9 +152,8 @@ void ForwardingInformationBase::parseTable(string tpath)
             }
         }
 
-        int cost = graph->calculateCost(nodeIds[i]);
         vector<FIBEntry*> list;	
-		FIBEntry* entry = new FIBEntry(name, interface, cost);
+		FIBEntry* entry = new FIBEntry(name, interface, 0);
 		list.push_back(entry);
 		entries[prefixes[i]] = list;
     }
@@ -185,6 +187,28 @@ ForwardingInformationBase::~ForwardingInformationBase(void)
     delete graph;
 }
 
+
+void ForwardingInformationBase::updateRewards(void)
+{
+    vector<float> rtts;
+    for(unsigned int i = 0; i < getInterfaces().size(); i++) { rtts.push_back(0); }
+    for(auto& list : entries)
+	{
+		for(unsigned int i = 0; i < list.second.size(); i++)
+		{
+			FIBEntry* entry = list.second[i];
+            Interface* interface = entry->getInterface();
+            rtts[interface->getId()] = entry->getRtt();
+        }
+    }
+
+   mdp->updateRewards(rtts);
+
+}
+
+
+
+
 vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Interest& interest)
 {
 	const Name& name = interest.getName();
@@ -217,6 +241,26 @@ vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Interes
 }
 
 
+void ForwardingInformationBase::updateRTT(const Name& name, float rtt)
+{
+    int maxScore = 0;   
+    FIBEntry* finalEntry = NULL;
+    for(auto& list : entries)
+	{
+		for(unsigned int i = 0; i < list.second.size(); i++)
+		{
+			FIBEntry* entry = list.second[i];
+            int curScore = computeLongestCommonPrefixSize(name, entry->getName()); 
+            if(curScore > maxScore) 
+            {
+                maxScore = curScore;
+                finalEntry = entry;
+            }
+        }
+    }
+    assert(finalEntry != NULL);
+    finalEntry->setRtt(rtt);
+}
 
 void ForwardingInformationBase::insert(Request& request)
 {

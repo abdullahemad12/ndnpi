@@ -37,6 +37,7 @@ class FIBEntry
 		Interface* interface;
 		float rtt; /*expected RTT for this name when forwarded on this interface*/
         int frequency;
+        int dataCount; /*stores the count of the data received on the Interface specified by this entry*/
 	public:
 		FIBEntry(Name name, Interface* interface, float rtt);
 		~FIBEntry(void);

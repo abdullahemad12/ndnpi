@@ -32,13 +32,13 @@
 #include <modules/Shaper.hpp>
 #include <modules/FaceManager.hpp>
 #include <modules/Classifier.hpp>
-
+#include <MDP/MDP.hpp>
 
 extern Stream* stream;
 extern ForwardingInformationBase* fib;
 extern Shaper* shaper;
 extern FaceManager* faceManager;
 extern Classifier* classifier;
-
+extern MDP* mdp;
 
 #endif /*..._NDNPI_HPP*/
