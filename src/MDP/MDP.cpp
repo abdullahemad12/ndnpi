@@ -203,7 +203,7 @@ void MDP::updateRewards(std::vector<float> rtts)
         mat(i, 0) = 0;
         for(int j = 1; j < numActions; j--)
         {
-            mat(i, j) = FLT_MAX - rtts[j-1];
+            mat(i, j) = DBL_MAX - rtts[j-1];
         }
     }
     this->actionReward = mat;
