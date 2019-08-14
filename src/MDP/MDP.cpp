@@ -4,16 +4,48 @@
 // Description : An c++ implementation of a Markov Decision Process (MDP)
 //============================================================================
 #include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
-#include<map>
+#include <map>
 #include <boost/numeric/ublas/io.hpp>
-#include <MDP/storage_adaptors.hpp>
 #include <MDP/MDP.hpp>
+#include <MDP/storage_adaptors.hpp>
+#include <float.h>
 
-using namespace boost::numeric::ublas;
+
+
+using namespace boost::numeric;
+
+/**
+  * Prototypes
+  */
+ublas::matrix<double> initializeReceivingActionTransition(void);
+ublas::matrix<double> initializeForwardingActionTransition(void);
+ublas::matrix<double> initializeRewards(int n_actions);
+
+
+MDP::MDP(int n_interfaces, double d)
+{    
+    std::map<int, ublas::matrix<double>> at;
+    at[0] = initializeReceivingActionTransition();
+    ublas::matrix<double> mat = initializeForwardingActionTransition();
+
+    for(int i = 1; i <= n_interfaces; i++)
+    {
+        at[i] = mat;
+    }
+
+    ublas::matrix<double> ar = initializeRewards(n_interfaces + 1);
+
+    this->actionTransitions = at;
+    this->actionReward = ar;
+    this->discount = d;
+    this->numStates = ar.size1();
+	this->numActions = at.size();
+}
 
 //Constructor initializing all member variables
-MDP::MDP(std::map<int, matrix<double> > at, matrix<double> ar, double d) {
+MDP::MDP(std::map<int, ublas::matrix<double> > at, ublas::matrix<double> ar, double d) {
 	this->actionTransitions = at;
 	this->actionReward = ar;
 	this->discount = d;
@@ -21,34 +53,34 @@ MDP::MDP(std::map<int, matrix<double> > at, matrix<double> ar, double d) {
 	this->numActions = at.size();
 }
 
-//reward for each state associated with this policy (given the action reward and transition matrix for this MDP)
-vector<double> MDP::policyReward(matrix<double> policy) {
+//reward for each state associated with this policy (given the action reward and transition ublas::matrix for this MDP)
+ublas::vector<double> MDP::policyReward(ublas::matrix<double> policy) {
 
-	vector<double> v(this->actionReward.size1());
+	ublas::vector<double> v(this->actionReward.size1());
 
 	for (unsigned i = 0; i < policy.size1(); ++i) {
 
-		matrix_row<matrix<double> > policyRow(policy, i);
-		matrix_row<matrix<double> > rewardRow(this->actionReward, i);
+		ublas::matrix_row<ublas::matrix<double> > policyRow(policy, i);
+		ublas::matrix_row<ublas::matrix<double> > rewardRow(this->actionReward, i);
 
-		v(i) = sum(element_prod(policyRow, rewardRow));
+		v(i) = ublas::sum(ublas::element_prod(policyRow, rewardRow));
 	}
 
 	return v;
 }
 
 //transition matrix associated with this policy (given the transition matrix for this MDP)
-matrix<double> MDP::policyTransitions(matrix<double> policy) {
+ublas::matrix<double> MDP::policyTransitions(ublas::matrix<double> policy) {
 
-	matrix<double> ptp = zero_matrix<double>(3, 3);
+	ublas::matrix<double> ptp = ublas::zero_matrix<double>(3, 3);
 
 	for (unsigned i = 0; i < policy.size1(); ++i) {
 
-		for (std::map<int, matrix<double> >::iterator it =
+		for (std::map<int, ublas::matrix<double> >::iterator it =
 				this->actionTransitions.begin();
 				it != this->actionTransitions.end(); ++it) {
 
-			matrix_row<matrix<double> > atmRow(it->second, i);
+			ublas::matrix_row<ublas::matrix<double> > atmRow(it->second, i);
 
 			row(ptp, i) += atmRow * policy(i, it->first);
 		}
@@ -59,33 +91,33 @@ matrix<double> MDP::policyTransitions(matrix<double> policy) {
 }
 
 //Compute the result of the Bellman equation
-vector<double> MDP::bellmanEquation(matrix<double> policyTrans,
-		vector<double> policyRew, vector<double> valueFunc) {
+ublas::vector<double> MDP::bellmanEquation(ublas::matrix<double> policyTrans,
+		ublas::vector<double> policyRew, ublas::vector<double> valueFunc) {
 
 	return policyRew + this->discount * prod(policyTrans, valueFunc);
 }
 
 //Compute the value function associated with a given policy
-vector<double> MDP::policyEvaluation(matrix<double> pTransProb,
-		vector<double> pReward, double epsilon) {
+ublas::vector<double> MDP::policyEvaluation(ublas::matrix<double> pTransProb,
+		ublas::vector<double> pReward, double epsilon) {
 
 	//Initialize value function to zero
-	vector<double> valueFunction = zero_vector<double>(pReward.size());
+	ublas::vector<double> valueFunction = ublas::zero_vector<double>(pReward.size());
 
 	double delta = 10.0;
 
 	while (delta > epsilon) {
 
-		vector<double> previousValueFunction = valueFunction;
+		ublas::vector<double> previousValueFunction = valueFunction;
 
 		//compute value function via the Bellman equation
 		valueFunction = bellmanEquation(pTransProb, pReward, valueFunction);
 
 		//Check for convergence
-		vector<double> diffVect = valueFunction - previousValueFunction;
+		ublas::vector<double> diffVect = valueFunction - previousValueFunction;
 
 		//get maximum element
-		vector<double>::iterator result;
+		ublas::vector<double>::iterator result;
 
 		//delta is most changed element (if it is small then convergence has occurred)
 		delta = *std::max_element(diffVect.begin(), diffVect.end());
@@ -100,16 +132,16 @@ struct actionValue {
 };
 
 //Greedy policy improvement given the current policy's value function
-matrix<double> MDP::policyImprovement(vector<double> valueFunction) {
+ublas::matrix<double> MDP::policyImprovement(ublas::vector<double> valueFunction) {
 
-	matrix<double> greedyPolicy = zero_matrix<double>(this->numStates,
+	ublas::matrix<double> greedyPolicy = ublas::zero_matrix<double>(this->numStates,
 			this->numActions);
 
 	for (int i = 0; i < numStates; ++i) {
 
 		actionValue greedyAction = { -1, 0.0 };
 
-		for (std::map<int, matrix<double> >::iterator it =
+		for (std::map<int, ublas::matrix<double> >::iterator it =
 				this->actionTransitions.begin();
 				it != this->actionTransitions.end(); ++it) {
 
@@ -131,28 +163,28 @@ matrix<double> MDP::policyImprovement(vector<double> valueFunction) {
 }
 
 //compute the optimal policy for this MDP (corresponding value function can be found using policyEvalution method)
-matrix<double> MDP::policyIteration() {
+ublas::matrix<double> MDP::policyIteration() {
 
 	//initialize with a random policy
-	matrix<double> currentPolicy = scalar_matrix<double>(this->numStates,
+	ublas::matrix<double> currentPolicy = ublas::scalar_matrix<double>(this->numStates,
 			this->numActions);
 
 	currentPolicy = currentPolicy / (double) this->numActions;
 
-	matrix<double> oldPolicy = zero_matrix<double>(this->numStates,
+	ublas::matrix<double> oldPolicy = ublas::zero_matrix<double>(this->numStates,
 			this->numActions);
 
 	const double epsilon = std::numeric_limits<double>::epsilon();
 
-	while (!detail::equals(currentPolicy, oldPolicy, epsilon, epsilon)) {
+	while (!ublas::detail::equals(currentPolicy, oldPolicy, epsilon, epsilon)) {
 
 		oldPolicy = currentPolicy;
 
-		matrix<double> policyTrans = this->policyTransitions(currentPolicy);
+		ublas::matrix<double> policyTrans = this->policyTransitions(currentPolicy);
 
-		vector<double> policyReward = this->policyReward(currentPolicy);
+		ublas::vector<double> policyReward = this->policyReward(currentPolicy);
 
-		vector<double> policyValue = this->policyEvaluation(policyTrans,
+		ublas::vector<double> policyValue = this->policyEvaluation(policyTrans,
 				policyReward, 0.001);
 
 		currentPolicy = this->policyImprovement(policyValue);
@@ -160,3 +192,119 @@ matrix<double> MDP::policyIteration() {
 
 	return currentPolicy;
 }
+
+
+/***************************************
+ *  Code that initializes The Matrices *
+ ***************************************/
+
+
+int countOnes(int n)
+{
+    int n_bits = (int)log2(N_STATES);
+
+    int count = 0; 
+    for(int i = 0; i < n_bits; i++)
+    {
+        if(n & (1 << i))
+        {
+            ++count;
+        }
+    }
+    return count;
+}
+
+int countZeros(int n)
+{
+    int n_bits = (int)log2(N_STATES);
+
+    int count = 0; 
+    for(int i = 0; i < n_bits; i++)
+    {
+        if(!(n & (1 << i)))
+        {
+            ++count;
+        }
+    }
+    return count;
+}
+
+bool isPower2(double n)
+{
+    double p = log2(n);
+    return p == floor(p);
+}
+ublas::matrix<double> initializeForwardingActionTransition(void)
+{
+    
+    ublas::matrix<double> mat(N_STATES, N_STATES);
+
+    for(int i = 0; i < N_STATES; i++)
+    {
+        double probability = 1.0 / (countOnes(i) + 1.0);        
+        for(int j = i; j >= 0; j--)
+        {
+            if(j == i || (isPower2(i - j) && ((j | i) == i)))
+            {
+                mat(i, j) = probability;
+            }
+            else
+            {
+                mat(i, j) = 0;
+            }
+        }               
+    }
+    return mat;
+}
+
+ublas::matrix<double> initializeReceivingActionTransition(void)
+{
+    
+    ublas::matrix<double> mat(N_STATES, N_STATES);
+
+    for(int i = 0; i < N_STATES; i++)
+    {
+        double probability;
+        if(i == 0)
+        {
+            probability = 1.0 / (countZeros(i));        
+        }
+        else
+        {
+            probability = 1.0 / (countZeros(i) + 1);
+        }
+
+        for(int j = i; j < N_STATES; j++)
+        {
+            if((j > 0) && ((j == i) || (isPower2(j - i) && ((i | j) == j))))
+            {
+                mat(i, j) = probability;
+            }
+            else
+            {
+                mat(i, j) = 0;
+            }
+        }               
+    }
+    return mat;
+}
+
+ublas::matrix<double> initializeRewards(int n_actions)
+{
+    ublas::matrix<double> mat(N_STATES, n_actions);
+
+    for(int i = 0; i < N_STATES; i++)
+    {
+        for(int j = 1; j < n_actions; j--)
+        {
+            mat(i, j) = DBL_MAX;
+        }
+    }
+    
+    return mat;
+}
+
+
+
+
+

@@ -22,6 +22,7 @@
   * SOFTWARE.
   */
 
+
 #ifndef _NDNPI_
 #define _NDNPI_
 
@@ -32,9 +33,12 @@
 #include <modules/FaceManager.hpp>
 #include <modules/Classifier.hpp>
 
+
 extern Stream* stream;
 extern ForwardingInformationBase* fib;
 extern Shaper* shaper;
 extern FaceManager* faceManager;
 extern Classifier* classifier;
+
+
 #endif /*..._NDNPI_HPP*/

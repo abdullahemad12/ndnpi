@@ -11,19 +11,24 @@
 #define MDP_MDP_HPP_
 
 #include <boost/numeric/ublas/matrix.hpp>
-#include<map>
+#include <map>
+#include <boost/numeric/ublas/vector.hpp>
+#include <MDP/storage_adaptors.hpp>
+#include <boost/numeric/ublas/io.hpp>
 
-using namespace boost::numeric::ublas;
+#define N_STATES 16
+
+using namespace boost::numeric;
 
 
 class MDP{
 
 private :
 	//mapping from action to probability transition matrix
-	std::map<int,matrix<double> > actionTransitions;
+	std::map<int,ublas::matrix<double> > actionTransitions;
 
-	//matrix where entry (i,j) is the reward associated with taking action j from state j
-	matrix<double> actionReward;
+	//ublas::matrix where entry (i,j) is the reward associated with taking action j from state j
+	ublas::matrix<double> actionReward;
 
 	//MDP discount factor in [0,1]
 	double discount;
@@ -34,28 +39,29 @@ private :
 	//Total number of actions in MDP
 	int numActions;
 
+	//Constructor initializing all member variables
+	MDP(std::map<int,ublas::matrix<double> > at, ublas::matrix<double> ar, double d);
+
 public:
 
-	//Constructor initializing all member variables
-	MDP(std::map<int,matrix<double> > at, matrix<double> ar, double d);
+    MDP(int n_interfaces, double d);
+	//reward for each state associated with this policy (given the action reward and transition ublas::matrix for this MDP)
+	ublas::vector<double> policyReward(ublas::matrix<double> policy);
 
-	//reward for each state associated with this policy (given the action reward and transition matrix for this MDP)
-	vector<double> policyReward(matrix<double> policy);
-
-	//transition matrix associated with this policy (given the transition matrix for this MDP)
-	matrix<double> policyTransitions(matrix<double> policy);
+	//transition ublas::matrix associated with this policy (given the transition ublas::matrix for this MDP)
+	ublas::matrix<double> policyTransitions(ublas::matrix<double> policy);
 
 	//compute the Bellman equation for the given parameters
-	vector<double> bellmanEquation(matrix<double> policyTrans, vector<double> policyRew, vector<double> valueFunc);
+	ublas::vector<double> bellmanEquation(ublas::matrix<double> policyTrans, ublas::vector<double> policyRew, ublas::vector<double> valueFunc);
 
 	//Compute the value function associated with a given policy
-	vector<double> policyEvaluation(matrix<double> policyTrans, vector<double> policyRew, double epsilon);
+	ublas::vector<double> policyEvaluation(ublas::matrix<double> policyTrans, ublas::vector<double> policyRew, double epsilon);
 
 	//Greedy policy improvement given the current policy's value function
-	matrix<double> policyImprovement(vector<double> valueFunction);
+	ublas::matrix<double> policyImprovement(ublas::vector<double> valueFunction);
 
 	//compute the optimal policy for this MDP (corresponding value function can be found using policyEvalution method)
-	matrix<double> policyIteration();
+	ublas::matrix<double> policyIteration();
 
 };
 

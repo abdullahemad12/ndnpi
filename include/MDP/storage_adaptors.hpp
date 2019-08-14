@@ -5,8 +5,8 @@
  *      Author: alexminnaar
  */
 
-#ifndef MDP_STORAGE_ADAPTORS_H
-#define MDP_STORAGE_ADAPTORS_H
+#ifndef BOOST_UBLAS_STORAGE_ADAPTORS_H
+#define BOOST_UBLAS_STORAGE_ADAPTORS_H
 
 #include <algorithm>
 
