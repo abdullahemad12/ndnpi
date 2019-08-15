@@ -92,10 +92,6 @@ class ForwardingInformationBase
 		  */
 		vector<Interface*> sortInterfaces(unordered_map<Interface*, int>& scoreMap);
 
-        /**
-          * EFFECTS: update the rewards in the MDP
-          */
-        void updateRewards(void);
 	public:
 		/**
 		  * const char* tpath: the path to the routing table
@@ -181,6 +177,11 @@ class ForwardingInformationBase
           * MODIFIES: this
           */
         void updateRTT(const Name& name, float rtt);
+        
+        /**
+          * EFFECTS: update the rewards in the MDP
+          */
+        void updateRewards(void);
 
 };
 

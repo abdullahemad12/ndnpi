@@ -93,6 +93,7 @@ void Shaper::forward(void)
  		 */
 		lock.unlock();
 		faceManager->sendAll();
+        fib->updateRewards();
 	}
 }
 
