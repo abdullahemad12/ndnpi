@@ -29,6 +29,7 @@
 #include <data/Interface.hpp>
 #include <ndnpi.hpp>
 #include <stdio.h>
+#include <ndn-cxx/lp/tags.hpp>
 
 /**
   *
@@ -49,8 +50,9 @@ void Stream::onInterest(const InterestFilter& filter, const Interest& interestt)
     Interest interest(interestt);
     interest.refreshNonce();	
     //classifier->classifyInterestPriority(interest);
+	
 
-	// forward the interest
+    // forward the interest
 	if(!shaper->addInterest(interest))
 	{
 		lp::Nack nack(interest);

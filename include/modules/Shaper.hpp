@@ -118,6 +118,12 @@ class Shaper
           */
         void removeFromPit(string key);
 
+        /**
+          * EFFECTS: gets the current state of the shaper
+          * RETURNS: the current state of the shaper as an int
+          */  
+        int getCurrentState(void);
+
 };
 
 

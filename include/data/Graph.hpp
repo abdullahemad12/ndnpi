@@ -111,6 +111,8 @@ class Graph
           * MODIFIES: this
           */
         int calculateCost(int destination);
+
+        vector<int> calculateNextHops(int destination);
 };
 
 #endif 

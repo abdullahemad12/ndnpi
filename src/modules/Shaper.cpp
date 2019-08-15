@@ -96,6 +96,21 @@ void Shaper::forward(void)
 	}
 }
 
+int Shaper::getCurrentState(void)
+{
+    int state = 0;
+
+    for(int i = 0; i < N_PRIORITIES; i++)
+    {
+        if(!shaping_queues[i].empty())
+        {
+            state = state | (1 << i);
+        } 
+    }
+
+    return state;
+}
+
 
 void Shaper::calculatePriorityPercentage(void)
 {

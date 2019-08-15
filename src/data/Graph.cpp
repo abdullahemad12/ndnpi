@@ -127,6 +127,28 @@ int Graph::calculateNextHop(int destination)
     return -1;
 }
 
+
+
+vector<int> Graph::calculateNextHops(int destination)
+{
+    vector<int> nexthops;
+    for(unsigned int i = 0; i < graph[sourceNode].size(); i++)
+    {   
+        int vertex = graph[sourceNode][i].vertex;
+        bool* visited = new bool[graph.size()];
+        for(unsigned int i = 0; i < graph.size(); i++) visited[i] = false;
+        visited[sourceNode] = true;
+        visited[vertex] = true;
+        bool reachable = canBeReached(vertex, destination, visited);
+        delete visited;
+        if(reachable)
+        {
+           nexthops.push_back(vertex);
+        }
+    }
+
+    return nexthops;
+}
 /******************
  * private helpers*
  ******************/
@@ -210,4 +232,6 @@ bool Graph::canBeReached(int source, int destination, bool* visited)
 
     return ret;
 }
+
+
 

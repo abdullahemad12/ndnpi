@@ -23,6 +23,8 @@
   */
 
 #include <modules/ForwardingInformationBase.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/io.hpp>
 #include <ndn-cxx/face.hpp>
 #include <datastructures/linkedlist.h>
 #include <vector>
@@ -36,6 +38,8 @@
 #include <MDP/MDP.hpp>
 
 using namespace std;
+using namespace boost::numeric;
+
 /**
   * Prototypes for helper functions
   */
@@ -211,32 +215,27 @@ void ForwardingInformationBase::updateRewards(void)
 
 vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Interest& interest)
 {
-	const Name& name = interest.getName();
 	vector<Interface*> interfaces;
+    ublas::matrix<double> policy = mdp->policyIteration();
 
-	/*initialize the score Map*/
-	unordered_map<Interface*, int> scoreMap = initScoreMap();
-	
+    int state = shaper->getCurrentState();
 
-	/**
-	  * Priority 1 will be forwarded to all Interfaces
-	  * Priority 2 will be forwarded to all the interfaces except 2
-	  * and so On
-      */	
-	computeScores(scoreMap, name);
+    int maxProb = 0;
+    int maxI = 0;
+    for(unsigned int i = 0; i < policy.size2(); i++)
+    {
+        if(policy(state, i) > maxProb)
+        {
+            maxProb = policy(state, i);
+            maxI = i;
+        }
+        
+    }
+    maxI = maxI > 0 ? maxI - 1 : maxI;
 
-	if(isNoMatch(scoreMap))
-	{
-		/*I have to broadcast regardless of the priority because I dont know which interface
-		  will fetch the data back for sure*/
-		return interfaces;
-	}
+    interfaces.push_back(this->interfaces[maxI]);
 
-	
-	vector<Interface*> intarr = sortInterfaces(scoreMap);
-	
-	interfaces.clear();
-    interfaces.push_back(intarr[0]);
+
 	return interfaces;
 }
 
