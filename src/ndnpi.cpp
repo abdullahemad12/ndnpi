@@ -59,7 +59,9 @@ int main(int argc, char* argv[])
 	chdir("bin");
 
 
-
+    /*create and initialize MDP*/
+    mdp = new MDP(fib->getInterfaces().size(), 0.5);
+    
 	/*create the Forwarding information base*/
 	fib = new ForwardingInformationBase("rt");
     
@@ -78,9 +80,7 @@ int main(int argc, char* argv[])
 	/*on exit signal free all the memory*/
 	atexit(exiting);
 
-    /*create and initialize MDP*/
-    mdp = new MDP(fib->getInterfaces().size(), 0.5);
-    
+
 	/*start Listening on for Interests*/	
 	stream->listen();
 
