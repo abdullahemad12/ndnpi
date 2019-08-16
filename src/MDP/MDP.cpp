@@ -201,7 +201,7 @@ void MDP::updateRewards(std::vector<float> rtts)
     for(int i = 0; i < N_STATES; i++)
     {
         mat(i, 0) = 0;
-        for(int j = 1; j < numActions; j--)
+        for(int j = 1; j < numActions; j++)
         {
             mat(i, j) = DBL_MAX - rtts[j-1];
         }
@@ -310,7 +310,7 @@ ublas::matrix<double> initializeRewards(int n_actions)
 
     for(int i = 0; i < N_STATES; i++)
     {
-        for(int j = 1; j < n_actions; j--)
+        for(int j = 1; j < n_actions; j++)
         {
             mat(i, j) = DBL_MAX;
         }
