@@ -59,12 +59,14 @@ int main(int argc, char* argv[])
 	chdir("bin");
 
 
-    /*create and initialize MDP*/
-    mdp = new MDP(fib->getInterfaces().size(), 0.5);
+
     
 	/*create the Forwarding information base*/
 	fib = new ForwardingInformationBase("rt");
     
+    /*create and initialize MDP*/
+    mdp = new MDP(fib->getInterfaces().size(), 0.5);
+
     /*create the packets classifier*/
     classifier = new Classifier();
 
