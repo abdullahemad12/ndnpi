@@ -93,7 +93,7 @@ class ForwardingInformationBase
 		vector<Interface*> sortInterfaces(unordered_map<Interface*, int>& scoreMap);
         int getPrefixId(string name);
         bool isReachableThroughNode(string name, int id);
-
+        int getInterfaceIndex(int id);
 	public:
 		/**
 		  * const char* tpath: the path to the routing table

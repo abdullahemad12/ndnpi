@@ -170,7 +170,19 @@ void ForwardingInformationBase::parseTable(string tpath)
     file.close();
 
 }
-
+int ForwardingInformationBase::getInterfaceIndex(int id)
+{
+    int i = 0;
+    for(Interface* interface : interfaces)
+    {
+        if(interface->getId() == id)
+        {
+            return i;
+        }
+        ++i;
+    }
+    return -1;
+}
 int ForwardingInformationBase::getPrefixId(string name)
 {
     int id = 0;
@@ -226,7 +238,7 @@ void ForwardingInformationBase::updateRewards(void)
 		{
 			FIBEntry* entry = list.second[i];
             Interface* interface = entry->getInterface();
-            rtts[interface->getId()] = entry->getRtt();
+            rtts[getInterfaceIndex(interface->getId())] = entry->getRtt();
         }
     }
 
