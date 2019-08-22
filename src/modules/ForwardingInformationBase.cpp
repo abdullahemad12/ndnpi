@@ -107,8 +107,8 @@ void ForwardingInformationBase::parseTable(string tpath)
         file >> graph_edges[i][0] >> graph_edges[i][1] >> graph_edges[i][2];        
     }
 
-    graph = new Graph(graph_edges, interfaces.size(), nEdges, source_node);
-    graph->calculateMST();
+    this->graph = new Graph(graph_edges, interfaces.size(), nEdges, source_node);
+    this->graph->calculateMST();
 
 
     for(int i = 0; i < nEdges; i++)
@@ -140,6 +140,8 @@ void ForwardingInformationBase::parseTable(string tpath)
 
     for(int i = 0; i < nPrefixes; i++)
     {
+
+        prefixesNodeIds[prefixes[i]] = nodeIds[i];
         Name name(prefixes[i]);
         Interface* interface = NULL;
 
@@ -169,6 +171,28 @@ void ForwardingInformationBase::parseTable(string tpath)
 
 }
 
+int ForwardingInformationBase::getPrefixId(string name)
+{
+    int id = 0;
+    int maxScore = 0;
+    for(auto& entry : prefixesNodeIds)
+    {
+        int curScore = computeLongestCommonPrefixSize(Name(entry.first), Name(name));
+        if(curScore > maxScore) 
+        {
+            maxScore = curScore;    
+            id = entry.second;
+        }
+    }
+    return id;
+}
+
+bool ForwardingInformationBase::isReachableThroughNode(string name, int id)
+{
+    int destination = getPrefixId(name);
+
+    return graph->isReachableThrough(destination, id);
+}
 ForwardingInformationBase::ForwardingInformationBase(string tpath)
 {
 	this->parseTable(tpath);
@@ -220,11 +244,13 @@ vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Interes
 
     int state = shaper->getCurrentState();
 
+    string name = interest.getName().toUri();
     int maxProb = 0;
     int maxI = 0;
     for(unsigned int i = 0; i < policy.size2(); i++)
     {
-        if(policy(state, i) > maxProb)
+        int faceId = this->interfaces[i]->getId();
+        if(policy(state, i) > maxProb && isReachableThroughNode(name, faceId))
         {
             maxProb = policy(state, i);
             maxI = i;

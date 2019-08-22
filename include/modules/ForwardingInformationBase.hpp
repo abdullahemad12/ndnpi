@@ -46,7 +46,7 @@ class ForwardingInformationBase
 		vector<Interface*> interfaces;
 		unordered_map<string, vector<FIBEntry*>> entries;
         Graph* graph; /*represents the network this node belongs to*/
-
+        unordered_map<string, int> prefixesNodeIds;
 		/**
 		  * EFFECTS: parses the interfaces file and intializes the faces accordingly  
 		  * MODIFIES: this 
@@ -91,6 +91,8 @@ class ForwardingInformationBase
 		  * RETURNS: list of sorted interfaces
 		  */
 		vector<Interface*> sortInterfaces(unordered_map<Interface*, int>& scoreMap);
+        int getPrefixId(string name);
+        bool isReachableThroughNode(string name, int id);
 
 	public:
 		/**
@@ -182,6 +184,8 @@ class ForwardingInformationBase
           * EFFECTS: update the rewards in the MDP
           */
         void updateRewards(void);
+
+
 
 };
 

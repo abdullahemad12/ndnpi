@@ -149,6 +149,35 @@ vector<int> Graph::calculateNextHops(int destination)
 
     return nexthops;
 }
+
+bool Graph::isReachableThrough(int destination, int nextHop)
+{
+    bool* visited = new bool[graph.size()];
+    for(unsigned int i = 0; i < graph.size(); i++) visited[i] = false;
+    stack<int> s;
+    visited[sourceNode] = true;
+    visited[nextHop] = true;
+    s.push(nextHop);
+    while(!s.empty())
+    {
+        int curNode = s.top();
+        s.pop();
+        if(curNode == destination)
+        {
+            return true;
+        }
+        for(unsigned int i = 0; i < graph[curNode].size(); i++)
+        {
+            int nextVertex = graph[curNode][i].vertex; 
+            if(!visited[nextVertex])
+            {
+                visited[nextVertex] = true;
+                s.push(nextVertex);
+            }
+        }
+    }
+    return false;
+}  
 /******************
  * private helpers*
  ******************/

@@ -113,6 +113,8 @@ class Graph
         int calculateCost(int destination);
 
         vector<int> calculateNextHops(int destination);
+
+        bool isReachableThrough(int destination, int nextHop);
 };
 
 #endif 
