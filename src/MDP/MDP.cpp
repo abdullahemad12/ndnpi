@@ -72,7 +72,7 @@ ublas::vector<double> MDP::policyReward(ublas::matrix<double> policy) {
 //transition matrix associated with this policy (given the transition matrix for this MDP)
 ublas::matrix<double> MDP::policyTransitions(ublas::matrix<double> policy) {
 
-	ublas::matrix<double> ptp = ublas::zero_matrix<double>(3, 3);
+	ublas::matrix<double> ptp = ublas::zero_matrix<double>(policy.size1(), policy.size1());
 
 	for (unsigned i = 0; i < policy.size1(); ++i) {
 
@@ -81,7 +81,6 @@ ublas::matrix<double> MDP::policyTransitions(ublas::matrix<double> policy) {
 				it != this->actionTransitions.end(); ++it) {
 
 			ublas::matrix_row<ublas::matrix<double> > atmRow(it->second, i);
-
 			row(ptp, i) += atmRow * policy(i, it->first);
 		}
 
@@ -155,9 +154,12 @@ ublas::matrix<double> MDP::policyImprovement(ublas::vector<double> valueFunction
 				greedyAction.value = value;
 			}
 		}
-
+        if(greedyAction.action >= 0)
 		greedyPolicy(i, greedyAction.action) = 1.0;
 	}
+    
+
+
 
 	return greedyPolicy;
 }
@@ -174,10 +176,8 @@ ublas::matrix<double> MDP::policyIteration() {
 	ublas::matrix<double> oldPolicy = ublas::zero_matrix<double>(this->numStates,
 			this->numActions);
 
-	const double epsilon = std::numeric_limits<double>::epsilon();
 
-	while (!ublas::detail::equals(currentPolicy, oldPolicy, epsilon, epsilon)) {
-
+	for(int i = 0; i < 500; i++){
 		oldPolicy = currentPolicy;
 
 		ublas::matrix<double> policyTrans = this->policyTransitions(currentPolicy);
@@ -185,10 +185,12 @@ ublas::matrix<double> MDP::policyIteration() {
 		ublas::vector<double> policyReward = this->policyReward(currentPolicy);
 
 		ublas::vector<double> policyValue = this->policyEvaluation(policyTrans,
-				policyReward, 0.001);
+				policyReward, 0.01);
 
 		currentPolicy = this->policyImprovement(policyValue);
 	}
+
+   std::cout << "done\n";
 
 	return currentPolicy;
 }
@@ -209,6 +211,29 @@ void MDP::updateRewards(std::vector<float> rtts)
     this->actionReward = mat;
 }
 
+
+
+MDPN::MDPN(size_t n_interfaces, double discount)
+{
+    this->numActions = n_interfaces + 1;
+    this->discount = discount;
+
+
+    std::map<int, ublas::matrix<double>> at;
+    at[0] = initializeReceivingActionTransition();
+    ublas::matrix<double> mat = initializeForwardingActionTransition();
+
+    for(unsigned int i = 1; i <= n_interfaces; i++)
+    {
+        at[i] = mat;
+    }
+
+    ublas::matrix<double> ar = initializeRewards(n_interfaces + 1);
+
+    this->actionTransitions = at;
+    this->actionReward = ar;
+
+}
 /***************************************
  *  Code that initializes The Matrices *
  ***************************************/

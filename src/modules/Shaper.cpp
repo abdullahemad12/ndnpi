@@ -68,6 +68,7 @@ void Shaper::forward(void)
 		
 		if(totalSize > 0)
 		{
+            fib->updateRewards();
 			/*iterate over all the queues according to the given percentage*/
 			calculatePriorityPercentage();
             int leftOvers = 0;
@@ -93,7 +94,6 @@ void Shaper::forward(void)
  		 */
 		lock.unlock();
 		faceManager->sendAll();
-        fib->updateRewards();
 	}
 }
 

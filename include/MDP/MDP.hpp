@@ -70,4 +70,27 @@ public:
 
 };
 
+
+class MDPN {
+    private:
+        size_t numActions;
+        double discount;
+	    std::map<int,ublas::matrix<double> > actionTransitions;
+	    ublas::matrix<double> actionReward;
+
+    public:
+        MDPN(size_t n_interfaces, double discount);
+        size_t getS() const { return N_STATES; }
+        size_t getA() const { return numActions; }
+        double getDiscount() const { return discount; }
+
+        double getTransitionProbability( size_t s, size_t a, size_t s1 );
+
+        double getExpectedReward( size_t, size_t, size_t s1 );
+
+ 
+        std::tuple<size_t, double> sampleSR(size_t,size_t) const;
+        bool isTerminal(size_t) const;
+};
+
 #endif /* MDP_HPP_ */
