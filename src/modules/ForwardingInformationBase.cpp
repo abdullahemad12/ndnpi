@@ -269,7 +269,6 @@ vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Interes
         }
         
     }
-    maxI = maxI > 0 ? maxI - 1 : maxI;
 
     interfaces.push_back(this->interfaces[maxI]);
 
