@@ -259,12 +259,12 @@ vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Interes
     string name = interest.getName().toUri();
     int maxProb = 0;
     int maxI = 0;
-    for(unsigned int i = 0; i < policy.size2(); i++)
+    for(unsigned int i = 0; i < this->interfaces.size(); i++)
     {
         int faceId = this->interfaces[i]->getId();
-        if(policy(state, i) > maxProb && isReachableThroughNode(name, faceId))
+        if(policy(state, i+1) > maxProb && isReachableThroughNode(name, faceId))
         {
-            maxProb = policy(state, i);
+            maxProb = policy(state, i+1);
             maxI = i;
         }
         
