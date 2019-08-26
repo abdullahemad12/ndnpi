@@ -262,7 +262,7 @@ vector<Interface*> ForwardingInformationBase::computeMatchingFaces(const Interes
     for(unsigned int i = 0; i < this->interfaces.size(); i++)
     {
         int faceId = this->interfaces[i]->getId();
-        if(policy(state, i+1) > maxProb && isReachableThroughNode(name, faceId))
+        if(policy(state, i+1) >= maxProb && isReachableThroughNode(name, faceId))
         {
             maxProb = policy(state, i+1);
             maxI = i;
