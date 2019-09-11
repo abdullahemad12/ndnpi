@@ -74,9 +74,10 @@ void Shaper::forward(void)
 			/*iterate over all the queues according to the given percentage*/
 			calculatePriorityPercentage();
             int leftOvers = 0;
+            (void) leftOvers;
 			for(int i = 0; i < N_PRIORITIES; i++)
 			{
- 				int n_packets = capacity * alphas[i] + leftOvers;
+ 				int n_packets = capacity * alphas[i];
 				for(int j = 0; j < n_packets && !shaping_queues[i].empty(); j++)
 				{
 					Interest interest = shaping_queues[i].front();
