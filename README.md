@@ -7,8 +7,8 @@ NDN Router implementation that is intended to run on RaspberryPi board.
 
 In order to compile and run this program on any device, the following libraries should be installed with their dependencies: 
 
-1. (NDN C++ library with eXperimental eXtensions)[https://github.com/named-data/ndn-cxx]
-2. (Named Data Networking Forwarding Daemon)[https://github.com/named-data/NFD]
+1. [NDN C++ library with eXperimental eXtensions](https://github.com/named-data/ndn-cxx)
+2. [Named Data Networking Forwarding Daemon](https://github.com/named-data/NFD)
 3. Build essential library e.g: `sudo apt-get install build-essential`
 
 # Compilation Guide
